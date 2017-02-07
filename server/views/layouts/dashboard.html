@@ -1,0 +1,55 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>Straylight Member Portal -- {% block title %}Subtitle{% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/member/stylesheets/style.css">
+  </head>
+  <body>
+    <!-- Static navbar -->
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid container-wide">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/member/profile">Straylight Member Portal</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          {% if path != '/' %}
+            <ul class="nav navbar-nav">
+              <li {%if path == '/profile'%}class="active"{%endif%}><a href="/member/profile">Profile</a></li>
+              <li {%if path == '/billing'%}class="active"{%endif%}><a href="/member/billing">Billing</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="/member/logout">Logout</a></li>
+            </ul>
+          {% endif %}
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    {%- block content -%}{%- endblock -%}
+    <hr>
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+    <script>
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+     ga('create', '{{googleAnalytics}}');
+     ga('send', 'pageview');
+    </script>
+
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script type="text/javascript">
+      Stripe.setPublishableKey('{{stripePubKey}}');
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="/member/javascripts/app.js"></script>
+</body>
+</html>

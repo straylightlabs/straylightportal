@@ -1,0 +1,72 @@
+{% extends 'layouts/dashboard.html' %}
+
+{% block title %}Billing{% endblock %}
+
+{% block content %}
+  <div class="container" style="max-width: 700px">
+    {% include "partials/flash.html" %}
+    <div class="page-header">
+      <h3>Billing</h3>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title">Membership Details</h3></div>
+      <div class="panel-body">
+        <dl class="dl-horizontal">
+          <dt>Plan</dt><dd>{{plans[user.membershipPlan].name}}</dd>
+          <dt>Price</dt><dd>{{plans[user.membershipPlan].price}} yen / month</dd>
+          <dt>Status</dt><dd>
+            {% if plans[user.stripe.plan] %}
+              ACTIVE
+            {% else %}
+              INACTIVE
+            {% endif %}
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <form role="form" id="cardForm" action="/member/user/billing" method="POST" class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Card Number</label>
+        <div class="col-sm-5">
+          <input id="card-num" type="text" class="form-control" {% if user.stripe.last4 %}placeholder="XXXX XXXX XXXX {{user.stripe.last4}}"{% endif %}>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Card Details</label>
+        <div class="col-sm-5">
+          <div class="row">
+            <div class="col-xs-4">
+              <input id="card-month" type="text" size="2" maxlength="2" class="form-control" placeholder="MM">
+            </div>
+            <div class="col-xs-4">
+              <input id="card-year"  type="text" size="2" maxlength="2" class="form-control" placeholder="YY">
+            </div>
+            <div class="col-xs-4">
+              <input id="card-cvc" type="text" size="3" maxlength="3" class="form-control" placeholder="CVC">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-7">
+          <div id="cardFormError" class="alert alert-danger hidden" role="alert">
+            <p>{{error}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-4">
+          <button type="submit" class="btn btn-primary">
+            {% if user.stripe.last4 %}
+              Update Card
+            {% else %}
+              Start Subscription
+            {% endif %}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

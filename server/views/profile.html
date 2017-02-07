@@ -1,0 +1,37 @@
+{% extends 'layouts/dashboard.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+  <div class="container" style="max-width: 700px">
+    {% include "partials/flash.html" %}
+    <div class="page-header">
+      <h3>Profile</h3>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title">Basic Information</h3></div>
+      <div class="panel-body">
+        <dl class="dl-horizontal">
+          <dt>Name</dt><dd>{{user.profile.displayName}}</dd>
+          <dt>Email</dt><dd>{{user.email}}</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title">Straylight Membership</h3></div>
+      <div class="panel-body">
+        {% if plans[user.stripe.plan] %}
+          <dl class="dl-horizontal">
+            <dt>Plan</dt><dd>{{plans[user.stripe.plan].name}}</dd>
+            <dt>Price</dt><dd>{{plans[user.stripe.plan].price}} yen / month</dd>
+            <dt>Status</dt><dd>ACTIVE</dd>
+          </dl>
+        {% else %}
+          Your membership type is {{plans[user.membershipPlan].name}}.<br>
+          To keep your membership status, please update your <a
+          href="/member/billing">billing</a> information.
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
