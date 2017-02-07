@@ -18,10 +18,10 @@ var stripeWebhook = new StripeWebhook({
   respond: true
 });
 
-// Prepend '/member' to every path.
+// Prepend '/portal' to every path.
 function setRedirect(routes) {
   for (var key in routes) {
-    routes[key] = '/member' + routes[key];
+    routes[key] = '/portal' + routes[key];
   }
   return setRedirectInternal(routes);
 }

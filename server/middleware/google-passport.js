@@ -25,7 +25,7 @@ module.exports = function(passport) {
   passport.use(new GoogleStrategy({
       clientID: secrets.googleOAuth.clientID,
       clientSecret: secrets.googleOAuth.clientSecret,
-      callbackURL: "https://straylight.jp/member/auth/google/callback"
+      callbackURL: "https://straylight.jp/portal/auth/google/callback"
     },
     function(accessToken, refreshToken, profile, cb) {
       process.nextTick(function() {  // wait for all the data from Google

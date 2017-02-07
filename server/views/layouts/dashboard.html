@@ -7,23 +7,23 @@
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/member/stylesheets/style.css">
+    <link rel="stylesheet" href="/portal/stylesheets/style.css">
   </head>
   <body>
     <!-- Static navbar -->
     <div class="navbar navbar-default navbar-static-top" role="navigation">
       <div class="container-fluid container-wide">
         <div class="navbar-header">
-          <a class="navbar-brand" href="/member/profile">Straylight Member Portal</a>
+          <a class="navbar-brand" href="/portal/profile">Straylight Member Portal</a>
         </div>
         <div class="navbar-collapse collapse">
           {% if path != '/' %}
             <ul class="nav navbar-nav">
-              <li {%if path == '/profile'%}class="active"{%endif%}><a href="/member/profile">Profile</a></li>
-              <li {%if path == '/billing'%}class="active"{%endif%}><a href="/member/billing">Billing</a></li>
+              <li {%if path == '/profile'%}class="active"{%endif%}><a href="/portal/profile">Profile</a></li>
+              <li {%if path == '/billing'%}class="active"{%endif%}><a href="/portal/billing">Billing</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-              <li><a href="/member/logout">Logout</a></li>
+              <li><a href="/portal/logout">Logout</a></li>
             </ul>
           {% endif %}
         </div><!--/.nav-collapse -->
@@ -50,6 +50,6 @@
     </script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="/member/javascripts/app.js"></script>
+    <script src="/portal/javascripts/app.js"></script>
 </body>
 </html>
