@@ -52,7 +52,10 @@ app.use(favicon(path.join(__dirname + '/../public/favicon.png')));
 app.use(logger('dev'));
 
 app.use(compress);
-app.use(bodyParser());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json());
 app.use(expressValidator());
 app.use(cookieParser());
 
