@@ -5,6 +5,7 @@
 {% block content %}
   <div class="container" style="max-width: 700px">
     {% include "partials/flash.html" %}
+    <div id="cardFormError" class="alert alert-danger hidden" role="alert"><p></p></div>
     <div class="page-header">
       <h3>Billing</h3>
     </div>
@@ -13,15 +14,14 @@
       <div class="panel-heading"><h3 class="panel-title">Membership Details</h3></div>
       <div class="panel-body">
         <dl class="dl-horizontal">
-          <dt>Plan</dt><dd>{{plans[user.membershipPlan].name}}</dd>
-          <dt>Price</dt><dd>{{plans[user.membershipPlan].price}} yen / month</dd>
-          <dt>Status</dt><dd>
-            {% if plans[user.stripe.plan] %}
-              ACTIVE
-            {% else %}
-              INACTIVE
-            {% endif %}
-          </dd>
+          <dt>Plan</dt><dd>{{user.getMembershipPlan().name}}</dd>
+          <dt>Price</dt><dd>{{user.getMembershipPlan().price}} yen / month</dd>
+          {% if user.stripe.plan %}
+            <dt>Status</dt><dd>ACTIVE</dd>
+            <dt>Expires on</dt><dd>[[to be filled]]</dd>
+          {% else %}
+            <dt>Status</dt><dd>INACTIVE</dd>
+          {% endif %}
         </dl>
       </div>
     </div>
@@ -30,7 +30,7 @@
       <div class="form-group">
         <label class="col-sm-3 control-label">Card Number</label>
         <div class="col-sm-5">
-          <input id="card-num" type="text" class="form-control" {% if user.stripe.last4 %}placeholder="XXXX XXXX XXXX {{user.stripe.last4}}"{% endif %}>
+          <input type="text" class="form-control" data-stripe="number" {% if user.stripe.last4 %}placeholder="XXXX XXXX XXXX {{user.stripe.last4}}"{% endif %}>
         </div>
       </div>
       <div class="form-group">
@@ -38,33 +38,58 @@
         <div class="col-sm-5">
           <div class="row">
             <div class="col-xs-4">
-              <input id="card-month" type="text" size="2" maxlength="2" class="form-control" placeholder="MM">
+              <input type="text" size="2" maxlength="2" class="form-control" data-stripe="exp_month" placeholder="MM">
             </div>
             <div class="col-xs-4">
-              <input id="card-year"  type="text" size="2" maxlength="2" class="form-control" placeholder="YY">
+              <input type="text" size="2" maxlength="2" class="form-control" data-stripe="exp_year" placeholder="YY">
             </div>
             <div class="col-xs-4">
-              <input id="card-cvc" type="text" size="3" maxlength="3" class="form-control" placeholder="CVC">
+              <input type="text" size="3" maxlength="3" class="form-control" data-stripe="cvc" placeholder="CVC">
             </div>
           </div>
         </div>
       </div>
       <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-7">
-          <div id="cardFormError" class="alert alert-danger hidden" role="alert">
-            <p>{{error}}</p>
-          </div>
+        <label class="col-sm-3 control-label">Card Holder Name</label>
+        <div class="col-sm-5">
+          <input type="text" class="form-control" data-stripe="name" value="{{user.profile.displayName}}" placeholder="Card Holder Name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Company Name (optional)</label>
+        <div class="col-sm-5">
+          <input type="text" class="form-control" name="company_name" placeholder="Company Name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Billing Address</label>
+        <div class="col-sm-5">
+          <input type="text" class="form-control" data-stripe="address_line1" placeholder="Address line 1">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-5">
+          <input type="text" class="form-control" data-stripe="address_line2" placeholder="Address line 2">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-5">
+          <input type="text" class="form-control" data-stripe="address_city" placeholder="City">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-5">
+          <input type="text" class="form-control" data-stripe="address_state" placeholder="State">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-2">
+          <input type="text" class="form-control" data-stripe="address_zip" placeholder="Zip Code">
         </div>
       </div>
       <div class="form-group">
         <div class="col-sm-offset-3 col-sm-4">
-          <button type="submit" class="btn btn-primary">
-            {% if user.stripe.last4 %}
-              Update Card
-            {% else %}
-              Start Subscription
-            {% endif %}
-          </button>
+          <button type="submit" class="btn btn-primary">Save and review</button>
         </div>
       </div>
     </form>

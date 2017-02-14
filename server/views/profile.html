@@ -13,21 +13,31 @@
       <div class="panel-body">
         <dl class="dl-horizontal">
           <dt>Name</dt><dd>{{user.profile.displayName}}</dd>
+          {% if user.profile.imageUrl %}
+            <dt>Photo</dt>
+            <dd><img src="{{user.profile.imageUrl}}" alt="profile image" class="img-thumbnail"></dd>
+          {% endif %}
           <dt>Email</dt><dd>{{user.email}}</dd>
+          <dt>Mailing Address</dt><dd>{{user.profile.mailingAddress.value}}{% if user.profile.mailingAddress.isPrivate %} (private){% endif %}</dd>
+          <dt>Mobile Phone</dt><dd>{{user.profile.mobilePhone.value}}{% if user.profile.mobilePhone.isPrivate %} (private){% endif %}</dd>
         </dl>
+        <div class="text-right">
+          <a href="/portal/profile/edit" class="btn btn-primary" role="button">Update</a>
+        </div>
       </div>
     </div>
     <div class="panel panel-default">
       <div class="panel-heading"><h3 class="panel-title">Straylight Membership</h3></div>
       <div class="panel-body">
-        {% if plans[user.stripe.plan] %}
+        {% if user.getPlan() %}
           <dl class="dl-horizontal">
-            <dt>Plan</dt><dd>{{plans[user.stripe.plan].name}}</dd>
-            <dt>Price</dt><dd>{{plans[user.stripe.plan].price}} yen / month</dd>
+            <dt>Plan</dt><dd>{{user.getPlan().name}}</dd>
+            <dt>Price</dt><dd>{{user.getPlan().price}} yen / month</dd>
             <dt>Status</dt><dd>ACTIVE</dd>
+            <dt>Expires on</dt><dd>[[to be filled]]</dd>
           </dl>
         {% else %}
-          Your membership type is {{plans[user.membershipPlan].name}}.<br>
+          Your membership type is {{user.getMembershipPlan().name}}.<br>
           To keep your membership status, please update your <a
           href="/portal/billing">billing</a> information.
         {% endif %}

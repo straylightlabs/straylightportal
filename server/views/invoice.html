@@ -1,0 +1,47 @@
+{% extends 'layouts/dashboard.html' %}
+
+{% block title %}Invoice{% endblock %}
+
+{% block content %}
+  <div class="container" style="max-width: 900px">
+    {% include "partials/flash.html" %}
+    <div class="page-header">
+      <h3>Invoice</h3>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title">{{user.getPlan().name}}</h3></div>
+      <div class="panel-body container-fluid">
+        <div class="row">
+          <div class="col-md-7">
+            <h4>Straylight LLC</h4>
+            Motoyoyogicho 4-5, Shibuya, Tokyo, 151-0062<br>
+            03-5738-7695<br>
+          </div>
+          <div class="col-md-5">
+            Customer ID: {{invoice.customer}}<br>
+            Invoice ID: {{invoice.id}}<br>
+            Date: {{moment(invoice.date).format('YYYY-MM-DD')}}<br>
+            Period: {{moment(invoice.period_start).format('YYYY-MM-DD')}} - {{moment(invoice.period_end).format('YYYY-MM-DD')}}<br>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-7">
+            <h4>Billed to:</h4>
+            {{user.profile.displayName}}<br>
+            {{user.profile.billingAddress}}<br>
+          </div>
+        </div>
+        <table class="table">
+          {% for item in invoice.lines.data %}
+            <tr><td>{{item.plan.name}}</td><td>{{item.amount}} {{invoice.currency}}</td></tr>
+          {% endfor %}
+          <tr><td>Subtotal</td><td>{{invoice.subtotal}} {{invoice.currency}}</td></tr>
+          <tr><td>Tax ({{invoice.tax_percent}}%)</td><td>{{invoice.tax}} {{invoice.currency}}</td></tr>
+          <tr><td>Total</td><td>{{invoice.total}} {{invoice.currency}}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

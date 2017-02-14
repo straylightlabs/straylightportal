@@ -1,32 +1,21 @@
 jQuery(function($) {
 
   var cardForm = $('#cardForm'),
-  formError = $('#cardFormError'),
-  cardFormBtn = cardForm.find('button');
+  cardFormButton = cardForm.find('button'),
+  formError = $('#cardFormError');
 
   cardForm.submit(function(e) {
     e.preventDefault();
 
-    cardFormBtn.prop('disabled', true);
+    cardFormButton.prop('disabled', true);
 
-    var cardNum = $('#card-num').val();
-    var cardMonth = $('#card-month').val();
-    var cardYear = $('#card-year').val();
-    var cardCVC = $('#card-cvc').val();
-
-    Stripe.card.createToken({
-      number: cardNum,
-      exp_month: cardMonth,
-      exp_year: cardYear,
-      cvc: cardCVC
-    }, function(status, response) {
+    Stripe.card.createToken(cardForm, function(status, response) {
       if (response.error) {
         formError.find('p').text(response.error.message);
         formError.removeClass('hidden');
-        cardForm.find('button').prop('disabled', false);
+        cardFormButton.prop('disabled', false);
       } else {
         var token = response.id;
-        console.info(token);
         cardForm.append($('<input type="hidden" name="stripeToken" />').val(token));
         cardForm.get(0).submit();
       }
@@ -35,4 +24,16 @@ jQuery(function($) {
     return false;
   });
 
+  $('#confirmation button').click(function(e) {
+    var button = $(this);
+    if (button.attr('confirmed')) {
+      return;
+    }
+
+    e.preventDefault();
+    $('#confirmation .well').removeClass('hidden');
+    button.html('Yes, proceed');
+    button.attr('confirmed', 'true');
+  });
 });
+

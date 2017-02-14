@@ -3,12 +3,16 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var User = require('../models/user');
 
 function updateUserProfile(src, dest) {
+  var updated = false;
   if (!dest.displayName) {
     dest.displayName = src.displayName;
+    updated = true;
   }
-  if (!dest.imageUrl && src.image) {
-    dest.imageUrl = src.image.url;
+  if (!dest.imageUrl && src.photos && src.photos.length) {
+    dest.imageUrl = src.photos[0].value;
+    updated = true;
   }
+  return updated;
 }
 
 module.exports = function(passport) {
@@ -37,7 +41,11 @@ module.exports = function(passport) {
           if (!user) {
             return cb('Your email is not registered in the system. Please contact core@straylight.jp for assistance.');
           }
-          updateUserProfile(profile, user.profile);
+          if (updateUserProfile(profile, user.profile)) {
+            user.save(function(err) {
+              return cb(err, user);
+            });
+          }
           return cb(null, user);
         });
       });

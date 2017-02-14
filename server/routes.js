@@ -1,13 +1,13 @@
 'use strict';
 
+var secrets = require('./config/secrets');
 // middleware
 var StripeWebhook = require('stripe-webhook-middleware'),
 isAuthenticated = require('./middleware/auth').isAuthenticated,
 isUnauthenticated = require('./middleware/auth').isUnauthenticated,
 setRender = require('middleware-responder').setRender,
 setRedirectInternal = require('middleware-responder').setRedirect,
-stripeEvents = require('./middleware/stripe-events'),
-secrets = require('./config/secrets');
+stripeEvents = require('./middleware/stripe-events');
 // controllers
 var users = require('./controllers/users-controller'),
 index = require('./controllers/index-controller'),
@@ -28,14 +28,14 @@ function setRedirect(routes) {
 
 module.exports = function (app, passport) {
 
-  // homepage and dashboard
+  // Homepage.
   app.get('/',
     setRedirect({auth: '/profile'}),
     isUnauthenticated,
     setRender('index'),
     index.getHome);
 
-  // sessions
+  // Sessions.
   app.get('/auth/google',
     isUnauthenticated,
     sessions.login);
@@ -48,24 +48,53 @@ module.exports = function (app, passport) {
     isAuthenticated,
     sessions.logout);
 
+  // Pages.
+  app.get('/profile',
+    setRender('profile'),
+    setRedirect({auth: '/', editProfile: '/profile/edit', billing: '/billing', subscription: '/subscription' }),
+    isAuthenticated,
+    users.getOnboardingFlow,
+    users.getDefault);
+  app.get('/profile/edit',
+    setRender('profile-edit'),
+    setRedirect({auth: '/'}),
+    isAuthenticated,
+    users.getDefault);
   app.get('/billing',
     setRender('billing'),
     setRedirect({auth: '/'}),
     isAuthenticated,
     users.getDefault);
-  app.get('/profile',
-    setRender('profile'),
-    setRedirect({auth: '/'}),
+  app.get('/subscription',
+    setRender('subscription'),
+    setRedirect({auth: '/', billing: '/billing'}),
     isAuthenticated,
-    users.getDefault);
+    users.getSubscription);
+  app.get('/invoice',
+    setRender('invoice'),
+    setRedirect({auth: '/', failure: '/subscription'}),
+    isAuthenticated,
+    users.getInvoice);
 
-  // user api stuff
+  // User API.
+  app.post('/user/profile',
+    setRedirect({auth: '/', success: '/profile', failure: '/profile/edit'}),
+    isAuthenticated,
+    users.postProfile);
   app.post('/user/billing',
-    setRedirect({auth: '/', success: '/billing', failure: '/billing'}),
+    setRedirect({auth: '/', success: '/subscription', failure: '/billing'}),
     isAuthenticated,
-    users.postStartSubscription);
+    users.postBilling);
+  app.post('/user/subscription',
+    setRedirect({auth: '/', success: '/subscription', failure: '/subscription'}),
+    isAuthenticated,
+    users.postSubscription);
+  app.post('/user/subscription/cancel',
+    setRedirect({auth: '/', success: '/profile', failure: '/subscription'}),
+    isAuthenticated,
+    users.postCancelSubscription);
 
-  // use this url to receive stripe webhook events
+  // Stripe webhook events.
   app.post('/stripe/events',
     stripeWebhook.middleware,
     stripeEvents

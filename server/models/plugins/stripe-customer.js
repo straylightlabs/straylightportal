@@ -24,8 +24,12 @@ module.exports = exports = function stripeCustomer (schema, options) {
     });
   });
 
-  schema.statics.getPlans = function () {
-    return options.planData;
+  schema.methods.getPlan = function () {
+    return options.planData[this.stripe.plan];
+  };
+
+  schema.methods.getMembershipPlan = function () {
+    return options.planData[this.membershipPlan];
   };
 
   schema.methods.createCustomer = function(cb) {
@@ -127,6 +131,45 @@ module.exports = exports = function stripeCustomer (schema, options) {
     });
   };
 
+  schema.methods.getInvoices = function(limit, cb) {
+    var user = this;
+
+    if (!user.stripe.customerId) return cb();
+
+    // TODO(ryok): Parallelize the calls.
+    stripe.invoices.list({
+      limit: limit,
+      customer: user.stripe.customerId
+    }, function(err, invoices) {
+      if (err || !invoices) {
+        return cb(err);
+      }
+
+      var req;
+      if (user.stripe.subscriptionId) {
+        req = { subscription: user.stripe.subscriptionId };
+      } else {
+        req = { subscription_plan: user.membershipPlan };
+      }
+      stripe.invoices.retrieveUpcoming(user.stripe.customerId, req, function(err, upcomingInvoice) {
+        if (err || !upcomingInvoice) {
+          return cb(err);
+        }
+        cb(err, upcomingInvoice, invoices.data);
+      });
+    });
+  };
+
+  schema.methods.getInvoice = function(id, cb) {
+    var user = this;
+
+    if (!user.stripe.customerId) return cb();
+
+    stripe.invoices.retrieve(id, function(err, invoice) {
+      cb(err, invoice);
+    });
+  };
+
   schema.methods.cancelStripe = function(cb){
     var user = this;
 
@@ -134,7 +177,10 @@ module.exports = exports = function stripeCustomer (schema, options) {
       stripe.customers.del(
         user.stripe.customerId
       ).then(function(confirmation) {
-        cb();
+        user.stripe = {};
+        user.save(function(err) {
+          return cb(err);
+        });
       }, function(err) {
         return cb(err);
       });

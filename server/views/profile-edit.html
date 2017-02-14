@@ -1,0 +1,56 @@
+{% extends 'layouts/dashboard.html' %}
+
+{% block title %}Update Profile{% endblock %}
+
+{% block content %}
+  <div class="container" style="max-width: 700px">
+    {% include "partials/flash.html" %}
+    <div class="page-header">
+      <h3>Update Profile</h3>
+    </div>
+    <form action="/portal/user/profile" method="post" class="form-horizontal">
+      <div class="form-group">
+        <label for="display-name" class="col-sm-3 control-label">Display Name</label>
+        <div class="col-sm-4">
+          <input type="text" name="displayName" value="{{user.profile.displayName}}" id="display-name" class="form-control">
+        </div>
+      </div>
+      {% if user.profile.imageUrl %}
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-4">
+              <img src="{{user.profile.imageUrl}}" alt="profile image" class="img-thumbnail">
+          </div>
+        </div>
+      {% endif %}
+      <div class="form-group">
+        <label for="mailing-address" class="col-sm-3 control-label">Mailing Address</label>
+        <div class="col-sm-4">
+          <input type="text" name="mailingAddress" value="{{user.profile.mailingAddress.value}}" id="mailing-address" class="form-control">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="mailingAddressPrivate" value="1"{% if user.profile.mailingAddress.isPrivate %} checked="checked"{% endif %}>private
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="mobile-phone" class="col-sm-3 control-label">Mobile Phone</label>
+        <div class="col-sm-4">
+          <input type="text" name="mobilePhone" value="{{user.profile.mobilePhone.value}}" id="mobile-phone" class="form-control">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="mobilePhonePrivate" value="1"{% if user.profile.mobilePhone.isPrivate %} checked="checked"{% endif %}>private
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-4">
+          <button type="submit" class="btn btn-primary">
+            <span class="ion-edit"></span>Save{% if !user.profile.isConfirmed %} and continue{% endif %}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

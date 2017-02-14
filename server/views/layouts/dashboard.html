@@ -21,6 +21,9 @@
             <ul class="nav navbar-nav">
               <li {%if path == '/profile'%}class="active"{%endif%}><a href="/portal/profile">Profile</a></li>
               <li {%if path == '/billing'%}class="active"{%endif%}><a href="/portal/billing">Billing</a></li>
+              {% if user.stripe.customerId %}
+                <li {%if path == '/subscription'%}class="active"{%endif%}><a href="/portal/subscription">Subscription</a></li>
+              {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <li><a href="/portal/logout">Logout</a></li>
