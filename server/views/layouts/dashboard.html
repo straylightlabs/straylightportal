@@ -5,8 +5,13 @@
     <title>Straylight Member Portal -- {% block title %}Subtitle{% endblock %}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/portal/stylesheets/bootstrap-material-design.min.css">
+    <link rel="stylesheet" href="/portal/stylesheets/ripples.min.css">
     <link rel="stylesheet" href="/portal/stylesheets/style.css">
   </head>
   <body>
@@ -53,6 +58,13 @@
     </script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="/portal/javascripts/ripples.min.js"></script>
+    <script src="/portal/javascripts/material.min.js"></script>
+    <script type="text/javascript">
+      $(function() {
+        $.material.init();
+      });
+    </script>
     <script src="/portal/javascripts/app.js"></script>
 </body>
 </html>
