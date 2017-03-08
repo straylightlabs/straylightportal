@@ -38,7 +38,9 @@ exports.getOnboardingFlow = function(req, res, next) {
 
 exports.postProfile = function(req, res, next) {
   req.assert('displayName', 'Display Name is required').notEmpty();
-  // TODO(ryok): Add more validation.
+  req.assert('mailingAddress', 'Mailing Address is required').notEmpty();
+  req.assert('mobilePhone', 'Mobile Phone is required').notEmpty();
+  req.assert('mobilePhoneCountryCode', 'Mobile Phone is required').notEmpty();
 
   var errors = req.validationErrors();
   if (errors) {
@@ -55,14 +57,10 @@ exports.postProfile = function(req, res, next) {
     if (err) return next(err);
 
     user.profile.displayName = req.body.displayName;
-    if (req.body.mailingAddress) {
-      user.profile.mailingAddress.value = req.body.mailingAddress;
-      user.profile.mailingAddress.isPrivate = req.body.mailingAddressPrivate == '1';
-    }
-    if (req.body.mobilePhone) {
-      user.profile.mobilePhone.value = req.body.mobilePhone;
-      user.profile.mobilePhone.isPrivate = req.body.mobilePhonePrivate == '1';
-    }
+    user.profile.mailingAddress.value = req.body.mailingAddress;
+    user.profile.mailingAddress.isPrivate = req.body.mailingAddressPrivate == '1';
+    user.profile.mobilePhone.value = [req.body.mobilePhoneCountryCode, req.body.mobilePhone].join('-');
+    user.profile.mobilePhone.isPrivate = req.body.mobilePhonePrivate == '1';
     if (req.file) {
       user.profile.imageUrl = '/portal/files/' + req.file.filename + '?mime=' + encodeURIComponent(req.file.mimetype);
     }

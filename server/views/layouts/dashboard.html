@@ -36,6 +36,7 @@
           </div>
         </header>
         <nav class="mdl-navigation mdl-color--blue-grey-800">
+          <a class="mdl-navigation__link" href="/portal/profile"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">account_box</i>Profile</a>
           <a class="mdl-navigation__link" href="/portal/billing"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">credit_card</i>Billing</a>
           {% if user.stripe.customerId %}
             <a class="mdl-navigation__link" href="/portal/subscription"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">card_membership</i>Subscription</a>
