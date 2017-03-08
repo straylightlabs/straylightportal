@@ -3,6 +3,13 @@
 var moment = require('moment');
 var User = require('../models/user');
 
+function isImageMime(mime) {
+  return (
+      mime == 'image/png' ||
+      mime == 'image/jpeg' ||
+      mime == 'image/gif');
+}
+
 exports.getDefault = function(req, res, next) {
   var error = null;
   var errorFlash = req.flash('error');
@@ -34,9 +41,13 @@ exports.postProfile = function(req, res, next) {
   // TODO(ryok): Add more validation.
 
   var errors = req.validationErrors();
-
   if (errors) {
     req.flash('errors', errors);
+    return res.redirect(req.redirect.failure);
+  }
+
+  if (req.file && !isImageMime(req.file.mimetype)) {
+    req.flash('error', 'The image file is not recognized.');
     return res.redirect(req.redirect.failure);
   }
 
@@ -51,6 +62,9 @@ exports.postProfile = function(req, res, next) {
     if (req.body.mobilePhone) {
       user.profile.mobilePhone.value = req.body.mobilePhone;
       user.profile.mobilePhone.isPrivate = req.body.mobilePhonePrivate == '1';
+    }
+    if (req.file) {
+      user.profile.imageUrl = '/portal/files/' + req.file.filename + '?mime=' + encodeURIComponent(req.file.mimetype);
     }
     user.profile.isConfirmed = true;
 
@@ -82,7 +96,18 @@ exports.postBilling = function(req, res, next) {
         req.flash('errors', { msg: msg });
         return res.redirect(req.redirect.failure);
       }
-      res.redirect(req.redirect.success);
+      user.billing.companyName = req.body.companyName;
+      user.billing.address.street = req.body.addressStreet;
+      user.billing.address.city = req.body.addressCity;
+      user.billing.address.state = req.body.addressState;
+      user.billing.address.zip = req.body.addressZip;
+      user.save(function(err) {
+        if (err) {
+          req.flash('errors', { msg: err });
+          return res.redirect(req.redirect.failure);
+        }
+        return res.redirect(req.redirect.success);
+      });
     });
   });
 };

@@ -1,26 +1,23 @@
-{% extends 'layouts/dashboard.html' %}
+{% extends 'layouts/plain.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Log In{% endblock %}
 
 {% block content %}
-  <div class="container" style="max-width: 700px">
-    <p class="center-text">
-      Straylight Member Portal is the online counterpart of the Straylight One
-      space. It's where you get to know members of the community who you haven't
-      met yet, it's where you share and exchange valuable information
-      exclusively with the community, and the last but not least, it's where you
-      manage your membership subscription and billing :)
-    </p>
-    <p class="center-text">
-      DISCLAIMER: so far, we have only built the billing part. Your <a
-      href="https://github.com/straylightlabs/straylightportal"
-      target="_blank">contribution</a> is crucial to build the rest of the fun
-      part.
-    </p>
-    <hr>
-    <p class="center-text">Please log in with your registered Google account.</p>
-    <p class="center-text">
-      <a href="/portal/auth/google" class="btn btn-danger btn-raised"><span class="fa fa-google-plus"></span> Google</a>
-    </p>
+<div class="welcome-card mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Welcome</h2>
   </div>
+  <div class="mdl-card__supporting-text">
+    Straylight Member Portal is the online counterpart of the Straylight One
+    space. It's where you get to know members of the community who you haven't
+    met yet, it's where you share and exchange valuable information
+    exclusively with the community, and the last but not least, it's where you
+    manage your membership subscription and billing :)
+  </div>
+  <div class="mdl-card__actions mdl-card--border">
+    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/portal/auth/google">
+      <span class="fa fa-google-plus"></span> Login
+    </a>
+  </div>
+</div>
 {% endblock %}

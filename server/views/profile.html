@@ -3,45 +3,46 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-  <div class="container" style="max-width: 700px">
-    {% include "partials/flash.html" %}
-    <div class="page-header">
-      <h3>Profile</h3>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading"><h3 class="panel-title">Basic Information</h3></div>
-      <div class="panel-body">
-        <dl class="dl-horizontal">
-          <dt>Name</dt><dd>{{user.profile.displayName}}</dd>
-          {% if user.profile.imageUrl %}
-            <dt>Photo</dt>
-            <dd><img src="{{user.profile.imageUrl}}" alt="profile image" class="img-thumbnail"></dd>
-          {% endif %}
-          <dt>Email</dt><dd>{{user.email}}</dd>
-          <dt>Mailing Address</dt><dd>{{user.profile.mailingAddress.value}}{% if user.profile.mailingAddress.isPrivate %} (private){% endif %}</dd>
-          <dt>Mobile Phone</dt><dd>{{user.profile.mobilePhone.value}}{% if user.profile.mobilePhone.isPrivate %} (private){% endif %}</dd>
-        </dl>
-        <div class="text-right">
-          <a href="/portal/profile/edit" class="btn btn-primary btn-raised" role="button">Update</a>
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading"><h3 class="panel-title">Straylight Membership</h3></div>
-      <div class="panel-body">
-        {% if user.getPlan() %}
-          <dl class="dl-horizontal">
-            <dt>Plan</dt><dd>{{user.getPlan().name}}</dd>
-            <dt>Price</dt><dd>{{user.getPlan().price}} yen / month</dd>
-            <dt>Status</dt><dd>ACTIVE</dd>
-            <dt>Expires on</dt><dd>[[to be filled]]</dd>
-          </dl>
-        {% else %}
-          Your membership type is {{user.getMembershipPlan().name}}.<br>
-          To keep your membership status, please update your <a
-          href="/portal/billing">billing</a> information.
-        {% endif %}
-      </div>
-    </div>
+<div class="wide-card mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Basic Information</h2>
   </div>
+  <div class="mdl-card__supporting-text">
+    <ul class="demo-list-icon mdl-list">
+      <li class="mdl-list__item">
+	<span class="mdl-list__item-primary-content">
+	  <i class="material-icons mdl-list__item-icon">person</i>
+	  {{user.profile.displayName}}
+	</span>
+      </li>
+      <li class="mdl-list__item">
+	<span class="mdl-list__item-primary-content">
+	  <i class="material-icons mdl-list__item-icon">email</i>
+	  {{user.email}}
+	</span>
+      </li>
+      {% if user.profile.mailingAddress.value %}
+      <li class="mdl-list__item">
+	<span class="mdl-list__item-primary-content">
+	  <i class="material-icons mdl-list__item-icon">home</i>
+	  {{user.profile.mailingAddress.value}}{% if user.profile.mailingAddress.isPrivate %} (private){% endif %}
+	</span>
+      </li>
+      {% endif %}
+      {% if user.profile.mobilePhone.value %}
+      <li class="mdl-list__item">
+	<span class="mdl-list__item-primary-content">
+	  <i class="material-icons mdl-list__item-icon">phone</i>
+	  {{user.profile.mobilePhone.value}}{% if user.profile.mobilePhone.isPrivate %} (private){% endif %}
+	</span>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+  <div class="mdl-card__actions mdl-card--border">
+    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/portal/profile/edit">
+      Update
+    </a>
+  </div>
+</div>
 {% endblock %}

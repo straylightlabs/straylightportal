@@ -19,6 +19,15 @@ var userSchema = new mongoose.Schema({
       isPrivate: Boolean
     },
     isConfirmed: Boolean
+  },
+  billing: {
+    address: {
+      street: String,
+      city: String,
+      state: String,
+      zip: String
+    },
+    companyName: String
   }
 });
 

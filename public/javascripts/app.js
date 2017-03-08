@@ -1,8 +1,7 @@
 jQuery(function($) {
 
-  var cardForm = $('#cardForm'),
-  cardFormButton = cardForm.find('button'),
-  formError = $('#cardFormError');
+  var cardForm = $('#card-form'),
+  cardFormButton = cardForm.find('button');
 
   cardForm.submit(function(e) {
     e.preventDefault();
@@ -11,8 +10,7 @@ jQuery(function($) {
 
     Stripe.card.createToken(cardForm, function(status, response) {
       if (response.error) {
-        formError.find('p').text(response.error.message);
-        formError.removeClass('hidden');
+        showToast(response.error.message);
         cardFormButton.prop('disabled', false);
       } else {
         var token = response.id;
@@ -24,16 +22,20 @@ jQuery(function($) {
     return false;
   });
 
-  $('#confirmation button').click(function(e) {
+  $('.confirmation button').click(function(e) {
     var button = $(this);
     if (button.attr('confirmed')) {
       return;
     }
 
     e.preventDefault();
-    $('#confirmation .well').removeClass('hidden');
+    $('.confirmation .short-card').removeClass('hidden');
     button.html('Yes, proceed');
     button.attr('confirmed', 'true');
+  });
+
+  $('#upload-button').change(function() {
+    $('#upload-file').val(this.files[0].name);
   });
 });
 

@@ -4,6 +4,8 @@ var Stripe = require('stripe'),
 stripe;
 
 module.exports = exports = function stripeCustomer (schema, options) {
+  const TAX_PERCENT = 8;
+
   stripe = Stripe(options.apiKey);
 
   schema.add({
@@ -94,7 +96,10 @@ module.exports = exports = function stripeCustomer (schema, options) {
     var createSubscription = function(){
       stripe.customers.createSubscription(
         user.stripe.customerId,
-        {plan: plan},
+        {
+          plan: plan,
+          tax_percent: TAX_PERCENT
+        },
         subscriptionHandler
       );
     };
@@ -112,7 +117,10 @@ module.exports = exports = function stripeCustomer (schema, options) {
         stripe.customers.updateSubscription(
           user.stripe.customerId,
           user.stripe.subscriptionId,
-          { plan: plan },
+          {
+            plan: plan,
+            tax_percent: TAX_PERCENT
+          },
           subscriptionHandler
         );
       } else {
@@ -131,6 +139,21 @@ module.exports = exports = function stripeCustomer (schema, options) {
     });
   };
 
+  function setCurrencySymbol(invoice) {
+    invoice.currency_symbol = invoice.currency;
+    switch (invoice.currency) {
+      case 'jpy':
+        invoice.currency_symbol = '¥';
+        break;
+      case 'usd':
+        invoice.currency_symbol = '$';
+        break;
+      case 'eur':
+        invoice.currency_symbol = '€';
+        break;
+    }
+  }
+
   schema.methods.getInvoices = function(limit, cb) {
     var user = this;
 
@@ -144,6 +167,9 @@ module.exports = exports = function stripeCustomer (schema, options) {
       if (err || !invoices) {
         return cb(err);
       }
+      invoices.data.forEach(function(invoice) {
+        setCurrencySymbol(invoice);
+      });
 
       var req;
       if (user.stripe.subscriptionId) {
@@ -155,6 +181,7 @@ module.exports = exports = function stripeCustomer (schema, options) {
         if (err || !upcomingInvoice) {
           return cb(err);
         }
+        setCurrencySymbol(upcomingInvoice);
         cb(err, upcomingInvoice, invoices.data);
       });
     });
@@ -166,6 +193,7 @@ module.exports = exports = function stripeCustomer (schema, options) {
     if (!user.stripe.customerId) return cb();
 
     stripe.invoices.retrieve(id, function(err, invoice) {
+      setCurrencySymbol(invoice);
       cb(err, invoice);
     });
   };

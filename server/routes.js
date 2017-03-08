@@ -1,5 +1,7 @@
 'use strict';
 
+const UPLOAD_DIR = 'uploads/';
+
 var secrets = require('./config/secrets');
 // middleware
 var StripeWebhook = require('stripe-webhook-middleware'),
@@ -7,11 +9,13 @@ isAuthenticated = require('./middleware/auth').isAuthenticated,
 isUnauthenticated = require('./middleware/auth').isUnauthenticated,
 setRender = require('middleware-responder').setRender,
 setRedirectInternal = require('middleware-responder').setRedirect,
-stripeEvents = require('./middleware/stripe-events');
+stripeEvents = require('./middleware/stripe-events'),
+upload = require('multer')({ dest: UPLOAD_DIR });
 // controllers
 var users = require('./controllers/users-controller'),
 index = require('./controllers/index-controller'),
-sessions = require('./controllers/sessions-controller');
+sessions = require('./controllers/sessions-controller'),
+files = require('./controllers/files-controller');
 
 var stripeWebhook = new StripeWebhook({
   stripeApiKey: secrets.stripeOptions.apiKey,
@@ -30,7 +34,7 @@ module.exports = function (app, passport) {
 
   // Homepage.
   app.get('/',
-    setRedirect({auth: '/profile'}),
+    setRedirect({auth: '/home'}),
     isUnauthenticated,
     setRender('index'),
     index.getHome);
@@ -40,7 +44,7 @@ module.exports = function (app, passport) {
     isUnauthenticated,
     sessions.login);
   app.get('/auth/google/callback',
-    setRedirect({auth: '/profile', success: '/profile', failure: '/'}),
+    setRedirect({auth: '/home', success: '/home', failure: '/'}),
     isUnauthenticated,
     sessions.postLogin);
   app.get('/logout',
@@ -49,11 +53,16 @@ module.exports = function (app, passport) {
     sessions.logout);
 
   // Pages.
-  app.get('/profile',
-    setRender('profile'),
+  app.get('/home',
+    setRender('home'),
     setRedirect({auth: '/', editProfile: '/profile/edit', billing: '/billing', subscription: '/subscription' }),
     isAuthenticated,
     users.getOnboardingFlow,
+    users.getDefault);
+  app.get('/profile',
+    setRender('profile'),
+    setRedirect({auth: '/'}),
+    isAuthenticated,
     users.getDefault);
   app.get('/profile/edit',
     setRender('profile-edit'),
@@ -75,11 +84,13 @@ module.exports = function (app, passport) {
     setRedirect({auth: '/', failure: '/subscription'}),
     isAuthenticated,
     users.getInvoice);
+  app.get('/files/:fileId', files.get);
 
   // User API.
   app.post('/user/profile',
     setRedirect({auth: '/', success: '/profile', failure: '/profile/edit'}),
     isAuthenticated,
+    upload.single('avatar'),
     users.postProfile);
   app.post('/user/billing',
     setRedirect({auth: '/', success: '/subscription', failure: '/billing'}),
@@ -90,7 +101,7 @@ module.exports = function (app, passport) {
     isAuthenticated,
     users.postSubscription);
   app.post('/user/subscription/cancel',
-    setRedirect({auth: '/', success: '/profile', failure: '/subscription'}),
+    setRedirect({auth: '/', success: '/home', failure: '/subscription'}),
     isAuthenticated,
     users.postCancelSubscription);
 
