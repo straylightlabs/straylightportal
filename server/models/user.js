@@ -12,17 +12,11 @@ var userSchema = new mongoose.Schema({
     imageUrl: String,
     mailingAddress: {
       value: String,
-      isPrivate: {
-        type: Boolean,
-        default: true
-      }
+      isPrivate: Boolean
     },
     mobilePhone: {
       value: String,
-      isPrivate: {
-        type: Boolean,
-        default: true
-      }
+      isPrivate: Boolean
     },
     isConfirmed: Boolean
   },

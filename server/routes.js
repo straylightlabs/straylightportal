@@ -61,8 +61,9 @@ module.exports = function (app, passport) {
     users.getDefault);
   app.get('/profile',
     setRender('profile'),
-    setRedirect({auth: '/'}),
+    setRedirect({auth: '/', editProfile: '/profile/edit', billing: '/billing', subscription: '/subscription' }),
     isAuthenticated,
+    users.getOnboardingFlow,
     users.getDefault);
   app.get('/profile/edit',
     setRender('profile-edit'),

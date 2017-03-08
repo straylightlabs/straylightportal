@@ -10,6 +10,13 @@ function isImageMime(mime) {
       mime == 'image/gif');
 }
 
+function joinMobilePhone(countryCode, number) {
+  if (countryCode[0] != '+') {
+    countryCode = '+' + countryCode;
+  }
+  return [countryCode, number].join(' ');
+}
+
 exports.getDefault = function(req, res, next) {
   var error = null;
   var errorFlash = req.flash('error');
@@ -59,7 +66,7 @@ exports.postProfile = function(req, res, next) {
     user.profile.displayName = req.body.displayName;
     user.profile.mailingAddress.value = req.body.mailingAddress;
     user.profile.mailingAddress.isPrivate = req.body.mailingAddressPrivate == '1';
-    user.profile.mobilePhone.value = [req.body.mobilePhoneCountryCode, req.body.mobilePhone].join('-');
+    user.profile.mobilePhone.value = joinMobilePhone(req.body.mobilePhoneCountryCode, req.body.mobilePhone);
     user.profile.mobilePhone.isPrivate = req.body.mobilePhonePrivate == '1';
     if (req.file) {
       user.profile.imageUrl = '/portal/files/' + req.file.filename + '?mime=' + encodeURIComponent(req.file.mimetype);

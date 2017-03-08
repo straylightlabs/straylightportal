@@ -1,18 +1,52 @@
 var secrets = require('../config/secrets');
+var base = require('airtable').base('appI5wbax01HyDamh');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var User = require('../models/user');
 
 function updateUserProfile(src, dest) {
   var updated = false;
-  if (!dest.displayName) {
-    dest.displayName = src.displayName;
-    updated = true;
-  }
-  if (!dest.imageUrl && src.photos && src.photos.length) {
-    dest.imageUrl = src.photos[0].value;
-    updated = true;
-  }
   return updated;
+}
+
+function fetchProfileFromAirtable(email, cb) {
+  base('People').select({
+    filterByFormula: "{Portal Email} = '" + email + "'"
+  }).firstPage(function(error, people) {
+    if (error) {
+      return cb(error);
+    }
+    if (people.length == 0) {
+      return cb('Your email is not registered in the system. Please contact core@straylight.jp for assistance.');
+    }
+    return cb(null, people[0]);
+  });
+}
+
+function createNewUser(googleProfile, cb) {
+  var email = googleProfile.emails[0].value;
+  fetchProfileFromAirtable(email, function(err, airtableProfile) {
+    if (err) return cb(err);
+    var user = new User({
+      email: email,
+      membershipPlan: airtableProfile.get('Portal Membership'),
+      profile: {
+        displayName: googleProfile.displayName,
+        imageUrl: googleProfile.photos && googleProfile.photos.length == 1
+            ? googleProfile.photos[0].value : null,
+        mailingAddress: {
+          value: airtableProfile.get('Physical Address'),
+          isPrivate: true
+        },
+        mobilePhone: {
+          value: airtableProfile.get('Mobile'),
+          isPrivate: true
+        }
+      }
+    });
+    user.save(function(err) {
+      return cb(err, user);
+    });
+  });
 }
 
 module.exports = function(passport) {
@@ -42,18 +76,12 @@ module.exports = function(passport) {
       process.nextTick(function() {  // wait for all the data from Google
         var email = profile.emails[0].value;
         User.findOne({ email: email }, function (err, user) {
-          if (err) {
-            return cb(err);
+          if (err || user) {
+            return cb(err, user);
           }
-          if (!user) {
-            return cb('Your email is not registered in the system. Please contact core@straylight.jp for assistance.');
-          }
-          if (updateUserProfile(profile, user.profile)) {
-            user.save(function(err) {
-              return cb(err, user);
-            });
-          }
-          return cb(null, user);
+          createNewUser(profile, function(err, user) {
+            return cb(err, user);
+          });
         });
       });
     }
