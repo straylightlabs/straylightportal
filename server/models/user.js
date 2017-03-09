@@ -6,7 +6,6 @@ var timestamps = require('mongoose-timestamp');
 var userSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true },
   membershipPlan: String,
-  isOnboarded: Boolean,
   profile: {
     displayName: String,
     imageUrl: String,
@@ -21,13 +20,15 @@ var userSchema = new mongoose.Schema({
     isConfirmed: Boolean
   },
   billing: {
+    // TODO(ryok): Take from "invoice.source".
     address: {
       street: String,
       city: String,
       state: String,
       zip: String
     },
-    companyName: String
+    companyName: String,
+    firstBillingDate: Date
   }
 });
 

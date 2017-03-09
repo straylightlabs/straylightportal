@@ -3,6 +3,16 @@
 {% block title %}Subscription{% endblock %}
 
 {% block content %}
+{% if oneTimeInvoice %}
+<h5>Pending payment</h5>
+<p style="max-width: 500px">
+Please authorize one-time, prorated payment of
+{{oneTimeInvoice.currency_symbol}}{{oneTimeInvoice.amount_due}} (tax exclusive) for
+{{oneTimeInvoice.description}}. From the next month onwards, you will be
+automatically charged the monthly membership fee on 25th of every month.
+</p>
+{% endif %}
+
 <h5>Upcoming payment</h5>
 <table class="payment-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <thead>
@@ -18,6 +28,7 @@
     </tr>
   </tbody>
 </table>
+
 {% if invoices.length > 0 %}
 <h5>Past payments</h5>
 <table class="payment-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
@@ -30,11 +41,13 @@
   </thead>
   <tbody>
     {% for invoice in invoices %}
+    {% if invoice.amount_due > 0 %}
     <tr>
       <td class="mdl-data-table__cell--non-numeric">{{moment(invoice.date * 1000).format('YYYY-MM-DD')}}</td>
       <td>{{invoice.currency_symbol}}{{invoice.amount_due}} (tax inclusive)</td>
       <td class="mdl-data-table__cell--non-numeric"><a href="/portal/invoice?id={{invoice.id}}">link</a></td>
     </tr>
+    {% endif %}
     {% endfor %}
   </tbody>
 </table>
@@ -42,6 +55,9 @@
 
 {% if !user.stripe.plan %}
 <form role="form" action="/portal/user/subscription" method="POST">
+  {% if oneTimeInvoice %}
+  <input type="hidden" name="oneTimeInvoice" value="{{encodeURIComponent(JSON.stringify(oneTimeInvoice))}}">
+  {% endif %}
   <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
     Confirm and process payment
   </button>

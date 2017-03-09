@@ -17,6 +17,43 @@ function joinMobilePhone(countryCode, number) {
   return [countryCode, number].join(' ');
 }
 
+function getTrialEnd() {
+  var trialEnd = new Date();
+  trialEnd.setHours(23);
+  trialEnd.setMinutes(59);
+  trialEnd.setSeconds(59);
+  trialEnd.setMilliseconds(0);
+  if (trialEnd.getDate() > 25) {
+    if (trialEnd.getMonth() == 11) {
+      trialEnd.setMonth(0);
+      trialEnd.setYear(trialEnd.getYear() + 1);
+    } else {
+      trialEnd.setMonth(trialEnd.getMonth() + 1);
+    }
+  }
+  trialEnd.setDate(25);
+  return trialEnd;
+}
+
+function createOneTimeInvoice(firstBillingDate, baseInvoice) {
+  var trialEnd = getTrialEnd();
+  var daysToBill = Math.floor((trialEnd.getTime() - firstBillingDate.getTime()) / (86400 * 1000));
+  if (daysToBill <= 0) {
+    return null;
+  }
+  var amountDue = Math.floor(baseInvoice.subtotal / 30 * daysToBill);
+  var planName = baseInvoice.lines.data[0].plan.name;
+  var fromDate = moment(firstBillingDate).format('YYYY/MM/DD');
+  var toDate = moment(trialEnd).format('YYYY/MM/DD');
+  var description = `${daysToBill} days of ${planName} subscription (${fromDate} - ${toDate})`;
+  return {
+    currency: 'jpy',
+    currency_symbol: '¥',
+    amount_due: amountDue,
+    description: description
+  };
+}
+
 exports.getDefault = function(req, res, next) {
   var error = null;
   var errorFlash = req.flash('error');
@@ -28,9 +65,6 @@ exports.getDefault = function(req, res, next) {
 };
 
 exports.getOnboardingFlow = function(req, res, next) {
-  if (req.user.isOnboarded) {
-    return next();
-  }
   if (!req.user.profile.isConfirmed) {
     return res.redirect(req.redirect.editProfile);
   }
@@ -132,26 +166,42 @@ exports.getSubscription = function(req, res, next) {
     if (err) return next(err);
 
     // TODO(ryok): Support pagination.
-    user.getInvoices(10 /* limit */, function(err, upcomingInvoice, invoices) {
+    user.getInvoices({ limit: 10 }, function(err, upcomingInvoice, invoices) {
       if (err) {
         error = (err && err.message) ? err.message
             : 'Your invoices could not be retrieved.';
       }
+      if (!user.stripe.plan) {
+        // The date needs to be adjusted if subscription hasn't been made.
+        upcomingInvoice.date = getTrialEnd().getTime() / 1000;
+      }
+      var oneTimeInvoice = !user.stripe.plan &&
+          createOneTimeInvoice(user.billing.firstBillingDate, upcomingInvoice);
       return res.render(req.render, {
         user: req.user,
         error: error,
+        oneTimeInvoice: oneTimeInvoice,
         upcomingInvoice: upcomingInvoice,
         invoices: invoices,
-        moment: moment});
+        moment: moment
+      });
     });
   });
 };
 
 exports.postSubscription = function(req, res, next) {
+  var oneTimeInvoice = null;
+  if (req.body.oneTimeInvoice) {
+    oneTimeInvoice = JSON.parse(decodeURIComponent(req.body.oneTimeInvoice));
+  }
+
   User.findById(req.user.id, function(err, user) {
     if (err) return next(err);
 
-    user.setPlan(user.membershipPlan, null /* token */, function(err) {
+    user.setPlan({
+      plan: user.membershipPlan,
+      trialEnd: getTrialEnd()
+    }, function(err) {
       if (err) {
         var msg = (err.code && err.code == 'card_declined')
             ? 'Your card was declined. Please provide a valid card.'
@@ -161,15 +211,16 @@ exports.postSubscription = function(req, res, next) {
         req.flash('errors', { msg: msg });
         return res.redirect(req.redirect.failure);
       }
-      if (!user.isOnboarded) {
-        user.isOnboarded = true;
-        user.save(function(err) {
-          if (err) return next(err);
-          return res.redirect(req.redirect.success);
-        });
-      } else {
+
+      if (!oneTimeInvoice) {
         return res.redirect(req.redirect.success);
       }
+      user.createInvoice(oneTimeInvoice, function(err, invoice) {
+        if (err) {
+          return next(err.message || 'Failed to create invoice');
+        }
+        return res.redirect(req.redirect.success);
+      });
     });
   });
 };

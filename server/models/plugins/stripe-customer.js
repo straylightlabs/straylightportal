@@ -76,16 +76,16 @@ module.exports = exports = function stripeCustomer (schema, options) {
     }
   };
 
-  schema.methods.setPlan = function(plan, stripe_token, cb) {
+  schema.methods.setPlan = function(options, cb) {
     var user = this,
     customerData = {
-      plan: plan
+      plan: options.plan
     };
 
     var subscriptionHandler = function(err, subscription) {
       if(err) return cb(err);
 
-      user.stripe.plan = plan;
+      user.stripe.plan = options.plan;
       user.stripe.subscriptionId = subscription.id;
       user.save(function(err){
         if (err) return cb(err);
@@ -97,15 +97,16 @@ module.exports = exports = function stripeCustomer (schema, options) {
       stripe.customers.createSubscription(
         user.stripe.customerId,
         {
-          plan: plan,
-          tax_percent: TAX_PERCENT
+          plan: options.plan,
+          tax_percent: TAX_PERCENT,
+          trial_end: options.trialEnd && options.trialEnd.getTime() / 1000
         },
         subscriptionHandler
       );
     };
 
-    if(stripe_token) {
-      user.setCard(stripe_token, function(err){
+    if(options.stripe_token) {
+      user.setCard(options.stripe_token, function(err){
         if (err) return cb(err);
         createSubscription();
       });
@@ -118,7 +119,7 @@ module.exports = exports = function stripeCustomer (schema, options) {
           user.stripe.customerId,
           user.stripe.subscriptionId,
           {
-            plan: plan,
+            plan: options.plan,
             tax_percent: TAX_PERCENT
           },
           subscriptionHandler
@@ -154,18 +155,21 @@ module.exports = exports = function stripeCustomer (schema, options) {
     }
   }
 
-  schema.methods.getInvoices = function(limit, cb) {
+  schema.methods.getInvoices = function(options, cb) {
     var user = this;
 
     if (!user.stripe.customerId) return cb();
 
     // TODO(ryok): Parallelize the calls.
     stripe.invoices.list({
-      limit: limit,
+      limit: options.limit,
       customer: user.stripe.customerId
     }, function(err, invoices) {
-      if (err || !invoices) {
+      if (err) {
         return cb(err);
+      }
+      if (!invoices || !Array.isArray(invoices.data)) {
+        return cb({message: 'Failed to retrieve past invoices'});
       }
       invoices.data.forEach(function(invoice) {
         setCurrencySymbol(invoice);
@@ -175,14 +179,20 @@ module.exports = exports = function stripeCustomer (schema, options) {
       if (user.stripe.subscriptionId) {
         req = { subscription: user.stripe.subscriptionId };
       } else {
-        req = { subscription_plan: user.membershipPlan };
+        req = {
+          subscription_plan: user.membershipPlan,
+          subscription_tax_percent: TAX_PERCENT
+        };
       }
       stripe.invoices.retrieveUpcoming(user.stripe.customerId, req, function(err, upcomingInvoice) {
-        if (err || !upcomingInvoice) {
+        if (err) {
           return cb(err);
         }
+        if (!upcomingInvoice) {
+          return cb({message: 'Failed to retrieve upcoming invoice'});
+        }
         setCurrencySymbol(upcomingInvoice);
-        cb(err, upcomingInvoice, invoices.data);
+        cb(null, upcomingInvoice, invoices.data);
       });
     });
   };
@@ -195,6 +205,32 @@ module.exports = exports = function stripeCustomer (schema, options) {
     stripe.invoices.retrieve(id, function(err, invoice) {
       setCurrencySymbol(invoice);
       cb(err, invoice);
+    });
+  };
+
+  schema.methods.createInvoice = function(options, cb) {
+    var user = this;
+
+    if (!user.stripe.customerId ||
+        !user.stripe.subscriptionId) {
+      return cb({message: 'customerId or subscriptionId missing'});
+    }
+
+    stripe.invoiceItems.create({
+      customer: user.stripe.customerId,
+      amount: options.amount_due,
+      currency: options.currency,
+      description: options.description,
+      subscription: user.stripe.subscriptionId
+    }, function(err, invoiceItem) {
+      if (err) return cb(err);
+
+      stripe.invoices.create({
+        customer: user.stripe.customerId,
+        description: options.description,
+        subscription: user.stripe.subscriptionId,
+        tax_percent: TAX_PERCENT
+      }, cb);
     });
   };
 
