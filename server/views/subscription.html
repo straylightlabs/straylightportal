@@ -76,5 +76,20 @@ automatically charged the monthly membership fee on 25th of every month.
   </button>
 </form>
 {% endif %}
-</div>
+
+<script>
+jQuery(function($) {
+  $('.confirmation button').click(function(e) {
+    var button = $(this);
+    if (button.attr('confirmed')) {
+      return;
+    }
+
+    e.preventDefault();
+    $('.confirmation .short-card').removeClass('hidden');
+    button.html('Yes, proceed');
+    button.attr('confirmed', 'true');
+  });
+});
+</script>
 {% endblock %}

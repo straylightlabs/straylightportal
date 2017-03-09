@@ -15,27 +15,27 @@
 <form role="form" id="card-form" action="/portal/user/billing" method="POST">
   <div class="mdl-grid">
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="number" id="number" pattern="[0-9]{1,16}">
+      <input class="mdl-textfield__input" type="text" data-stripe="number" id="number" pattern="[0-9]{1,16}" data-required>
       <label class="mdl-textfield__label" for="number">Card Number</label>
       <span class="mdl-textfield__error">Please input a valid card number</span>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-      <input class="mdl-textfield__input" type="text" size="2" maxlength="2" data-stripe="exp_month" id="exp_month" pattern="[0-9]{1,2}">
+      <input class="mdl-textfield__input" type="text" size="2" maxlength="2" data-stripe="exp_month" id="exp_month" pattern="[0-9]{1,2}" data-required>
       <label class="mdl-textfield__label" for="exp_month">MM</label>
       <span class="mdl-textfield__error">Please input two-digit month</span>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-      <input class="mdl-textfield__input" type="text" size="2" maxlength="2" data-stripe="exp_year" id="exp_year" pattern="[0-9]{1,2}">
+      <input class="mdl-textfield__input" type="text" size="2" maxlength="2" data-stripe="exp_year" id="exp_year" pattern="[0-9]{1,2}" data-required>
       <label class="mdl-textfield__label" for="exp_year">YY</label>
       <span class="mdl-textfield__error">Please input two-digit year</span>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-      <input class="mdl-textfield__input" type="text" size="3" maxlength="3" data-stripe="cvc" id="cvc" pattern="[0-9]{1,3}">
+      <input class="mdl-textfield__input" type="text" size="3" maxlength="3" data-stripe="cvc" id="cvc" pattern="[0-9]{1,3}" data-required>
       <label class="mdl-textfield__label" for="cvc">CVC</label>
       <span class="mdl-textfield__error">Please input three-digit CVC</span>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-      <input class="mdl-textfield__input" type="text" value="{{user.profile.displayName}}" data-stripe="name" id="name">
+      <input class="mdl-textfield__input" type="text" value="{{user.profile.displayName}}" data-stripe="name" id="name" data-required>
       <label class="mdl-textfield__label" for="name">Card Holder Name</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
@@ -43,19 +43,19 @@
       <label class="mdl-textfield__label" for="company_name">Company Name (optional)</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_line1" id="address_line1" name="addressStreet" value="{{user.billing.address.street}}">
+      <input class="mdl-textfield__input" type="text" data-stripe="address_line1" id="address_line1" name="addressStreet" value="{{user.billing.address.street}}" data-required>
       <label class="mdl-textfield__label" for="address_line1">Billing Address</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--8-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_city" id="address_city" name="addressCity" value="{{user.billing.address.zip}}">
+      <input class="mdl-textfield__input" type="text" data-stripe="address_city" id="address_city" name="addressCity" value="{{user.billing.address.zip}}" data-required>
       <label class="mdl-textfield__label" for="address_city">City</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_state" id="address_state" name="addressState" value="{{user.billing.address.state}}">
+      <input class="mdl-textfield__input" type="text" data-stripe="address_state" id="address_state" name="addressState" value="{{user.billing.address.state}}" data-required>
       <label class="mdl-textfield__label" for="address_state">Prefecture / State</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_zip" id="address_zip" pattern="[-0-9]{1,8}" name="addressZip" value="{{user.billing.address.zip}}">
+      <input class="mdl-textfield__input" type="text" data-stripe="address_zip" id="address_zip" pattern="[-0-9]{1,8}" name="addressZip" value="{{user.billing.address.zip}}" data-required>
       <label class="mdl-textfield__label" for="address_zip">Zip Code</label>
       <span class="mdl-textfield__error">Please input valid zip code</span>
     </div>
@@ -64,4 +64,30 @@
     </button>
   </div>
 </form>
+
+<script>
+jQuery(function($) {
+  var cardForm = $('#card-form'),
+  cardFormButton = cardForm.find('button');
+
+  cardForm.submit(function(e) {
+    e.preventDefault();
+
+    cardFormButton.prop('disabled', true);
+
+    Stripe.card.createToken(cardForm, function(status, response) {
+      if (response.error) {
+        showToast(response.error.message);
+        cardFormButton.prop('disabled', false);
+      } else {
+        var token = response.id;
+        cardForm.append($('<input type="hidden" name="stripeToken" />').val(token));
+        cardForm.get(0).submit();
+      }
+    });
+
+    return false;
+  });
+});
+</script>
 {% endblock %}

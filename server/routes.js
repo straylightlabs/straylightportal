@@ -8,7 +8,7 @@ var StripeWebhook = require('stripe-webhook-middleware'),
 isAuthenticated = require('./middleware/auth').isAuthenticated,
 isUnauthenticated = require('./middleware/auth').isUnauthenticated,
 setRender = require('middleware-responder').setRender,
-setRedirectInternal = require('middleware-responder').setRedirect,
+setRedirect = require('middleware-responder').setRedirect,
 stripeEvents = require('./middleware/stripe-events'),
 upload = require('multer')({ dest: UPLOAD_DIR });
 // controllers
@@ -22,15 +22,21 @@ var stripeWebhook = new StripeWebhook({
   respond: true
 });
 
-// Prepend '/portal' to every path.
-function setRedirect(routes) {
-  for (var key in routes) {
-    routes[key] = '/portal' + routes[key];
-  }
-  return setRedirectInternal(routes);
-}
+module.exports = function(app, passport) {
 
-module.exports = function (app, passport) {
+  // Prepend '/portal' to every redirection path.
+  app.use(function(req, res, next) {
+    var redirect = res.redirect;
+    res.redirect = function() {
+      var i = 0;
+      if (arguments.length == 2) {
+        i++;  // skip "status"
+      }
+      arguments[i] = '/portal' + arguments[i];
+      redirect.apply(res, arguments);
+    };
+    next();
+  });
 
   // Homepage.
   app.get('/',

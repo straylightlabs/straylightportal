@@ -73,10 +73,10 @@ exports.getOnboardingFlow = function(req, res, next) {
   if (!req.user.profile.isConfirmed) {
     return res.redirect(req.redirect.editProfile);
   }
-  if (!req.user.stripe.customerId) {
+  if (!req.user.stripe.last4 && req.originalUrl != req.redirect.billing) {
     return res.redirect(req.redirect.billing);
   }
-  if (!req.user.stripe.plan) {
+  if (!req.user.stripe.plan && req.originalUrl != req.redirect.subscription) {
     return res.redirect(req.redirect.subscription);
   }
   next();
