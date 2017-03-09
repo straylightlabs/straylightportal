@@ -17,6 +17,9 @@ var userSchema = new mongoose.Schema({
       value: String,
       isPrivate: Boolean
     },
+    currentLocation: String,
+    bio: String,
+    interests: String,
     isConfirmed: Boolean
   },
   billing: {

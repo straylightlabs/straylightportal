@@ -5,23 +5,17 @@
 {% block content %}
 <div class="wide-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Basic Information</h2>
+    <h2 class="mdl-card__title-text">{{user.profile.displayName}}</h2>
   </div>
   <div class="mdl-card__supporting-text">
     <ul class="demo-list-icon mdl-list">
-      <li class="mdl-list__item">
-	<span class="mdl-list__item-primary-content">
-	  <i class="material-icons mdl-list__item-icon">person</i>
-	  {{user.profile.displayName}}
-	</span>
-      </li>
       <li class="mdl-list__item">
 	<span class="mdl-list__item-primary-content">
 	  <i class="material-icons mdl-list__item-icon">email</i>
 	  {{user.email}}
 	</span>
       </li>
-      {% if user.profile.mailingAddress.value %}
+      {% if user.profile.mailingAddress.value && (!user.hidePrivateInfo || !user.profile.mailingAddress.isPrivate) %}
       <li class="mdl-list__item">
 	<span class="mdl-list__item-primary-content">
 	  <i class="material-icons mdl-list__item-icon">home</i>
@@ -29,7 +23,7 @@
 	</span>
       </li>
       {% endif %}
-      {% if user.profile.mobilePhone.value %}
+      {% if user.profile.mobilePhone.value && (!user.hidePrivateInfo || !user.profile.mobilePhone.isPrivate) %}
       <li class="mdl-list__item">
 	<span class="mdl-list__item-primary-content">
 	  <i class="material-icons mdl-list__item-icon">phone</i>
@@ -37,11 +31,35 @@
 	</span>
       </li>
       {% endif %}
+      {% if user.profile.currentLocation %}
+      <li class="mdl-list__item">
+	<span class="mdl-list__item-primary-content">
+	  <i class="material-icons mdl-list__item-icon">my_location</i>
+	  {{user.profile.currentLocation}}
+	</span>
+      </li>
+      {% endif %}
+      {% if user.profile.bio %}
+      <li class="mdl-list__item multiline">
+	<span class="mdl-list__item-primary-content">
+	  <i class="material-icons mdl-list__item-icon">domain</i>
+          {{user.profile.bio|replace('\n', '<br>', 'g')|safe}}
+	</span>
+      </li>
+      {% endif %}
+      {% if user.profile.interests %}
+      <li class="mdl-list__item multiline">
+	<span class="mdl-list__item-primary-content">
+	  <i class="material-icons mdl-list__item-icon">star</i>
+	  {{user.profile.interests|replace('\n', '<br>', 'g')|safe}}
+	</span>
+      </li>
+      {% endif %}
     </ul>
   </div>
   <div class="mdl-card__actions mdl-card--border">
     <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/portal/profile/edit">
-      Update
+      Edit
     </a>
   </div>
 </div>

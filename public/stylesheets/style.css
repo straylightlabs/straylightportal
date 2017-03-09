@@ -32,7 +32,14 @@ html, body {
   padding: 0;
 }
 .sl-layout .mdl-list .mdl-list__item {
+  font-size: 14px;
+  font-weight: normal;
+  letter-spacing: 0;
+  min-height: 32px;
   padding: 0 16px;
+}
+.sl-layout .mdl-list .mdl-list__item.multiline {
+  padding: 8px 16px;
 }
 
 .sl-layout .mdl-layout__header .mdl-layout__drawer-button {
@@ -123,12 +130,6 @@ html, body {
   line-height: 14px;
 }
 
-.mdl-list__item {
-  font-size: 14px;
-  font-weight: normal;
-  letter-spacing: 0;
-}
-
 .mdl-button--file input {
   cursor: pointer;
   height: 100%;
@@ -163,6 +164,7 @@ html, body {
   .mdl-layout__drawer {
     display: none;
   }
+  // TODO(ryok): Investigate why the huge left margin.
   body {
     margin-left: -200px;
   }
