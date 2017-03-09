@@ -75,13 +75,6 @@ module.exports = function(passport) {
       clientID: secrets.googleOAuth.clientID,
       clientSecret: secrets.googleOAuth.clientSecret,
       callbackURL: 'https://straylight.jp/portal/auth/google/callback',
-      scope: [
-        'profile',
-        'email',
-        // TODO(ryok): these additional scopes are being ignored.
-        'https://www.googleapis.com/auth/user.addresses.read',
-        'https://www.googleapis.com/auth/user.phonenumbers.read'
-      ]
     },
     function(accessToken, refreshToken, profile, cb) {
       process.nextTick(function() {  // wait for all the data from Google
