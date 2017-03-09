@@ -48,7 +48,7 @@ function createOneTimeInvoice(firstBillingDate, baseInvoice) {
   var planName = baseInvoice.lines.data[0].plan.name;
   var fromDate = moment(firstBillingDate).format('YYYY/MM/DD');
   var toDate = moment(trialEnd).format('YYYY/MM/DD');
-  var description = `${daysToBill} days of ${planName} subscription (${fromDate} - ${toDate})`;
+  var description = `${planName} (${fromDate} - ${toDate})`;
   return {
     currency: 'jpy',
     currency_symbol: '¥',
@@ -70,6 +70,9 @@ exports.getDefault = function(req, res, next) {
 };
 
 exports.getOnboardingFlow = function(req, res, next) {
+  if (req.query.redirect == 'false') {
+    return next();
+  }
   if (!req.user.profile.isConfirmed) {
     return res.redirect(req.redirect.editProfile);
   }
@@ -225,8 +228,13 @@ exports.postCancelSubscription = function(req, res, next) {
     user.cancelStripe(function(err) {
       if (err) return handleStripeError(err, req, res, next);
 
-      req.flash('success', { msg: 'You have successfully canceled subscription' });
-      res.redirect(req.redirect.success);
+      user.billing.firstBillingDate = new Date();
+      user.save(function(err) {
+        if (err) return next(err);
+
+        req.flash('success', 'You have successfully canceled subscription');
+        res.redirect(req.redirect.success);
+      });
     });
   });
 };

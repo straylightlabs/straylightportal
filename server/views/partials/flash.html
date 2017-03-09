@@ -15,17 +15,17 @@ function showToast(message) {
 $(function() {
   var messages = [
     {% for msg in messages.error %}
-    "{{msg}}",
+    "{{msg.msg || msg}}",
     {% endfor %}
     {% for msg in messages.success %}
-    "{{msg}}",
+    "{{msg.msg || msg}}",
     {% endfor %}
   ];
 
   setTimeout(function() {
-    if (messages.length) {
-      showToast(messages.join('<br>'));
-    }
+    messages.forEach(function(msg) {
+      showToast(msg);
+    });
   }, 500);
 });
 </script>

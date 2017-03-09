@@ -6,9 +6,8 @@
 {% if user.stripe.last4 %}
 <div class="short-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__supporting-text">
-    We have a valid card information in our system.<br>
-    XXXX XXXX XXXX {{user.stripe.last4}}<br><br>
-    Please proceed if you want to register a different card for billing.
+    Your card ending with {{user.stripe.last4}} is registered in our system.<br>
+    Please only proceed if you want to register a different card for billing.
   </div>
 </div>
 {% endif %}
@@ -60,7 +59,11 @@
       <span class="mdl-textfield__error">Please input valid zip code</span>
     </div>
     <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-cell mdl-cell--6-col">
+      {% if user.stripe.plan %}
+      Update
+      {% else %}
       Save and review
+      {% endif %}
     </button>
   </div>
 </form>

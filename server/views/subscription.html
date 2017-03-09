@@ -18,13 +18,13 @@ automatically charged the monthly membership fee on 25th of every month.
   <thead>
     <tr>
       <th class="mdl-data-table__cell--non-numeric">Date</th>
-      <th>Price</th>
+      <th>Price (tax inclusive)</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td class="mdl-data-table__cell--non-numeric">{{moment(upcomingInvoice.date * 1000).format('YYYY-MM-DD')}}</td>
-      <td>{{upcomingInvoice.currency_symbol}}{{upcomingInvoice.amount_due}} (tax inclusive)</td>
+      <td>{{upcomingInvoice.currency_symbol}}{{upcomingInvoice.amount_due}}</td>
     </tr>
   </tbody>
 </table>
@@ -35,7 +35,7 @@ automatically charged the monthly membership fee on 25th of every month.
   <thead>
     <tr>
       <th class="mdl-data-table__cell--non-numeric">Date</th>
-      <th>Price</th>
+      <th>Price (tax inclusive)</th>
       <th class="mdl-data-table__cell--non-numeric">Invoice</th>
     </tr>
   </thead>
@@ -44,7 +44,7 @@ automatically charged the monthly membership fee on 25th of every month.
     {% if invoice.amount_due > 0 %}
     <tr>
       <td class="mdl-data-table__cell--non-numeric">{{moment(invoice.date * 1000).format('YYYY-MM-DD')}}</td>
-      <td>{{invoice.currency_symbol}}{{invoice.amount_due}} (tax inclusive)</td>
+      <td>{{invoice.currency_symbol}}{{invoice.amount_due}}</td>
       <td class="mdl-data-table__cell--non-numeric"><a href="/portal/invoice?id={{invoice.id}}">link</a></td>
     </tr>
     {% endif %}
@@ -68,7 +68,9 @@ automatically charged the monthly membership fee on 25th of every month.
     <div class="mdl-card__supporting-text" style="color: red">
       Please confirm that you are canceling your membership subscription. This
       will mean losing access to all the member benefits including Straylight
-      One space.
+      One space. Note that reinstating membership during the month of
+      cancellation may result in additional charges, so please proceed with
+      care.
     </div>
   </div>
   <button type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">
