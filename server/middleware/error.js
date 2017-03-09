@@ -1,45 +1,58 @@
 'use strict';
 
+function isString(obj) {
+  return (Object.prototype.toString.call(obj) === '[object String]');
+}
+
+function getErrorMessage(err) {
+  if (isString(err)) {
+    return err;
+  }
+  if (isString(err.message)) {
+    return err.message;
+  }
+  return 'Unknown error';
+}
+
+class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+
+    this.status = 404;
+  }
+}
+
 module.exports = {
 
-  notFound: function(req, res, next) {
-    var err = new Error('Not Found');
+  NotFoundError: NotFoundError,
 
-    err.status = 404;
+  notFound: function(req, res, next) {
+    var err = new NotFoundError('Not Found');
     next(err);
   },
 
   development: function(err, req, res, next) {
-    var customError = {
-      message: err.message,
-      error: err
-    };
-
+    console.error(err);
     res.status(err.status || 500);
     res.format({
       json: function(){
-        res.json(customError);
+        res.json(err);
       },
       html: function(){
-        res.render('error', {err: customError});
+        res.render('error', {
+          message: getErrorMessage(err),
+          error: err
+        });
       }
     });
   },
 
   production: function(err, req, res, next) {
-    var customError = {
-      message: err.message || 'Not Found',
-      error: false
-    };
-
+    console.error(err);
     res.status(err.status || 500);
-    res.format({
-      json: function(){
-        res.json(customError);
-      },
-      html: function(){
-        res.render('error', customError);
-      }
+    res.render('error', {
+      message: getErrorMessage(err),
+      error: false
     });
   }
 };

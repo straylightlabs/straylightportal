@@ -56,7 +56,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
-app.use(expressValidator());
+app.use(expressValidator());  // this line must be immediately after any of the bodyParser middlewares
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname + '/../public')));
@@ -90,13 +90,12 @@ app.use(viewHelper);
 var routes = require('./routes');
 routes(app, passport);
 
-/// catch 404 and forwarding to error handler
+// catch 404 and forwarding to error handler
 app.use(errorHandler.notFound);
 
-/// error handlers
+// error handlers
 if (app.get('env') === 'development') {
-  // TODO(ryok): So far, this has been unuseful hiding details of errors.
-  // app.use(errorHandler.development);
+  app.use(errorHandler.development);
 } else {
   app.use(errorHandler.production);
 }

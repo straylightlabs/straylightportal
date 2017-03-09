@@ -3,11 +3,6 @@ var base = require('airtable').base('appI5wbax01HyDamh');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var User = require('../models/user');
 
-function updateUserProfile(src, dest) {
-  var updated = false;
-  return updated;
-}
-
 function fetchProfileFromAirtable(email, cb) {
   base('People').select({
     filterByFormula: "{Portal Email} = '" + email + "'"

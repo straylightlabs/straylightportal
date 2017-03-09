@@ -52,57 +52,60 @@ module.exports = function (app, passport) {
     isAuthenticated,
     sessions.logout);
 
+  // Common redirect options.
+  app.use(setRedirect({
+    auth: '/',
+    editProfile: '/profile/edit',
+    billing: '/billing',
+    subscription: '/subscription'
+  }));
+
   // Pages.
   app.get('/home',
     setRender('home'),
-    setRedirect({auth: '/', editProfile: '/profile/edit', billing: '/billing', subscription: '/subscription' }),
     isAuthenticated,
     users.getOnboardingFlow,
     users.getDefault);
   app.get('/profile',
     setRender('profile'),
-    setRedirect({auth: '/', editProfile: '/profile/edit', billing: '/billing', subscription: '/subscription' }),
     isAuthenticated,
     users.getOnboardingFlow,
     users.getDefault);
   app.get('/profile/edit',
     setRender('profile-edit'),
-    setRedirect({auth: '/'}),
     isAuthenticated,
     users.getDefault);
   app.get('/billing',
     setRender('billing'),
-    setRedirect({auth: '/'}),
     isAuthenticated,
     users.getDefault);
   app.get('/subscription',
     setRender('subscription'),
-    setRedirect({auth: '/', billing: '/billing'}),
     isAuthenticated,
+    users.getOnboardingFlow,
     users.getSubscription);
   app.get('/invoice',
     setRender('invoice'),
-    setRedirect({auth: '/', failure: '/subscription'}),
     isAuthenticated,
     users.getInvoice);
   app.get('/files/:fileId', files.get);
 
   // User API.
   app.post('/user/profile',
-    setRedirect({auth: '/', success: '/profile', failure: '/profile/edit'}),
+    setRedirect({success: '/profile', failure: '/profile/edit'}),
     isAuthenticated,
     upload.single('avatar'),
     users.postProfile);
   app.post('/user/billing',
-    setRedirect({auth: '/', success: '/subscription', failure: '/billing'}),
+    setRedirect({success: '/subscription', failure: '/billing'}),
     isAuthenticated,
     users.postBilling);
   app.post('/user/subscription',
-    setRedirect({auth: '/', success: '/subscription', failure: '/subscription'}),
+    setRedirect({success: '/subscription', failure: '/subscription'}),
     isAuthenticated,
     users.postSubscription);
   app.post('/user/subscription/cancel',
-    setRedirect({auth: '/', success: '/home', failure: '/subscription'}),
+    setRedirect({success: '/home', failure: '/subscription'}),
     isAuthenticated,
     users.postCancelSubscription);
 

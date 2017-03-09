@@ -6,6 +6,7 @@ module.exports = {
   stripeOptions: {
     apiKey: process.env.STRIPE_KEY,
     stripePubKey: process.env.STRIPE_PUB_KEY,
+    // TODO(ryok): Get this info from Stripe.
     planData: {
       'maker_standard': {
         name: 'Maker',

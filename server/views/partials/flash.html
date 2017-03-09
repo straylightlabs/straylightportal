@@ -12,19 +12,16 @@ function showToast(message) {
   });
 }
 
-var messages = [
-{% if error %}
-  "{{error}}",
-{% endif %}
-{% for error in messages.errors %}
-  "{{error.msg || error}}",
-{% endfor %}
-{% for success in messages.success %}
-  "{{success.msg || success}}",
-{% endfor %}
-];
-
 $(function() {
+  var messages = [
+    {% for msg in messages.error %}
+    "{{msg}}",
+    {% endfor %}
+    {% for msg in messages.success %}
+    "{{msg}}",
+    {% endfor %}
+  ];
+
   setTimeout(function() {
     if (messages.length) {
       showToast(messages.join('<br>'));

@@ -1,5 +1,3 @@
-'use strict';
-
 var passport = require('passport');
 
 exports.login = function(req, res, next) {
@@ -16,13 +14,13 @@ exports.postLogin = function(req, res, next) {
   })(req, res, next);
 };
 
-exports.logout = function(req, res) {
+exports.logout = function(req, res, next) {
   var time = 60 * 1000;
 
   req.logout();
   req.session.cookie.maxAge = time;
   req.session.cookie.expires = new Date(Date.now() + time);
   req.session.touch();
-  req.flash('success', 'Successfully logged out.');
+  req.flash('success', 'Successfully logged out');
   res.redirect(req.redirect.success);
 };

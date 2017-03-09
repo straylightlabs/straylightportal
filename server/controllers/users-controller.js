@@ -2,6 +2,9 @@
 
 var moment = require('moment');
 var User = require('../models/user');
+var NotFoundError = require('../middleware/error').NotFoundError;
+
+const MSECS_PER_DAY = 86400 * 1000;
 
 function isImageMime(mime) {
   return (
@@ -37,7 +40,7 @@ function getTrialEnd() {
 
 function createOneTimeInvoice(firstBillingDate, baseInvoice) {
   var trialEnd = getTrialEnd();
-  var daysToBill = Math.floor((trialEnd.getTime() - firstBillingDate.getTime()) / (86400 * 1000));
+  var daysToBill = Math.floor((trialEnd.getTime() - firstBillingDate.getTime()) / MSECS_PER_DAY);
   if (daysToBill <= 0) {
     return null;
   }
@@ -54,21 +57,23 @@ function createOneTimeInvoice(firstBillingDate, baseInvoice) {
   };
 }
 
-exports.getDefault = function(req, res, next) {
-  var error = null;
-  var errorFlash = req.flash('error');
-  if (errorFlash.length) {
-    error = errorFlash[0];
+function handleStripeError(err, req, res, next) {
+  if (err.message) {
+    req.flash('error', err.message);
+    return res.redirect(req.redirect.failure);
   }
+  next(err);
+}
 
-  res.render(req.render, {user: req.user, error: error});
+exports.getDefault = function(req, res, next) {
+  res.render(req.render, {user: req.user});
 };
 
 exports.getOnboardingFlow = function(req, res, next) {
   if (!req.user.profile.isConfirmed) {
     return res.redirect(req.redirect.editProfile);
   }
-  if (!req.user.stripe.last4) {
+  if (!req.user.stripe.customerId) {
     return res.redirect(req.redirect.billing);
   }
   if (!req.user.stripe.plan) {
@@ -78,14 +83,19 @@ exports.getOnboardingFlow = function(req, res, next) {
 };
 
 exports.postProfile = function(req, res, next) {
-  req.assert('displayName', 'Display Name is required').notEmpty();
-  req.assert('mailingAddress', 'Mailing Address is required').notEmpty();
-  req.assert('mobilePhone', 'Mobile Phone is required').notEmpty();
-  req.assert('mobilePhoneCountryCode', 'Mobile Phone is required').notEmpty();
+  req.sanitizeBody('displayName').trim();
+  req.sanitizeBody('mailingAddress').trim();
+  req.sanitizeBody('mailingAddressPrivate').toBoolean();
+  req.sanitizeBody('mobilePhonePrivate').toBoolean();
+
+  req.checkBody('displayName', 'Display Name is required').notEmpty();
+  req.checkBody('mailingAddress', 'Mailing Address is required').notEmpty();
+  req.checkBody('mobilePhone', 'Mobile Phone is required').notEmpty().isInt();
+  req.checkBody('mobilePhoneCountryCode', 'Country Code is required').matches('^\\+[0-9]{1,3}$');
 
   var errors = req.validationErrors();
   if (errors) {
-    req.flash('errors', errors);
+    req.flash('error', errors);
     return res.redirect(req.redirect.failure);
   }
 
@@ -99,87 +109,78 @@ exports.postProfile = function(req, res, next) {
 
     user.profile.displayName = req.body.displayName;
     user.profile.mailingAddress.value = req.body.mailingAddress;
-    user.profile.mailingAddress.isPrivate = req.body.mailingAddressPrivate == '1';
+    user.profile.mailingAddress.isPrivate = req.body.mailingAddressPrivate;
     user.profile.mobilePhone.value = joinMobilePhone(req.body.mobilePhoneCountryCode, req.body.mobilePhone);
-    user.profile.mobilePhone.isPrivate = req.body.mobilePhonePrivate == '1';
+    user.profile.mobilePhone.isPrivate = req.body.mobilePhonePrivate;
     if (req.file) {
-      user.profile.imageUrl = '/portal/files/' + req.file.filename + '?mime=' + encodeURIComponent(req.file.mimetype);
+      user.profile.imageUrl = `/portal/files/${req.file.filename}?mime=${encodeURIComponent(req.file.mimetype)}`;
     }
     user.profile.isConfirmed = true;
 
     user.save(function(err) {
       if (err) return next(err);
-      req.flash('success', { msg: 'Profile information updated.' });
+
+      req.flash('success', 'Profile information updated');
       res.redirect(req.redirect.success);
     });
   });
 };
 
 exports.postBilling = function(req, res, next) {
-  var stripeToken = req.body.stripeToken;
-  if (!stripeToken) {
-    req.flash('errors', { msg: 'Please provide a valid card.' });
+  req.sanitizeBody('addressStreet').trim();
+  req.sanitizeBody('addressCity').trim();
+  req.sanitizeBody('addressState').trim();
+  req.sanitizeBody('addressZip').trim();
+
+  req.checkBody('stripeToken', 'Please provide a valid card').notEmpty();
+  req.checkBody('addressStreet', 'Street Address is required').notEmpty();
+  req.checkBody('addressCity', 'City is required').notEmpty();
+  req.checkBody('addressState', 'State / Prefecture is required').notEmpty();
+  req.checkBody('addressZip', 'Zip Code is required').matches('^[-0-9]{1,8}$');
+
+  var errors = req.validationErrors();
+  if (errors) {
+    req.flash('error', errors);
     return res.redirect(req.redirect.failure);
   }
 
   User.findById(req.user.id, function(err, user) {
     if (err) return next(err);
 
-    user.setCard(stripeToken, function(err) {
-      if (err) {
-        var msg = (err.code && err.code == 'card_declined')
-            ? 'Your card was declined. Please provide a valid card.'
-            : (err && err.message)
-                ? err.message
-                : 'An unexpected error occurred.';
-        req.flash('errors', { msg: msg });
-        return res.redirect(req.redirect.failure);
-      }
+    user.setCard(req.body.stripeToken, function(err) {
+      if (err) return handleStripeError(err, req, res, next);
+
       user.billing.companyName = req.body.companyName;
       user.billing.address.street = req.body.addressStreet;
       user.billing.address.city = req.body.addressCity;
       user.billing.address.state = req.body.addressState;
       user.billing.address.zip = req.body.addressZip;
       user.save(function(err) {
-        if (err) {
-          req.flash('errors', { msg: err });
-          return res.redirect(req.redirect.failure);
-        }
-        return res.redirect(req.redirect.success);
+        if (err) return next(err);
+
+        res.redirect(req.redirect.success);
       });
     });
   });
 };
 
 exports.getSubscription = function(req, res, next) {
-  var error = null;
-  var errorFlash = req.flash('error');
-  if (errorFlash.length) {
-    error = errorFlash[0];
-  }
-
-  if (!req.user.stripe.customerId) {
-    return res.redirect(req.billing);
-  }
-
   User.findById(req.user.id, function(err, user) {
     if (err) return next(err);
 
     // TODO(ryok): Support pagination.
-    user.getInvoices({ limit: 10 }, function(err, upcomingInvoice, invoices) {
-      if (err) {
-        error = (err && err.message) ? err.message
-            : 'Your invoices could not be retrieved.';
-      }
+    user.getInvoices({ limit: 50 }, function(err, upcomingInvoice, invoices) {
+      if (err) return handleStripeError(err, req, res, next);
+
+      var oneTimeInvoice;
       if (!user.stripe.plan) {
-        // The date needs to be adjusted if subscription hasn't been made.
+        // The date needs to be adjusted if subscription hasn't been created.
         upcomingInvoice.date = getTrialEnd().getTime() / 1000;
+        // One-time, prorated invoice for the membership until the trial ends.
+        oneTimeInvoice = createOneTimeInvoice(user.billing.firstBillingDate, upcomingInvoice);
       }
-      var oneTimeInvoice = !user.stripe.plan &&
-          createOneTimeInvoice(user.billing.firstBillingDate, upcomingInvoice);
       return res.render(req.render, {
         user: req.user,
-        error: error,
         oneTimeInvoice: oneTimeInvoice,
         upcomingInvoice: upcomingInvoice,
         invoices: invoices,
@@ -190,6 +191,7 @@ exports.getSubscription = function(req, res, next) {
 };
 
 exports.postSubscription = function(req, res, next) {
+  // TODO(ryok): Use session.
   var oneTimeInvoice = null;
   if (req.body.oneTimeInvoice) {
     oneTimeInvoice = JSON.parse(decodeURIComponent(req.body.oneTimeInvoice));
@@ -202,23 +204,14 @@ exports.postSubscription = function(req, res, next) {
       plan: user.membershipPlan,
       trialEnd: getTrialEnd()
     }, function(err) {
-      if (err) {
-        var msg = (err.code && err.code == 'card_declined')
-            ? 'Your card was declined. Please provide a valid card.'
-            : (err && err.message)
-                ? err.message
-                : 'An unexpected error occurred.';
-        req.flash('errors', { msg: msg });
-        return res.redirect(req.redirect.failure);
-      }
+      if (err) return handleStripeError(err, req, res, next);
 
       if (!oneTimeInvoice) {
         return res.redirect(req.redirect.success);
       }
       user.createInvoice(oneTimeInvoice, function(err, invoice) {
-        if (err) {
-          return next(err.message || 'Failed to create invoice');
-        }
+        if (err) return handleStripeError(err, req, res, next);
+
         return res.redirect(req.redirect.success);
       });
     });
@@ -230,13 +223,9 @@ exports.postCancelSubscription = function(req, res, next) {
     if (err) return next(err);
 
     user.cancelStripe(function(err) {
-      if (err) {
-        var msg = (err && err.message) ? err.message
-            : 'An unexpected error occurred.';
-        req.flash('errors', { msg: msg });
-        return res.redirect(req.redirect.failure);
-      }
-      req.flash('success', { msg: 'You have successfully canceled subscription.' });
+      if (err) return handleStripeError(err, req, res, next);
+
+      req.flash('success', { msg: 'You have successfully canceled subscription' });
       res.redirect(req.redirect.success);
     });
   });
@@ -244,21 +233,17 @@ exports.postCancelSubscription = function(req, res, next) {
 
 exports.getInvoice = function(req, res, next) {
   if (!req.query.id) {
-    return res.redirect(req.redirect.failure);
+    return next(new NotFoundError('Invoice not found'));
   }
 
   User.findById(req.user.id, function(err, user) {
     if (err) return next(err);
 
     user.getInvoice(req.query.id, function(err, invoice) {
-      var error = null;
-      if (err) {
-        error = (err && err.message) ? err.message
-            : 'Your invoice could not be retrieved.';
-      }
+      if (err) return handleStripeError(err, req, res, next);
+
       return res.render(req.render, {
         user: req.user,
-        error: error,
         invoice: invoice,
         moment: moment});
     });
