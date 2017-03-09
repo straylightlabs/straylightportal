@@ -248,6 +248,7 @@ exports.getInvoice = function(req, res, next) {
     return next(new NotFoundError('Invoice not found'));
   }
 
+  // TODO(ryok): Wait.. why req.user isn't enough?
   User.findById(req.user.id, function(err, user) {
     if (err) return next(err);
 
@@ -262,3 +263,30 @@ exports.getInvoice = function(req, res, next) {
   });
 };
 
+exports.getMembers = function(req, res, next) {
+  User.find({}, function(err, users) {
+    if (err) return next(err);
+
+    users.forEach(function(u) {
+      if (u.id != req.user.id) {
+        u.hidePrivateInfo = true;
+      }
+    });
+    users.sort(function(lhs, rhs) {
+      lhs = lhs.toUpperCase();
+      rhs = rhs.toUpperCase();
+      if (lhs < rhs) {
+        return -1;
+      }
+      if (lhs > rhs) {
+        return 1;
+      }
+      return 0;
+    });
+
+    res.render(req.render, {
+      user: req.user,
+      users: users
+    });
+  });
+};

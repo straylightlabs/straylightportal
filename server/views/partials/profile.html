@@ -1,0 +1,48 @@
+<ul class="demo-list-icon mdl-list">
+  <li class="mdl-list__item">
+    <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-icon">email</i>
+      {{user.email}}
+    </span>
+  </li>
+  {% if user.profile.mailingAddress.value && (!user.hidePrivateInfo || !user.profile.mailingAddress.isPrivate) %}
+  <li class="mdl-list__item">
+    <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-icon">home</i>
+      {{user.profile.mailingAddress.value}}{% if user.profile.mailingAddress.isPrivate %} (private){% endif %}
+    </span>
+  </li>
+  {% endif %}
+  {% if user.profile.mobilePhone.value && (!user.hidePrivateInfo || !user.profile.mobilePhone.isPrivate) %}
+  <li class="mdl-list__item">
+    <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-icon">phone</i>
+      {{user.profile.mobilePhone.value}}{% if user.profile.mobilePhone.isPrivate %} (private){% endif %}
+    </span>
+  </li>
+  {% endif %}
+  {% if user.profile.currentLocation %}
+  <li class="mdl-list__item">
+    <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-icon">my_location</i>
+      {{user.profile.currentLocation}}
+    </span>
+  </li>
+  {% endif %}
+  {% if user.profile.bio %}
+  <li class="mdl-list__item multiline">
+    <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-icon">domain</i>
+      {{user.profile.bio|replace('\n', '<br>', 'g')|safe}}
+    </span>
+  </li>
+  {% endif %}
+  {% if user.profile.interests %}
+  <li class="mdl-list__item multiline">
+    <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-icon">star</i>
+      {{user.profile.interests|replace('\n', '<br>', 'g')|safe}}
+    </span>
+  </li>
+  {% endif %}
+</ul>

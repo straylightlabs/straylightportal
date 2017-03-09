@@ -95,6 +95,10 @@ module.exports = function(app, passport) {
     isAuthenticated,
     users.getInvoice);
   app.get('/files/:fileId', files.get);
+  app.get('/members',
+    setRender('members'),
+    isAuthenticated,
+    users.getMembers);
 
   // User API.
   app.post('/user/profile',
