@@ -273,8 +273,8 @@ exports.getMembers = function(req, res, next) {
       }
     });
     users.sort(function(lhs, rhs) {
-      lhs = lhs.toUpperCase();
-      rhs = rhs.toUpperCase();
+      lhs = lhs.profile.displayName.toUpperCase();
+      rhs = rhs.profile.displayName.toUpperCase();
       if (lhs < rhs) {
         return -1;
       }

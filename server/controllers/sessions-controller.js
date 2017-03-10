@@ -8,7 +8,8 @@ exports.login = function(req, res, next) {
       // TODO(ryok): those additional data are not coming through.
       // https://developers.google.com/people/api/rest/v1/people#get
       'https://www.googleapis.com/auth/user.addresses.read',
-      'https://www.googleapis.com/auth/user.phonenumbers.read'
+      'https://www.googleapis.com/auth/user.phonenumbers.read',
+      'https://www.googleapis.com/auth/calendar'
     ]
   })(req, res, next);
 };
