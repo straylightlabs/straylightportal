@@ -118,8 +118,16 @@ html, body {
 }
 
 .payment-table {
-  width: 400px;
-  margin-bottom: 25px;
+  width: 100%;
+}
+
+.mdl-card.no-padding {
+  min-height: 0;
+}
+
+.mdl-card.no-padding .mdl-card__supporting-text {
+  padding: 0;
+  width: 100%;
 }
 
 .small-top-margin {

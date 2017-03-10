@@ -65,7 +65,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   cookie: {
-    maxAge: 60 * 1000  // 1 minute
+    maxAge: 14 * 86400 * 1000  // 2 weeks
   },
   secret: secrets.sessionSecret,
   store: new MongoStore({
