@@ -60,7 +60,7 @@
         <tr>
           <td class="mdl-data-table__cell--non-numeric">{{moment(invoice.date * 1000).format('YYYY-MM-DD')}}</td>
           <td>{{invoice.currency_symbol}}{{invoice.amount_due}}</td>
-          <td class="mdl-data-table__cell--non-numeric"><a href="/portal/invoice?id={{invoice.id}}">link</a></td>
+          <td class="mdl-data-table__cell--non-numeric"><a href="{{base_url}}/invoice?id={{invoice.id}}">link</a></td>
         </tr>
         {% endif %}
         {% endfor %}
@@ -71,7 +71,7 @@
 {% endif %}
 
 {% if !user.stripe.plan %}
-<form role="form" action="/portal/user/subscription" method="POST">
+<form role="form" action="{{base_url}}/user/subscription" method="POST">
   {% if oneTimeInvoice %}
   <input type="hidden" name="oneTimeInvoice" value="{{encodeURIComponent(JSON.stringify(oneTimeInvoice))}}">
   {% endif %}
@@ -80,7 +80,7 @@
   </button>
 </form>
 {% else %}
-<form role="form" action="/portal/user/subscription/cancel" method="POST" class="confirmation">
+<form role="form" action="{{base_url}}/user/subscription/cancel" method="POST" class="confirmation">
   <div class="short-card mdl-card mdl-shadow--2dp hidden">
     <div class="mdl-card__supporting-text" style="color: red">
       Please confirm that you are canceling your membership subscription. This

@@ -11,7 +11,7 @@
   </div>
 </div>
 {% endif %}
-<form role="form" id="card-form" action="/portal/user/billing" method="POST">
+<form role="form" id="card-form" action="{{base_url}}/user/billing" method="POST">
   <div class="mdl-grid">
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" data-stripe="number" id="number" pattern="[0-9]{1,16}" data-required>

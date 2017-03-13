@@ -120,7 +120,7 @@ exports.postProfile = function(req, res, next) {
     user.profile.bio = req.body.bio;
     user.profile.interests = req.body.interests;
     if (req.file) {
-      user.profile.imageUrl = `/portal/files/${req.file.filename}?mime=${encodeURIComponent(req.file.mimetype)}`;
+      user.profile.imageUrl = `{{res.locals.base_url}}/files/${req.file.filename}?mime=${encodeURIComponent(req.file.mimetype)}`;
     }
     user.profile.isConfirmed = true;
 

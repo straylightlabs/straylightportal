@@ -3,7 +3,7 @@
 {% block title %}Update Profile{% endblock %}
 
 {% block content %}
-<form id="profile-form" action="/portal/user/profile" method="post" enctype="multipart/form-data">
+<form id="profile-form" action="{{base_url}}/user/profile" method="post" enctype="multipart/form-data">
   <div class="mdl-grid">
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" value="{{user.profile.displayName}}" id="full-name" name="displayName" data-required>

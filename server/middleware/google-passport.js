@@ -5,6 +5,8 @@ var calendar = google.calendar('v3');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var User = require('../models/user');
 
+const PORTAL_BASE_URL = process.env.PORTAL_BASE_URL;
+
 function fetchProfileFromAirtable(email, cb) {
   base('People').select({
     filterByFormula: "{Portal Email} = '" + email + "'"
@@ -76,7 +78,7 @@ module.exports = function(passport) {
   var strategy = new GoogleStrategy({
       clientID: secrets.googleOAuth.clientID,
       clientSecret: secrets.googleOAuth.clientSecret,
-      callbackURL: 'https://straylight.jp/portal/auth/google/callback',
+      callbackURL: PORTAL_BASE_URL + '/auth/google/callback',
     },
     function(accessToken, refreshToken, profile, cb) {
       // Use this OAuth2 client for Google APIs.

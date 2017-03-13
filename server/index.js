@@ -84,7 +84,7 @@ app.use(flash());
 app.use(cors(corsOptions));
 
 // setup view helper
-app.use(viewHelper);
+app.use(viewHelper);  // must be before routes.
 
 // setup routes
 var routes = require('./routes');
