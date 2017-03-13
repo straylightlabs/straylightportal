@@ -1,11 +1,10 @@
 var secrets = require('../config/secrets');
+var config = require('../config/main');
 var base = require('airtable').base('appI5wbax01HyDamh');
 var google = require('googleapis');
 var calendar = google.calendar('v3');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var User = require('../models/user');
-
-const PORTAL_BASE_URL = process.env.PORTAL_BASE_URL;
 
 function fetchProfileFromAirtable(email, cb) {
   base('People').select({
@@ -78,7 +77,7 @@ module.exports = function(passport) {
   var strategy = new GoogleStrategy({
       clientID: secrets.googleOAuth.clientID,
       clientSecret: secrets.googleOAuth.clientSecret,
-      callbackURL: PORTAL_BASE_URL + '/auth/google/callback',
+      callbackURL: config.baseUrl + '/auth/google/callback',
     },
     function(accessToken, refreshToken, profile, cb) {
       // Use this OAuth2 client for Google APIs.
