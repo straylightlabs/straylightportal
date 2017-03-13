@@ -1,6 +1,12 @@
 {% extends 'layouts/dashboard.html' %}
 
-{% block title %}Subscription{% endblock %}
+{% block title %}
+{% if user.isOnboarded %}
+Subscription
+{% else %}
+Step 3/3: Confirm Subscription
+{% endif %}
+{% endblock %}
 
 {% block content %}
 {% if oneTimeInvoice %}

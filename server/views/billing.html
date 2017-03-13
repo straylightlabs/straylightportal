@@ -1,8 +1,21 @@
 {% extends 'layouts/dashboard.html' %}
 
-{% block title %}Billing{% endblock %}
+{% block title %}
+{% if user.isOnboarded %}
+Update Billing Information
+{% else %}
+Step 2/3: Enter Billing Information
+{% endif %}
+{% endblock %}
 
 {% block content %}
+{% if !user.isOnboarded %}
+<div class="short-card mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__supporting-text">
+    This is the message displayed during onboarding flow.
+  </div>
+</div>
+{% endif %}
 {% if user.stripe.last4 %}
 <div class="short-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__supporting-text">

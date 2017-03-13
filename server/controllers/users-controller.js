@@ -57,6 +57,15 @@ function createOneTimeInvoice(firstBillingDate, baseInvoice) {
   };
 }
 
+function handleOneTimeInvoice(req, res, next) {
+  if (!req.body.oneTimeInvoice) {
+    next();
+  }
+  // TODO(ryok): Insecure. Use session.
+  var oneTimeInvoice = JSON.parse(decodeURIComponent(req.body.oneTimeInvoice));
+  user.createInvoice(oneTimeInvoice, next);
+}
+
 function handleStripeError(err, req, res, next) {
   if (err.message) {
     req.flash('error', err.message);
@@ -70,9 +79,6 @@ exports.getDefault = function(req, res, next) {
 };
 
 exports.getOnboardingFlow = function(req, res, next) {
-  if (req.query.redirect == 'false') {
-    return next();
-  }
   if (!req.user.profile.isConfirmed) {
     return res.redirect(req.redirect.editProfile);
   }
@@ -198,12 +204,6 @@ exports.getSubscription = function(req, res, next) {
 };
 
 exports.postSubscription = function(req, res, next) {
-  // TODO(ryok): Use session.
-  var oneTimeInvoice = null;
-  if (req.body.oneTimeInvoice) {
-    oneTimeInvoice = JSON.parse(decodeURIComponent(req.body.oneTimeInvoice));
-  }
-
   User.findById(req.user.id, function(err, user) {
     if (err) return next(err);
 
@@ -213,13 +213,16 @@ exports.postSubscription = function(req, res, next) {
     }, function(err) {
       if (err) return handleStripeError(err, req, res, next);
 
-      if (!oneTimeInvoice) {
-        return res.redirect(req.redirect.success);
-      }
-      user.createInvoice(oneTimeInvoice, function(err, invoice) {
-        if (err) return handleStripeError(err, req, res, next);
+      handleOneTimeInvoice(req, res, function(err) {
+        if (err) return handleStripeError(ett, req, res, next);
 
-        return res.redirect(req.redirect.success);
+        user.isOnboarded = true;
+        user.save(function(err) {
+          if (err) return next(err);
+
+          req.flash('success', 'You have successfully subscribed');
+          res.redirect(req.redirect.success);
+        });
       });
     });
   });
