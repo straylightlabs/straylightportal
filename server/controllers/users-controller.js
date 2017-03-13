@@ -177,6 +177,7 @@ exports.postBilling = function(req, res, next) {
 exports.getSubscription = function(req, res, next) {
   User.findById(req.user.id, function(err, user) {
     if (err) return next(err);
+    if (!user.stripe.last4) return next('Billing information missing');
 
     // TODO(ryok): Support pagination.
     user.getInvoices({ limit: 50 }, function(err, upcomingInvoice, invoices) {
