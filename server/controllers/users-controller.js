@@ -57,7 +57,7 @@ function createOneTimeInvoice(firstBillingDate, baseInvoice) {
   };
 }
 
-function handleOneTimeInvoice(req, res, next) {
+function handleOneTimeInvoice(user, req, res, next) {
   if (!req.body.oneTimeInvoice) {
     next();
   }
@@ -74,21 +74,14 @@ function handleStripeError(err, req, res, next) {
   next(err);
 }
 
-exports.getDefault = function(req, res, next) {
-  res.render(req.render, {user: req.user});
+exports.getHome = function(req, res, next) {
+  res.onboardOr(req.user, function() {
+    res.render(req.render, {user: req.user});
+  });
 };
 
-exports.getOnboardingFlow = function(req, res, next) {
-  if (!req.user.profile.isConfirmed) {
-    return res.redirect(req.redirect.editProfile);
-  }
-  if (!req.user.stripe.last4 && req.originalUrl != req.redirect.billing) {
-    return res.redirect(req.redirect.billing);
-  }
-  if (!req.user.stripe.plan && req.originalUrl != req.redirect.subscription) {
-    return res.redirect(req.redirect.subscription);
-  }
-  next();
+exports.getDefault = function(req, res, next) {
+  res.render(req.render, {user: req.user});
 };
 
 exports.postProfile = function(req, res, next) {
@@ -134,7 +127,9 @@ exports.postProfile = function(req, res, next) {
       if (err) return next(err);
 
       req.flash('success', 'Profile information updated');
-      res.redirect(req.redirect.success);
+      res.onboardOr(user, function() {
+        res.redirect(req.redirect.success);
+      });
     });
   });
 };
@@ -171,7 +166,9 @@ exports.postBilling = function(req, res, next) {
       user.save(function(err) {
         if (err) return next(err);
 
-        res.redirect(req.redirect.success);
+        res.onboardOr(user, function() {
+          res.redirect(req.redirect.success);
+        });
       });
     });
   });
@@ -213,7 +210,7 @@ exports.postSubscription = function(req, res, next) {
     }, function(err) {
       if (err) return handleStripeError(err, req, res, next);
 
-      handleOneTimeInvoice(req, res, function(err) {
+      handleOneTimeInvoice(user, req, res, function(err) {
         if (err) return handleStripeError(ett, req, res, next);
 
         user.isOnboarded = true;

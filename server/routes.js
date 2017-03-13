@@ -42,6 +42,30 @@ module.exports = function(app, passport) {
     next();
   });
 
+  // Add a method to redirect to a different page during onboarding.
+  app.use(function(req, res, next) {
+    res.onboardOr = function(user, innerNext) {
+      if (!user.isOnboarded) {
+        if (!user.profile.isConfirmed) {
+          return res.redirect('/profile/edit');
+        }
+        if (!user.stripe.last4) {
+          return res.redirect('/billing');
+        }
+        if (!user.stripe.plan) {
+          return res.redirect('/subscription');
+        }
+      }
+      innerNext();
+    };
+    next();
+  });
+
+  // Common redirect options.
+  app.use(setRedirect({
+    auth: '/'
+  }));
+
   // Homepage.
   app.get('/',
     setRedirect({auth: '/home'}),
@@ -62,24 +86,14 @@ module.exports = function(app, passport) {
     isAuthenticated,
     sessions.logout);
 
-  // Common redirect options.
-  app.use(setRedirect({
-    auth: '/',
-    editProfile: '/profile/edit',
-    billing: '/billing',
-    subscription: '/subscription'
-  }));
-
   // Pages.
   app.get('/home',
     setRender('home'),
     isAuthenticated,
-    users.getOnboardingFlow,
-    users.getDefault);
+    users.getHome);
   app.get('/profile',
     setRender('profile'),
     isAuthenticated,
-    users.getOnboardingFlow,
     users.getDefault);
   app.get('/profile/edit',
     setRender('profile-edit'),
@@ -92,7 +106,6 @@ module.exports = function(app, passport) {
   app.get('/subscription',
     setRender('subscription'),
     isAuthenticated,
-    users.getOnboardingFlow,
     users.getSubscription);
   app.get('/invoice',
     setRender('invoice'),

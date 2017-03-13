@@ -76,9 +76,6 @@ Step 3/3: Confirm Subscription
 </div>
 {% endif %}
 
-<a href="{{base_url}}/billing" class="mdl-button mdl-js-button mdl-js-ripple-effect">
-  Update Billing Information
-</a>
 
 {% if !user.stripe.plan %}
 <form role="form" action="{{base_url}}/user/subscription" method="POST">
@@ -90,6 +87,9 @@ Step 3/3: Confirm Subscription
   </button>
 </form>
 {% else %}
+<a href="{{base_url}}/billing" class="mdl-button mdl-js-button mdl-js-ripple-effect">
+  Update Billing Information
+</a>
 <form role="form" action="{{base_url}}/user/subscription/cancel" method="POST" class="confirmation">
   <div class="short-card mdl-card mdl-shadow--2dp hidden">
     <div class="mdl-card__supporting-text" style="color: red">
