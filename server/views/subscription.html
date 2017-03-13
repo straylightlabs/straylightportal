@@ -70,6 +70,10 @@
 </div>
 {% endif %}
 
+<a href="{{base_url}}/billing" class="mdl-button mdl-js-button mdl-js-ripple-effect">
+  Update Billing Information
+</a>
+
 {% if !user.stripe.plan %}
 <form role="form" action="{{base_url}}/user/subscription" method="POST">
   {% if oneTimeInvoice %}
