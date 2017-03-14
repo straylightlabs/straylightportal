@@ -28,14 +28,14 @@ function createNewUser(googleProfile, accessToken, refreshToken, cb) {
       ? googleProfile.photos[0].value : '';
     var mailingAddress = (airtableProfile.get('Physical Address') || '').split('\n').join(' ');
     var firstBillingDateStr = airtableProfile.get('First Billing Date');
-    var firstBillingDate = new Date(firstBillingDateStr + 'T00:00:00+0900');
     var mobilePhone = airtableProfile.get('Mobile');
 
-    if (membershipPlan.length == 0 ||
+    if (!membershipPlan ||
         !new RegExp('[0-9]{4}-[0-9]{2}-[0-9]{2}').test(firstBillingDateStr)) {
       return cb(`Invalid data in Airtable: membershipPlan=${membershipPlan} firstBillingDate=${firstBillingDateStr}`);
     }
 
+    var firstBillingDate = new Date(firstBillingDateStr + 'T00:00:00+0900');
     var user = new User({
       email: email,
       membershipPlan: membershipPlan,

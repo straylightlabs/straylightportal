@@ -1,4 +1,7 @@
+const PORT = 8081;
+
 module.exports = {
-  baseUrl: process.env.PORTAL_BASE_URL || 'http://localhost:8081'
+  port: PORT,
+  baseUrl: process.env.PORTAL_BASE_URL || 'http://localhost:' + PORT
 };
 

@@ -1,0 +1,195 @@
+html, body {
+  font-family: 'Roboto', 'Helvetica', sans-serif;
+}
+
+.welcome-card.mdl-card {
+  width: 512px;
+  margin: 50px auto;
+}
+.welcome-card > .mdl-card__title {
+  color: #fff;
+  height: 176px;
+  background: url('login-card.png') center / cover;
+}
+
+.wide-card.mdl-card {
+  width: 512px;
+  margin-bottom: 20px;
+}
+.wide-card > .mdl-card__title {
+  color: #fff;
+  background-color: #37474f;
+}
+
+.short-card.mdl-card {
+  min-height: 0;
+  width: auto;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+.sl-layout .mdl-list {
+  padding: 0;
+}
+.sl-layout .mdl-list .mdl-list__item {
+  font-size: 14px;
+  font-weight: normal;
+  letter-spacing: 0;
+  min-height: 32px;
+  padding: 0 16px;
+}
+.sl-layout .mdl-list .mdl-list__item.multiline {
+  padding: 8px 16px;
+}
+
+.sl-layout .mdl-layout__header .mdl-layout__drawer-button {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.sl-layout .mdl-layout__drawer {
+  border: none;
+}
+.sl-layout .mdl-layout__drawer header {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 16px;
+  height: 151px;
+}
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+}
+.mdl-layout__drawer .avatar {
+  margin-bottom: 16px;
+}
+.avatar-dropdown {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+.sl-layout .mdl-menu a {
+  text-decoration: none;
+}
+.sl-layout .mdl-navigation {
+  flex-grow: 1;
+}
+.sl-layout .mdl-navigation .mdl-navigation__link {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.66);
+  font-weight: 500;
+}
+.sl-layout .mdl-navigation .mdl-navigation__link:hover {
+  background-color: #00BCD4;
+  color: #37474F;
+}
+.sl-layout .mdl-navigation .mdl-navigation__link .material-icons {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.66);
+  margin-right: 32px;
+}
+
+.content {
+  padding: 30px;
+}
+
+.caption {
+  color: #aaa;
+  font-size: smaller;
+  margin-top: -14px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+#card-form .mdl-grid {
+  max-width: 400px;
+  margin: 0;
+}
+
+#profile-form .mdl-grid {
+  max-width: 500px;
+  margin: 0;
+}
+
+#profile-form .mdl-switch {
+  margin-top: 25px;
+}
+
+.invoice-table {
+  width: 400px;
+}
+
+.payment-table {
+  width: 100%;
+}
+
+.mdl-card.no-padding {
+  min-height: 0;
+}
+
+.mdl-card.no-padding .mdl-card__supporting-text {
+  padding: 0;
+  width: 100%;
+}
+
+.mdl-card.no-padding table {
+  width: 100%;
+}
+
+.small-top-margin {
+  margin-top: 4px;
+}
+
+.subtle-font {
+  font-size: 12px;
+  color: #666;
+  line-height: 14px;
+}
+
+.mdl-button--file input {
+  cursor: pointer;
+  height: 100%;
+  right: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  width: 300px;
+  z-index: 4;
+}
+
+.mdl-textfield--file .mdl-textfield__input {
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+}
+
+.mdl-textfield--file .mdl-button--file {
+  right: 0;
+}
+
+/* iOS Safari specific workaround */
+.mdl-layout__drawer .mdl-menu__container {
+  z-index: -1;
+}
+.mdl-layout__drawer .mdl-navigation {
+  z-index: -2;
+}
+/* END iOS Safari specific workaround */
+
+@media print {
+  .mdl-layout__header,
+  .mdl-layout__drawer {
+    display: none;
+  }
+  // TODO(ryok): Investigate why the huge left margin.
+  body {
+    margin-left: -200px;
+  }
+}
