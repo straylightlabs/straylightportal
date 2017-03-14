@@ -15,10 +15,10 @@ var passport = require('passport');
 var bodyParser = require('body-parser');
 var compress = require('compression')();
 var lodash = require('lodash');
-// var Authentication = require('./authentication');
 var expressValidator = require('express-validator');
 var errorHandler = require('./middleware/error');
 var passportMiddleware = require('./middleware/google-passport');
+var setOAuth2Client = require('./middleware/auth').setOAuth2Client;
 var viewHelper = require('./middleware/view-helper');
 var flash = require('express-flash');
 var cors = require('cors');
@@ -60,6 +60,7 @@ app.use(expressValidator());  // this line must be immediately after any of the 
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname + '/../public')));
+app.use(express.static(path.join(__dirname + '/../node_modules')));
 
 app.use(session({
   resave: true,
@@ -78,6 +79,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 passportMiddleware(passport);
+app.use(setOAuth2Client);
 
 // other
 app.use(flash());

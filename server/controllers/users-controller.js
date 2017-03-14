@@ -195,7 +195,6 @@ exports.getSubscription = function(req, res, next) {
         oneTimeInvoice: oneTimeInvoice,
         upcomingInvoice: upcomingInvoice,
         invoices: invoices,
-        moment: moment
       });
     });
   });
@@ -258,8 +257,8 @@ exports.getInvoice = function(req, res, next) {
 
       return res.render(req.render, {
         user: req.user,
-        invoice: invoice,
-        moment: moment});
+        invoice: invoice
+      });
     });
   });
 };
