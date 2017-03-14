@@ -28,7 +28,7 @@ function createNewUser(googleProfile, cb) {
     var membershipPlan = airtableProfile.get('Portal Membership');
     var imageUrl = googleProfile.photos && googleProfile.photos.length == 1
       ? googleProfile.photos[0].value : '';
-    var mailingAddress = airtableProfile.get('Physical Address').split('\n').join(' ');
+    var mailingAddress = (airtableProfile.get('Physical Address') || '').split('\n').join(' ');
     var firstBillingDateStr = airtableProfile.get('First Billing Date');
     var firstBillingDate = new Date(firstBillingDateStr + 'T00:00:00+0900');
     var mobilePhone = airtableProfile.get('Mobile');

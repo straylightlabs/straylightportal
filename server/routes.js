@@ -27,9 +27,12 @@ module.exports = function(app, passport) {
   // Prepend base_url to every redirection path.
   app.use(function(req, res, next) {
     if (!res.locals.base_url) {
-      return;
+      return next();
     }
     var base_path = url.parse(res.locals.base_url).pathname;
+    if (base_path == '/') {
+      return next();
+    }
     var redirect = res.redirect;
     res.redirect = function() {
       var i = 0;
