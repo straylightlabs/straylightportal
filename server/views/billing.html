@@ -1,8 +1,21 @@
 {% extends 'layouts/dashboard.html' %}
 
-{% block title %}Billing{% endblock %}
+{% block title %}
+{% if user.isOnboarded %}
+Update Billing Information
+{% else %}
+Step 2/3: Enter Billing Information
+{% endif %}
+{% endblock %}
 
 {% block content %}
+{% if !user.isOnboarded %}
+<div class="short-card mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__supporting-text">
+    This is the message displayed during onboarding flow.
+  </div>
+</div>
+{% endif %}
 {% if user.stripe.last4 %}
 <div class="short-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__supporting-text">
@@ -11,7 +24,7 @@
   </div>
 </div>
 {% endif %}
-<form role="form" id="card-form" action="/portal/user/billing" method="POST">
+<form role="form" id="card-form" action="{{base_url}}/user/billing" method="POST">
   <div class="mdl-grid">
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" data-stripe="number" id="number" pattern="[0-9]{1,16}" data-required>

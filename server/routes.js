@@ -1,21 +1,21 @@
-'use strict';
-
 const UPLOAD_DIR = 'uploads/';
 
-var secrets = require('./config/secrets');
+const url = require('url'); 
+
+const secrets = require('./config/secrets');
 // middleware
-var StripeWebhook = require('stripe-webhook-middleware'),
-isAuthenticated = require('./middleware/auth').isAuthenticated,
-isUnauthenticated = require('./middleware/auth').isUnauthenticated,
-setRender = require('middleware-responder').setRender,
-setRedirect = require('middleware-responder').setRedirect,
-stripeEvents = require('./middleware/stripe-events'),
-upload = require('multer')({ dest: UPLOAD_DIR });
+const StripeWebhook = require('stripe-webhook-middleware');
+const isAuthenticated = require('./middleware/auth').isAuthenticated;
+const isUnauthenticated = require('./middleware/auth').isUnauthenticated;
+const setRender = require('middleware-responder').setRender;
+const setRedirect = require('middleware-responder').setRedirect;
+const stripeEvents = require('./middleware/stripe-events');
+const upload = require('multer')({ dest: UPLOAD_DIR });
 // controllers
-var users = require('./controllers/users-controller'),
-index = require('./controllers/index-controller'),
-sessions = require('./controllers/sessions-controller'),
-files = require('./controllers/files-controller');
+const users = require('./controllers/users-controller');
+const index = require('./controllers/index-controller');
+const sessions = require('./controllers/sessions-controller');
+const files = require('./controllers/files-controller');
 
 var stripeWebhook = new StripeWebhook({
   stripeApiKey: secrets.stripeOptions.apiKey,
@@ -24,19 +24,50 @@ var stripeWebhook = new StripeWebhook({
 
 module.exports = function(app, passport) {
 
-  // Prepend '/portal' to every redirection path.
+  // Prepend base_url to every redirection path.
   app.use(function(req, res, next) {
+    if (!res.locals.base_url) {
+      return next();
+    }
+    var base_path = url.parse(res.locals.base_url).pathname;
+    if (base_path == '/') {
+      return next();
+    }
     var redirect = res.redirect;
     res.redirect = function() {
       var i = 0;
       if (arguments.length == 2) {
         i++;  // skip "status"
       }
-      arguments[i] = '/portal' + arguments[i];
+      arguments[i] = base_path + arguments[i];
       redirect.apply(res, arguments);
     };
     next();
   });
+
+  // Add a method to redirect to a different page during onboarding.
+  app.use(function(req, res, next) {
+    res.onboardOr = function(user, innerNext) {
+      if (!user.isOnboarded) {
+        if (!user.profile.isConfirmed) {
+          return res.redirect('/profile/edit');
+        }
+        if (!user.stripe.last4) {
+          return res.redirect('/billing');
+        }
+        if (!user.stripe.plan) {
+          return res.redirect('/subscription');
+        }
+      }
+      innerNext();
+    };
+    next();
+  });
+
+  // Common redirect options.
+  app.use(setRedirect({
+    auth: '/'
+  }));
 
   // Homepage.
   app.get('/',
@@ -58,24 +89,14 @@ module.exports = function(app, passport) {
     isAuthenticated,
     sessions.logout);
 
-  // Common redirect options.
-  app.use(setRedirect({
-    auth: '/',
-    editProfile: '/profile/edit',
-    billing: '/billing',
-    subscription: '/subscription'
-  }));
-
   // Pages.
   app.get('/home',
     setRender('home'),
     isAuthenticated,
-    users.getOnboardingFlow,
-    users.getDefault);
+    users.getHome);
   app.get('/profile',
     setRender('profile'),
     isAuthenticated,
-    users.getOnboardingFlow,
     users.getDefault);
   app.get('/profile/edit',
     setRender('profile-edit'),
@@ -88,7 +109,6 @@ module.exports = function(app, passport) {
   app.get('/subscription',
     setRender('subscription'),
     isAuthenticated,
-    users.getOnboardingFlow,
     users.getSubscription);
   app.get('/invoice',
     setRender('invoice'),

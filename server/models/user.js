@@ -6,6 +6,7 @@ var timestamps = require('mongoose-timestamp');
 var userSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true },
   membershipPlan: String,
+  isOnboarded: Boolean,
   profile: {
     displayName: String,
     imageUrl: String,

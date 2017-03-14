@@ -1,4 +1,5 @@
 var secrets = require('../config/secrets');
+var config = require('../config/main');
 var base = require('airtable').base('appI5wbax01HyDamh');
 var google = require('googleapis');
 var calendar = google.calendar('v3');
@@ -27,7 +28,7 @@ function createNewUser(googleProfile, cb) {
     var membershipPlan = airtableProfile.get('Portal Membership');
     var imageUrl = googleProfile.photos && googleProfile.photos.length == 1
       ? googleProfile.photos[0].value : '';
-    var mailingAddress = airtableProfile.get('Physical Address').split('\n').join(' ');
+    var mailingAddress = (airtableProfile.get('Physical Address') || '').split('\n').join(' ');
     var firstBillingDateStr = airtableProfile.get('First Billing Date');
     var firstBillingDate = new Date(firstBillingDateStr + 'T00:00:00+0900');
     var mobilePhone = airtableProfile.get('Mobile');
@@ -76,7 +77,7 @@ module.exports = function(passport) {
   var strategy = new GoogleStrategy({
       clientID: secrets.googleOAuth.clientID,
       clientSecret: secrets.googleOAuth.clientSecret,
-      callbackURL: 'https://straylight.jp/portal/auth/google/callback',
+      callbackURL: config.baseUrl + '/auth/google/callback',
     },
     function(accessToken, refreshToken, profile, cb) {
       // Use this OAuth2 client for Google APIs.
