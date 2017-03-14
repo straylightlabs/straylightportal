@@ -86,10 +86,11 @@
           {% for project in projects %}
           <option value="{{project}}">{{project}}</option>
           {% endfor %}
+          <option value="Not Listed">Not Listed</option>
         </select>
         <label class="mdl-selectfield__label" for="project">Project</label>
       </div>
-      <div class="caption">Please select a project you plan to work with the guest.</div>
+      <div class="caption">Please select a project you plan to work with the guest during the visit. Consider adding a new one to Asana under the 'Projects / Incubation' team if doesn't exist already. You can also use 'Not Listed' as the last resort. Please have more details in the notes in that case.</div>
     </div>
     <div class="mdl-cell mdl-cell--12-col">
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-width">

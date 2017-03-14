@@ -1,13 +1,10 @@
+const asana = require('asana');
 const google = require('googleapis');
 const calendar = google.calendar('v3');
+const secrets = require('../config/secrets');
 
 const EXTERNAL_CAL_ID = 'primary';
 const INTERNAL_CAL_ID = 'straylight.jp_dvovuo73ok4pjq7qf6q5vg76lg@group.calendar.google.com';
-const PROJECTS = [
-  'project1',
-  'project2',
-  'project3'
-];
 
 function isValidDate(date) {
   var daysApart = Math.abs(new Date().getTime() - date.getTime()) / 86400000;
@@ -130,14 +127,32 @@ function deleteCalendarEvent(calendarId, eventId) {
   });
 }
 
-exports.get = function(req, res, next) {
-  res.render(req.render, {
-    user: req.user,
-    guests: req.user.guests,
-    guest: req.params.guest_id && req.user.guests.id(req.params.guest_id),
-    projects: PROJECTS,
-    exampleDate: new Date('2017-12-09T16:58:00+0900')
+function getAsanaProjects() {
+  return new Promise(function(resolve, reject) {
+    var client = asana.Client.create().useAccessToken(secrets.asanaAccessToken);
+    client.projects.findAll({
+      workspace: '54354912735116',
+      team: '251909689419307',
+      archived: false
+    }, {
+      public: true,
+      limit: 100
+    }).then(function(projects) {
+      resolve(projects.data.map(p => p.name).filter(p => p.indexOf('TEMPLATE') < 0));
+    }).catch(reject);
   });
+}
+
+exports.get = function(req, res, next) {
+  getAsanaProjects().then(function(projects) {
+    res.render(req.render, {
+      user: req.user,
+      guests: req.user.guests,
+      guest: req.params.guest_id && req.user.guests.id(req.params.guest_id),
+      projects: projects,
+      exampleDate: new Date('2017-12-09T16:58:00+0900')
+    });
+  }).catch(next);
 };
 
 exports.create = function(req, res, next) {
