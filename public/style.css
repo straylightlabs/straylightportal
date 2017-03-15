@@ -9,7 +9,7 @@ html, body {
 .welcome-card > .mdl-card__title {
   color: #fff;
   height: 176px;
-  background: url('../login-card.png') center / cover;
+  background: url('images/login-card.png') center / cover;
 }
 
 .wide-card.mdl-card {
