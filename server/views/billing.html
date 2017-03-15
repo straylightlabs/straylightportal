@@ -2,9 +2,9 @@
 
 {% block title %}
 {% if user.isOnboarded %}
-Update Billing Information
+Update billing information
 {% else %}
-Step 2/3: Enter Billing Information
+Step 2 of 3: Add billing information
 {% endif %}
 {% endblock %}
 
@@ -12,15 +12,16 @@ Step 2/3: Enter Billing Information
 {% if !user.isOnboarded %}
 <div class="short-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__supporting-text">
-    This is the message displayed during onboarding flow.
+    Please enter a credit card and billing information to be used for your monthly membership subscription. 
+    On the next screen, you will confirm your subscription amount and billing cycle before being charged.
   </div>
 </div>
 {% endif %}
 {% if user.stripe.last4 %}
 <div class="short-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__supporting-text">
-    Your card ending with {{user.stripe.last4}} is registered in our system.<br>
-    Please only proceed if you want to register a different card for billing.
+    <p>You have already registered your credit card ending in <b>{{user.stripe.last4}}</b>.
+    <p>If you would like to change your billing information, please continue.
   </div>
 </div>
 {% endif %}
@@ -28,35 +29,35 @@ Step 2/3: Enter Billing Information
   <div class="mdl-grid">
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" data-stripe="number" id="number" pattern="[0-9]{1,16}" data-required>
-      <label class="mdl-textfield__label" for="number">Card Number</label>
-      <span class="mdl-textfield__error">Please input a valid card number</span>
+      <label class="mdl-textfield__label" for="number">Card number</label>
+      <span class="mdl-textfield__error">Please input a valid credit card number</span>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
       <input class="mdl-textfield__input" type="text" size="2" maxlength="2" data-stripe="exp_month" id="exp_month" pattern="[0-9]{1,2}" data-required>
       <label class="mdl-textfield__label" for="exp_month">MM</label>
-      <span class="mdl-textfield__error">Please input two-digit month</span>
+      <span class="mdl-textfield__error">Please input a two-digit month</span>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
       <input class="mdl-textfield__input" type="text" size="2" maxlength="2" data-stripe="exp_year" id="exp_year" pattern="[0-9]{1,2}" data-required>
       <label class="mdl-textfield__label" for="exp_year">YY</label>
-      <span class="mdl-textfield__error">Please input two-digit year</span>
+      <span class="mdl-textfield__error">Please input a two-digit year</span>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-      <input class="mdl-textfield__input" type="text" size="3" maxlength="3" data-stripe="cvc" id="cvc" pattern="[0-9]{1,3}" data-required>
+      <input class="mdl-textfield__input" type="text" size="4" maxlength="4" data-stripe="cvc" id="cvc" pattern="[0-9]{1,4}" data-required>
       <label class="mdl-textfield__label" for="cvc">CVC</label>
-      <span class="mdl-textfield__error">Please input three-digit CVC</span>
+      <span class="mdl-textfield__error">Please input a three-or-four-digit CVC</span>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" value="{{user.profile.displayName}}" data-stripe="name" id="name" data-required>
-      <label class="mdl-textfield__label" for="name">Card Holder Name</label>
+      <label class="mdl-textfield__label" for="name">Card holder name</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" id="company_name" name="companyName" value="{{user.billing.companyName}}">
-      <label class="mdl-textfield__label" for="company_name">Company Name (optional)</label>
+      <label class="mdl-textfield__label" for="company_name">Company name (optional)</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" data-stripe="address_line1" id="address_line1" name="addressStreet" value="{{user.billing.address.street}}" data-required>
-      <label class="mdl-textfield__label" for="address_line1">Billing Address</label>
+      <label class="mdl-textfield__label" for="address_line1">Billing address</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--8-col">
       <input class="mdl-textfield__input" type="text" data-stripe="address_city" id="address_city" name="addressCity" value="{{user.billing.address.zip}}" data-required>
@@ -64,12 +65,12 @@ Step 2/3: Enter Billing Information
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
       <input class="mdl-textfield__input" type="text" data-stripe="address_state" id="address_state" name="addressState" value="{{user.billing.address.state}}" data-required>
-      <label class="mdl-textfield__label" for="address_state">Prefecture / State</label>
+      <label class="mdl-textfield__label" for="address_state">Prefecture / state</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
       <input class="mdl-textfield__input" type="text" data-stripe="address_zip" id="address_zip" pattern="[-0-9]{1,8}" name="addressZip" value="{{user.billing.address.zip}}" data-required>
-      <label class="mdl-textfield__label" for="address_zip">Zip Code</label>
-      <span class="mdl-textfield__error">Please input valid zip code</span>
+      <label class="mdl-textfield__label" for="address_zip">Postal code</label>
+      <span class="mdl-textfield__error">Please input valid postal code</span>
     </div>
     <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-cell mdl-cell--6-col">
       {% if user.stripe.plan %}

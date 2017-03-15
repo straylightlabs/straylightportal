@@ -48,12 +48,17 @@ function createOneTimeInvoice(firstBillingDate, baseInvoice) {
   var planName = baseInvoice.lines.data[0].plan.name;
   var fromDate = moment(firstBillingDate).format('YYYY/MM/DD');
   var toDate = moment(trialEnd).format('YYYY/MM/DD');
-  var description = `${planName} (${fromDate} - ${toDate})`;
+  var amountDueTax = Math.floor(amountDue * 1.08);
+  var subscriptionRate = Math.floor(baseInvoice.subtotal);
   return {
     currency: 'jpy',
     currency_symbol: '¥',
     amount_due: amountDue,
-    description: description
+    from_date: fromDate,
+    to_date: toDate,
+    plan_name: planName,
+    amount_due_tax: amountDueTax,
+    subscription_rate: subscriptionRate
   };
 }
 
