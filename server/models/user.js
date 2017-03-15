@@ -11,7 +11,11 @@ var userSchema = new mongoose.Schema({
     displayName: String,
     imageUrl: String,
     mailingAddress: {
-      value: String,
+      street: String,
+      city: String,
+      state: String,
+      zip: String,
+      country: String,
       isPrivate: Boolean
     },
     mobilePhone: {

@@ -26,9 +26,9 @@ function createNewUser(googleProfile, accessToken, refreshToken, cb) {
     var membershipPlan = airtableProfile.get('Portal Membership');
     var imageUrl = googleProfile.photos && googleProfile.photos.length == 1
       ? googleProfile.photos[0].value : '';
-    var mailingAddress = (airtableProfile.get('Physical Address') || '').split('\n').join(' ');
+    var mailingAddress = (airtableProfile.get('Physical Address') || '').split('\n');
     var firstBillingDateStr = airtableProfile.get('First Billing Date');
-    var mobilePhone = airtableProfile.get('Mobile');
+    var mobilePhone = airtableProfile.get('Mobile') || '';
 
     if (!membershipPlan ||
         !new RegExp('[0-9]{4}-[0-9]{2}-[0-9]{2}').test(firstBillingDateStr)) {
@@ -43,7 +43,11 @@ function createNewUser(googleProfile, accessToken, refreshToken, cb) {
         displayName: googleProfile.displayName,
         imageUrl: imageUrl,
         mailingAddress: {
-          value: mailingAddress,
+          street: mailingAddress[0],
+          city: mailingAddress[1],
+          state: mailingAddress[2],
+          zip: mailingAddress[3],
+          country: mailingAddress[4],
           isPrivate: true
         },
         mobilePhone: {

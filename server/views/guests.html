@@ -134,6 +134,9 @@ jQuery(function($) {
     button.addClass('mdl-button--raised');
     button.attr('confirmed', 'true');
   });
+  $('form').submit(function() {
+    $(this).find("button[type='submit']").prop('disabled',true);
+  });
 });
 </script>
 {% endif %}

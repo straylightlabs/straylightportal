@@ -5,11 +5,16 @@
       {{user.email}}
     </span>
   </li>
-  {% if user.profile.mailingAddress.value && (!user.hidePrivateInfo || !user.profile.mailingAddress.isPrivate) %}
+  {% if user.profile.mailingAddress.street && (!user.hidePrivateInfo || !user.profile.mailingAddress.isPrivate) %}
   <li class="mdl-list__item">
     <span class="mdl-list__item-primary-content">
       <i class="material-icons mdl-list__item-icon">home</i>
-      {{user.profile.mailingAddress.value}}{% if user.profile.mailingAddress.isPrivate %} (private){% endif %}
+      {{user.profile.mailingAddress.street}},
+      {{user.profile.mailingAddress.city}},
+      {{user.profile.mailingAddress.state}},
+      {{user.profile.mailingAddress.zip}},
+      {{user.profile.mailingAddress.country}}
+      {% if user.profile.mailingAddress.isPrivate %} (private){% endif %}
     </span>
   </li>
   {% endif %}

@@ -91,13 +91,21 @@ exports.getDefault = function(req, res, next) {
 
 exports.postProfile = function(req, res, next) {
   req.sanitizeBody('displayName').trim();
-  req.sanitizeBody('mailingAddress').trim();
+  req.sanitizeBody('addressStreet').trim();
+  req.sanitizeBody('addressCity').trim();
+  req.sanitizeBody('addressState').trim();
+  req.sanitizeBody('addressZip').trim();
+  req.sanitizeBody('addressCountry').trim();
   req.sanitizeBody('mailingAddressPrivate').toBoolean();
   req.sanitizeBody('mobilePhonePrivate').toBoolean();
   req.sanitizeBody('currentLocation').trim();
 
   req.checkBody('displayName', 'Display Name is required').notEmpty();
-  req.checkBody('mailingAddress', 'Mailing Address is required').notEmpty();
+  req.checkBody('addressStreet', 'Mailing Address is required').notEmpty();
+  req.checkBody('addressCity', 'Mailing Address is required').notEmpty();
+  req.checkBody('addressState', 'Mailing Address is required').notEmpty();
+  req.checkBody('addressZip', 'Mailing Address is required').notEmpty();
+  req.checkBody('addressCountry', 'Mailing Address is required').notEmpty();
   req.checkBody('mobilePhone', 'Mobile Phone is required').notEmpty().isInt();
   req.checkBody('mobilePhoneCountryCode', 'Country Code is required').matches('^\\+[0-9]{1,3}$');
 
@@ -116,7 +124,11 @@ exports.postProfile = function(req, res, next) {
     if (err) return next(err);
 
     user.profile.displayName = req.body.displayName;
-    user.profile.mailingAddress.value = req.body.mailingAddress;
+    user.profile.mailingAddress.street = req.body.addressStreet;
+    user.profile.mailingAddress.city = req.body.addressCity;
+    user.profile.mailingAddress.state = req.body.addressState;
+    user.profile.mailingAddress.zip = req.body.addressZip;
+    user.profile.mailingAddress.country = req.body.addressCountry;
     user.profile.mailingAddress.isPrivate = req.body.mailingAddressPrivate;
     user.profile.mobilePhone.value = joinMobilePhone(req.body.mobilePhoneCountryCode, req.body.mobilePhone);
     user.profile.mobilePhone.isPrivate = req.body.mobilePhonePrivate;

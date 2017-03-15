@@ -77,7 +77,6 @@ Step 3 of 3: Confirm your subscription
 </div>
 {% endif %}
 
-
 {% if !user.stripe.plan %}
 <form role="form" action="{{base_url}}/user/subscription" method="POST">
   {% if oneTimeInvoice %}
@@ -118,6 +117,9 @@ jQuery(function($) {
     $('.confirmation .short-card').removeClass('hidden');
     button.html('Yes, proceed');
     button.attr('confirmed', 'true');
+  });
+  $('form').submit(function() {
+    $(this).find("button[type='submit']").prop('disabled',true);
   });
 });
 </script>
