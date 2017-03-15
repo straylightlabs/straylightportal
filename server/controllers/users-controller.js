@@ -22,19 +22,17 @@ function joinMobilePhone(countryCode, number) {
 
 function getTrialEnd() {
   var trialEnd = new Date();
+  if (trialEnd.getMonth() == 11) {
+    trialEnd.setMonth(0);
+    trialEnd.setYear(trialEnd.getYear() + 1);
+  } else {
+    trialEnd.setMonth(trialEnd.getMonth() + 1);
+  }
+  trialEnd.setDate(1);
   trialEnd.setHours(23);
   trialEnd.setMinutes(59);
   trialEnd.setSeconds(59);
   trialEnd.setMilliseconds(0);
-  if (trialEnd.getDate() > 1) {
-    if (trialEnd.getMonth() == 11) {
-      trialEnd.setMonth(0);
-      trialEnd.setYear(trialEnd.getYear() + 1);
-    } else {
-      trialEnd.setMonth(trialEnd.getMonth() + 1);
-    }
-  }
-  trialEnd.setDate(1);
   return trialEnd;
 }
 
