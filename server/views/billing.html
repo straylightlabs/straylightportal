@@ -20,8 +20,8 @@ Step 2 of 3: Add billing information
 {% if user.stripe.last4 %}
 <div class="short-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__supporting-text">
-    <p>You have already registered your credit card ending in <b>{{user.stripe.last4}}</b>.
-    <p>If you would like to change your billing information, please continue.
+    You have already registered your credit card ending in <b>{{user.stripe.last4}}</b>.<br><br>
+    If you would like to change your billing information, please continue.
   </div>
 </div>
 {% endif %}
