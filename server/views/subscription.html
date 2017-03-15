@@ -2,9 +2,9 @@
 
 {% block title %}
 {% if user.isOnboarded %}
-Subscription
+Your subscription
 {% else %}
-Step 3/3: Confirm Subscription
+Step 3 of 3: Confirm your subscription
 {% endif %}
 {% endblock %}
 
@@ -12,28 +12,29 @@ Step 3/3: Confirm Subscription
 {% if oneTimeInvoice %}
 <div class="wide-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Pending Payment</h2>
+    <h2 class="mdl-card__title-text">Your first payment</h2>
   </div>
   <div class="mdl-card__supporting-text">
-    <p>Please authorize one-time, prorated payment of
-    {{oneTimeInvoice.currency_symbol}}{{oneTimeInvoice.amount_due}} (tax exclusive) for
-    {{oneTimeInvoice.description}}.
-    <p>From the next month onwards, you will be
-    automatically charged the monthly membership fee on 25th of every month.
+    <p>Your Straylight {{oneTimeInvoice.plan_name}} membership began on {{oneTimeInvoice.from_date}}. 
+    Your monthly membership fee is {{oneTimeInvoice.currency_symbol}}{{oneTimeInvoice.subscription_rate}}.
+    <p>Please authorize a one-time payment of 
+      <b>{{oneTimeInvoice.currency_symbol}}{{oneTimeInvoice.amount_due_tax}} (tax inclusive)</b> 
+      for the period between {{oneTimeInvoice.from_date}} and {{oneTimeInvoice.to_date}}.
+    <p>Starting next month, your membership fee will be charged automatically on the first day of each month.
   </div>
 </div>
 {% endif %}
 
 <div class="wide-card no-padding mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Upcoming Payments</h2>
+    <h2 class="mdl-card__title-text">Upcoming payments</h2>
   </div>
   <div class="mdl-card__supporting-text">
     <table class="payment-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
       <thead>
         <tr>
           <th class="mdl-data-table__cell--non-numeric">Date</th>
-          <th>Price (tax inclusive)</th>
+          <th>Amount (tax inclusive)</th>
         </tr>
       </thead>
       <tbody>
@@ -49,15 +50,15 @@ Step 3/3: Confirm Subscription
 {% if invoices.length > 0 %}
 <div class="wide-card no-padding mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Past Payments</h2>
+    <h2 class="mdl-card__title-text">Past payments</h2>
   </div>
   <div class="mdl-card__supporting-text">
     <table class="payment-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
       <thead>
         <tr>
           <th class="mdl-data-table__cell--non-numeric">Date</th>
-          <th>Price (tax inclusive)</th>
-          <th class="mdl-data-table__cell--non-numeric">Invoice</th>
+          <th>Amount (tax inclusive)</th>
+          <th class="mdl-data-table__cell--non-numeric">Receipt</th>
         </tr>
       </thead>
       <tbody>
@@ -88,16 +89,15 @@ Step 3/3: Confirm Subscription
 </form>
 {% else %}
 <a href="{{base_url}}/billing" class="mdl-button mdl-js-button mdl-js-ripple-effect">
-  Update Billing Information
+  Update billing information
 </a>
 <form role="form" action="{{base_url}}/user/subscription/cancel" method="POST" class="confirmation">
   <div class="short-card mdl-card mdl-shadow--2dp hidden">
     <div class="mdl-card__supporting-text" style="color: red">
-      Please confirm that you are canceling your membership subscription. This
-      will mean losing access to all the member benefits including Straylight
-      One space. Note that reinstating membership during the month of
-      cancellation may result in additional charges, so please proceed with
-      care.
+      Please confirm that you are canceling your membership to Straylight.
+      Note that all member benefits, including access to Straylight One, will be immediately revoked.
+      Reinstating membership during the month of cancellation may result in additional charges.
+      Please proceed with care.
     </div>
   </div>
   <button type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">

@@ -136,7 +136,7 @@ module.exports = function(app, passport) {
     isAuthenticated,
     users.postBilling);
   app.post('/user/subscription',
-    setRedirect({success: '/subscription', failure: '/subscription'}),
+    setRedirect({success: '/home', failure: '/subscription'}),
     isAuthenticated,
     users.postSubscription);
   app.post('/user/subscription/cancel',

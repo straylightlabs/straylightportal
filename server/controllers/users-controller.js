@@ -26,7 +26,7 @@ function getTrialEnd() {
   trialEnd.setMinutes(59);
   trialEnd.setSeconds(59);
   trialEnd.setMilliseconds(0);
-  if (trialEnd.getDate() > 25) {
+  if (trialEnd.getDate() > 1) {
     if (trialEnd.getMonth() == 11) {
       trialEnd.setMonth(0);
       trialEnd.setYear(trialEnd.getYear() + 1);
@@ -34,7 +34,7 @@ function getTrialEnd() {
       trialEnd.setMonth(trialEnd.getMonth() + 1);
     }
   }
-  trialEnd.setDate(25);
+  trialEnd.setDate(1);
   return trialEnd;
 }
 
@@ -48,12 +48,19 @@ function createOneTimeInvoice(firstBillingDate, baseInvoice) {
   var planName = baseInvoice.lines.data[0].plan.name;
   var fromDate = moment(firstBillingDate).format('YYYY/MM/DD');
   var toDate = moment(trialEnd).format('YYYY/MM/DD');
+  var amountDueTax = Math.floor(amountDue * 1.08);
+  var subscriptionRate = baseInvoice.subtotal;
   var description = `${planName} (${fromDate} - ${toDate})`;
   return {
     currency: 'jpy',
     currency_symbol: '¥',
     amount_due: amountDue,
-    description: description
+    description: description,
+    from_date: fromDate,
+    to_date: toDate,
+    plan_name: planName,
+    amount_due_tax: amountDueTax,
+    subscription_rate: subscriptionRate
   };
 }
 
