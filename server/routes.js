@@ -1,6 +1,6 @@
 const UPLOAD_DIR = 'uploads/';
 
-const url = require('url'); 
+const url = require('url');
 
 const secrets = require('./config/secrets');
 // middleware
@@ -13,6 +13,7 @@ const stripeEvents = require('./middleware/stripe-events');
 const upload = require('multer')({ dest: UPLOAD_DIR });
 // controllers
 const users = require('./controllers/users-controller');
+const guests = require('./controllers/guests-controller');
 const index = require('./controllers/index-controller');
 const sessions = require('./controllers/sessions-controller');
 const files = require('./controllers/files-controller');
@@ -119,6 +120,10 @@ module.exports = function(app, passport) {
     setRender('members'),
     isAuthenticated,
     users.getMembers);
+  app.get('/guests(/:guest_id)?',
+    setRender('guests'),
+    isAuthenticated,
+    guests.get);
 
   // User API.
   app.post('/user/profile',
@@ -138,6 +143,19 @@ module.exports = function(app, passport) {
     setRedirect({success: '/home', failure: '/subscription'}),
     isAuthenticated,
     users.postCancelSubscription);
+  // Guests API.
+  app.post('/guests/create',
+    setRedirect({success: '/guests', failure: '/guests'}),
+    isAuthenticated,
+    guests.create);
+  app.post('/guests/edit/:guest_id',
+    setRedirect({success: '/guests', failure: '/guests'}),
+    isAuthenticated,
+    guests.edit);
+  app.post('/guests/delete/:guest_id',
+    setRedirect({success: '/guests', failure: '/guests'}),
+    isAuthenticated,
+    guests.delete);
 
   // Stripe webhook events.
   app.post('/stripe/events',

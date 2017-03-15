@@ -33,6 +33,20 @@ var userSchema = new mongoose.Schema({
     },
     companyName: String,
     firstBillingDate: Date
+  },
+  guests: [{
+    name: String,
+    email: String,
+    dateStart: Date,
+    dateEnd: Date,
+    project: String,
+    notes: String,
+    internalEventId: String,
+    externalEventId: String
+  }],
+  oauth2: {
+    accessToken: String,
+    refreshToken: String
   }
 });
 

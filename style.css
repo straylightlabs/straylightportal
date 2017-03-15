@@ -9,7 +9,7 @@ html, body {
 .welcome-card > .mdl-card__title {
   color: #fff;
   height: 176px;
-  background: url('../login-card.png') center / cover;
+  background: url('login-card.png') center / cover;
 }
 
 .wide-card.mdl-card {
@@ -99,6 +99,16 @@ html, body {
   padding: 30px;
 }
 
+.caption {
+  color: #aaa;
+  font-size: smaller;
+  margin-top: -14px;
+}
+
+.full-width {
+  width: 100%;
+}
+
 #card-form .mdl-grid {
   max-width: 400px;
   margin: 0;
@@ -127,6 +137,10 @@ html, body {
 
 .mdl-card.no-padding .mdl-card__supporting-text {
   padding: 0;
+  width: 100%;
+}
+
+.mdl-card.no-padding table {
   width: 100%;
 }
 
@@ -179,4 +193,3 @@ html, body {
     margin-left: -200px;
   }
 }
-
