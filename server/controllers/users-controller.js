@@ -42,7 +42,7 @@ function createOneTimeInvoice(firstBillingDate, baseInvoice) {
   if (daysToBill <= 0) {
     return null;
   }
-  var amountDue = Math.floor(baseInvoice.subtotal / 30 * daysToBill);
+  var amountDue = Math.floor(baseInvoice.subtotal / 31 * daysToBill);
   var planName = baseInvoice.lines.data[0].plan.name;
   var fromDate = moment(firstBillingDate).format('YYYY/MM/DD');
   var toDate = moment(trialEnd).format('YYYY/MM/DD');

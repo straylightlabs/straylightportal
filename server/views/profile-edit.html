@@ -35,9 +35,9 @@ Step 1 of 3: Create your profile
     {% endif %}
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" id="address_line1" name="addressStreet" value="{{user.profile.mailingAddress.street}}" data-required>
-      <label class="mdl-textfield__label" for="address_line1">Mailing address: street</label>
+      <label class="mdl-textfield__label" for="address_line1">Mailing address</label>
     </div>
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
       <input class="mdl-textfield__input" type="text" id="address_city" name="addressCity" value="{{user.profile.mailingAddress.city}}" data-required>
       <label class="mdl-textfield__label" for="address_city">City</label>
     </div>
@@ -45,12 +45,12 @@ Step 1 of 3: Create your profile
       <input class="mdl-textfield__input" type="text" id="address_state" name="addressState" value="{{user.profile.mailingAddress.state}}" data-required>
       <label class="mdl-textfield__label" for="address_state">Prefecture / state</label>
     </div>
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
       <input class="mdl-textfield__input" type="text" id="address_zip" pattern="[-0-9]{1,8}" name="addressZip" value="{{user.profile.mailingAddress.zip}}" data-required>
       <label class="mdl-textfield__label" for="address_zip">Postal code</label>
       <span class="mdl-textfield__error">Please input valid postal code</span>
     </div>
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--8-col">
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
       <input class="mdl-textfield__input" type="text" id="address_country" name="addressCountry" value="{{user.profile.mailingAddress.country}}" data-required>
       <label class="mdl-textfield__label" for="address_country">Country</label>
     </div>
