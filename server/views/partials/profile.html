@@ -14,15 +14,15 @@
       {{user.profile.mailingAddress.state}},
       {{user.profile.mailingAddress.zip}},
       {{user.profile.mailingAddress.country}}
-      {% if user.profile.mailingAddress.isPrivate %} (private){% endif %}
+      {% if user.profile.mailingAddress.isPrivate %}(private){% endif %}
     </span>
   </li>
   {% endif %}
-  {% if user.profile.mobilePhone.value && (!user.hidePrivateInfo || !user.profile.mobilePhone.isPrivate) %}
+  {% if user.profile.mobilePhone.number && (!user.hidePrivateInfo || !user.profile.mobilePhone.isPrivate) %}
   <li class="mdl-list__item">
     <span class="mdl-list__item-primary-content">
       <i class="material-icons mdl-list__item-icon">phone</i>
-      {{user.profile.mobilePhone.value}}{% if user.profile.mobilePhone.isPrivate %} (private){% endif %}
+      +{{user.profile.mobilePhone.countryCode}} {{user.profile.mobilePhone.number}} {% if user.profile.mobilePhone.isPrivate %}(private){% endif %}
     </span>
   </li>
   {% endif %}

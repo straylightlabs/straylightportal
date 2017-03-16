@@ -13,13 +13,6 @@ function isImageMime(mime) {
       mime == 'image/gif');
 }
 
-function joinMobilePhone(countryCode, number) {
-  if (countryCode[0] != '+') {
-    countryCode = '+' + countryCode;
-  }
-  return [countryCode, number].join(' ');
-}
-
 function getTrialEnd() {
   var trialEnd = new Date();
   if (trialEnd.getMonth() == 11) {
@@ -130,7 +123,8 @@ exports.postProfile = function(req, res, next) {
     user.profile.mailingAddress.zip = req.body.addressZip;
     user.profile.mailingAddress.country = req.body.addressCountry;
     user.profile.mailingAddress.isPrivate = req.body.mailingAddressPrivate;
-    user.profile.mobilePhone.value = joinMobilePhone(req.body.mobilePhoneCountryCode, req.body.mobilePhone);
+    user.profile.mobilePhone.countryCode = req.body.mobilePhoneCountryCode;
+    user.profile.mobilePhone.number = req.body.mobilePhone;
     user.profile.mobilePhone.isPrivate = req.body.mobilePhonePrivate;
     user.profile.currentLocation = req.body.currentLocation;
     user.profile.bio = req.body.bio;

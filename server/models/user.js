@@ -19,7 +19,8 @@ var userSchema = new mongoose.Schema({
       isPrivate: Boolean
     },
     mobilePhone: {
-      value: String,
+      countryCode: String,
+      number: String,
       isPrivate: Boolean
     },
     currentLocation: String,
