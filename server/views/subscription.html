@@ -4,7 +4,7 @@
 {% if user.isOnboarded %}
 Your subscription
 {% else %}
-Step 3 of 3: Confirm your subscription
+Confirm your subscription
 {% endif %}
 {% endblock %}
 
@@ -15,6 +15,9 @@ Step 3 of 3: Confirm your subscription
     <h2 class="mdl-card__title-text">Your first payment</h2>
   </div>
   <div class="mdl-card__supporting-text">
+    {% if !user.isOnboarded %}
+    <p><strong>Step 3 of 3: Confirm your subscription</strong></p>
+    {% endif %}
     <p>Your Straylight {{oneTimeInvoice.plan_name}} membership began on {{oneTimeInvoice.from_date}}. 
     Your monthly membership fee is {{oneTimeInvoice.currency_symbol}}{{oneTimeInvoice.subscription_rate}}.
     <p>Please authorize a one-time payment of 
@@ -34,7 +37,7 @@ Step 3 of 3: Confirm your subscription
       <thead>
         <tr>
           <th class="mdl-data-table__cell--non-numeric">Date</th>
-          <th>Amount (tax inclusive)</th>
+          <th>Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -57,7 +60,7 @@ Step 3 of 3: Confirm your subscription
       <thead>
         <tr>
           <th class="mdl-data-table__cell--non-numeric">Date</th>
-          <th>Amount (tax inclusive)</th>
+          <th>Amount</th>
           <th class="mdl-data-table__cell--non-numeric">Receipt</th>
         </tr>
       </thead>
@@ -76,6 +79,8 @@ Step 3 of 3: Confirm your subscription
   </div>
 </div>
 {% endif %}
+
+<p class="caption">Amounts are tax inclusive</p>
 
 {% if !user.stripe.plan %}
 <form role="form" action="{{base_url}}/user/subscription" method="POST">

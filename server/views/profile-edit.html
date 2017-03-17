@@ -4,7 +4,7 @@
 {% if user.isOnboarded %}
 Edit profile
 {% else %}
-Step 1 of 3: Create your profile
+Create your profile
 {% endif %}
 {% endblock %}
 
@@ -12,7 +12,7 @@ Step 1 of 3: Create your profile
 {% if !user.isOnboarded %}
 <div class="short-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__supporting-text">
-    Create your profile. 
+    <p><strong>Step 1 of 3: Create your profile</strong></p>
     Information provided here will be visible to other Straylight members. 
     Any information marked private will be visible only to admins.
   </div>

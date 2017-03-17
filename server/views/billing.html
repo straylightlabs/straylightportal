@@ -4,7 +4,7 @@
 {% if user.isOnboarded %}
 Update billing information
 {% else %}
-Step 2 of 3: Add billing information
+Add billing information
 {% endif %}
 {% endblock %}
 
@@ -12,6 +12,7 @@ Step 2 of 3: Add billing information
 {% if !user.isOnboarded %}
 <div class="short-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__supporting-text">
+    <p><strong>Step 2 of 3: Add billing information</strong></p>
     Please enter a credit card and billing information to be used for your monthly membership subscription. 
     On the next screen, you will confirm your subscription amount and billing cycle before being charged.
   </div>
