@@ -11,8 +11,10 @@ Add billing information
 {% block content %}
 {% if !user.isOnboarded %}
 <div class="short-card mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Step 2 of 3: Add billing information</h2>
+  </div>
   <div class="mdl-card__supporting-text">
-    <p><strong>Step 2 of 3: Add billing information</strong></p>
     Please enter a credit card and billing information to be used for your monthly membership subscription. 
     On the next screen, you will confirm your subscription amount and billing cycle before being charged.
   </div>
