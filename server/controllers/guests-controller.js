@@ -66,18 +66,14 @@ function postInternalCalendarEvent(user, guest) {
       "end": {
         "dateTime": guest.dateEnd.toISOString()
       },
-      "attendees": [
-        {
-          "email": user.email
-        }
-      ],
-      "summary": `${guest.name} visit (host: ${user.profile.displayName})`,
+      "attendees": [],
+      "summary": `Guest - ${guest.name}`,
       "description":
           `Guest: ${guest.name}\n` +
           `Host: ${user.profile.displayName}\n` +
           `Project: ${guest.project}\n\n` +
           `Notes: ${guest.notes}\n`,
-      "location": "Straylight One"
+      "location": "Straylight, Shibuya, Tokyo"
     }
   });
 }
@@ -102,14 +98,16 @@ function postExternalCalendarEvent(user, guest) {
           "email": guest.email
         }
       ],
-      "summary": "Guest visit to Straylight One",
+      "summary": "Straylight visit",
       "description":
-        'Straylight is located 1-minute west of Yoyogi-Hachiman Station in the Createur Building. Follow the stairs up to 3rd floor and head to the door on your left.\n\n' +
+        `Dear ${guest.name},\n` +
+        `${user.profile.displayName} has invited you to visit Straylight.\n\n` +  
+        'We are located 1-minute west of Yoyogi-Hachiman Station in the Createur Building. Follow the stairs up to 3rd floor and head to the door on your left.\n\n' +
         'Straylight\n' +
         'Createur 3C, 4-5 Motoyoyogicho\n' +
         'Shibuya-ku, Tokyo 151-0062\n' +
         'https://goo.gl/maps/nd3kzhkqAax',
-      "location": "Straylight One"
+      "location": "Straylight, Shibuya, Tokyo"
     },
   });
 }
@@ -150,7 +148,7 @@ exports.get = function(req, res, next) {
       guests: req.user.guests,
       guest: req.params.guest_id && req.user.guests.id(req.params.guest_id),
       projects: projects,
-      exampleDate: new Date('2017-12-09T16:58:00+0900')
+      exampleDate: new Date('2017-12-09T15:00:00+0900')
     });
   }).catch(next);
 };

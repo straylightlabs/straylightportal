@@ -6,13 +6,13 @@
 {% if guests.length %}
 <div class="wide-card no-padding mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Upcoming Visits</h2>
+    <h2 class="mdl-card__title-text">Upcoming visits</h2>
   </div>
   <div class="mdl-card__supporting-text">
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
       <thead>
         <tr>
-          <th class="mdl-data-table__cell--non-numeric">Guest Name</th>
+          <th class="mdl-data-table__cell--non-numeric">Guest name</th>
           <th class="mdl-data-table__cell--non-numeric">Date</th>
           <th class="mdl-data-table__cell--non-numeric">Actions</th>
         </tr>
@@ -23,7 +23,7 @@
           <td class="mdl-data-table__cell--non-numeric">{{guest.name}}</td>
           <td class="mdl-data-table__cell--non-numeric">{{moment(guest.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
           <td class="mdl-data-table__cell--non-numeric">
-            <a href="{{base_url}}/guests/{{guest.id}}#form">modify</a>
+            <a href="{{base_url}}/guests/{{guest.id}}#form">Edit</a>
           </td>
         </tr>
         {% endfor %}
@@ -35,20 +35,19 @@
 
 <div class="wide-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Guest Policy</h2>
+    <h2 class="mdl-card__title-text">Guest policy</h2>
   </div>
   <div class="mdl-card__supporting-text">
     <p>A reminder about our guest policy:</p>
-    <p>Non-event time at Straylight is essentially work time, and so we encourage members to invite guests with the intention of collaborating on a project relevant to our community. If using the space for a discussion (vs. actively working on a project), please avoid scheduling during times when other visits are occurring. Please check the Straylight One calendar to avoid potential conflicts.</p>
-    <p>If you’d like to invite a guest to tour Straylight One and meet our community as a prospective member, please consult with Core and see the details in this guide regarding inviting new members. Or for more casual visits, consider inviting your guest to join an upcoming social event.</p>
-    <p>Some events may have a special guest policy and registration process. Please refer to the event guidelines in the details section of the event calendar entry or check with the event organizer.</p>
+    <p>Non-event time at Straylight is essentially work time, and so we encourage members to invite guests with the intention of collaborating on a project relevant to our community. If using the space for a formal discussion or group meeting, please check the Straylight One calendar to avoid scheduling during times when other visits or events are occurring.</p>
+    <p>If you’d like to invite a guest to tour Straylight and meet our community as a prospective member, please consult with Core about our invitation process, or consider inviting your guest to an upcoming event. To plan an event, get started in <a href="https://app.asana.com/0/253868425842275/list" target="_blank">Asana</a>.</p>
   </div>
 </div>
 
 <a name="form"></a>
 <div class="wide-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Registration Form</h2>
+    <h2 class="mdl-card__title-text">Registration form</h2>
   </div>
   <div class="mdl-card__supporting-text">
 {% if guest.id %}
@@ -59,11 +58,11 @@
   <div class="mdl-grid">
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" value="{{guest.name}}" id="name" name="name" data-required>
-      <label class="mdl-textfield__label" for="name">Guest Name</label>
+      <label class="mdl-textfield__label" for="name">Guest name</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" value="{{guest.email}}" id="email" name="email" data-required>
-      <label class="mdl-textfield__label" for="email">Guest Email</label>
+      <label class="mdl-textfield__label" for="email">Guest email</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
       <input class="mdl-textfield__input" type="text" {% if guest.dateStart %}value="{{moment(guest.dateStart).format('YYYY/MM/DD')}}"{% endif %} id="date" name="date" pattern="20[0-9]{2}/[0-1]?[0-9]/[0-3]?[0-9]" data-required>
@@ -72,12 +71,12 @@
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
       <input class="mdl-textfield__input" type="text" {% if guest.dateStart %}value="{{moment(guest.dateStart).format('HH:mm')}}"{% endif %} id="timeStart" name="timeStart" pattern="[0-2]?[0-9]:[0-5]?[0-9]" data-required>
-      <label class="mdl-textfield__label" for="timeStart">Time to Visit</label>
+      <label class="mdl-textfield__label" for="timeStart">Start time</label>
       <span class="mdl-textfield__error">Example: {{moment(exampleDate).format('HH:mm')}}</span>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
       <input class="mdl-textfield__input" type="text" {% if guest.dateEnd %}value="{{moment(guest.dateEnd).format('HH:mm')}}"{% endif %} id="timeEnd" name="timeEnd" pattern="[0-2]?[0-9]:[0-5]?[0-9]" data-required>
-      <label class="mdl-textfield__label" for="timeEnd">Time to Leave</label>
+      <label class="mdl-textfield__label" for="timeEnd">End time</label>
       <span class="mdl-textfield__error">Example: {{moment(exampleDate).format('HH:mm')}}</span>
     </div>
     <div class="mdl-cell mdl-cell--12-col">
@@ -90,14 +89,14 @@
         </select>
         <label class="mdl-selectfield__label" for="project">Project</label>
       </div>
-      <div class="caption">Please select a project you plan to work with the guest during the visit. Consider adding a new one to Asana under the 'Projects / Incubation' team if doesn't exist already. You can also use 'Not Listed' as the last resort. Please have more details in the notes in that case.</div>
+      <div class="caption">Select the project you plan to work on with your guest. New projects can be added via Asana in the 'Projects / Incubation' team. If selecting 'Not Listed', please add additional commentary in the Notes.</div>
     </div>
     <div class="mdl-cell mdl-cell--12-col">
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-width">
         <textarea class="mdl-textfield__input" type="text" id="notes" name="notes" rows="5">{{guest.notes}}</textarea>
         <label class="mdl-textfield__label" for="notes">Notes</label>
       </div>
-      <div class="caption">Please describe details about the guest and purpose/context of visit optionally with URL for more information about the guest or their company.</div>
+      <div class="caption">Please describe a few details about your guest and the purpose/context of the visit. Bonus points for linking to a personal or company website.</div>
     </div>
     <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-cell mdl-cell--12-col">
       {% if guest.id %}Update{% else %}Register{% endif %}
@@ -109,13 +108,12 @@
   <div class="mdl-grid">
     <div class="short-card mdl-card mdl-shadow--2dp hidden mdl-cell mdl-cell--12-col">
       <div class="mdl-card__supporting-text" style="color: red">
-        Please confirm that you are canceling this guest registration. This will
-        remove the corresponding calender entries and send notifications to the
-        guest and Straylight Core members.
+        Please confirm that you are canceling this visit. This will
+        remove corresponding calender entries and send notifications to the guest and other attendees.
       </div>
     </div>
     <button type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored mdl-cell mdl-cell--12-col">
-      Or, Cancel Registration
+      Cancel visit
     </button>
   </div>
 </form>
@@ -131,7 +129,7 @@ jQuery(function($) {
 
     e.preventDefault();
     $('.confirmation .short-card').removeClass('hidden');
-    button.html('Yes, proceed');
+    button.html('Confirm cancellation');
     button.addClass('mdl-button--raised');
     button.attr('confirmed', 'true');
   });
