@@ -65,11 +65,6 @@ module.exports = function(app, passport) {
     next();
   });
 
-  // Common redirect options.
-  app.use(setRedirect({
-    auth: '/'
-  }));
-
   // Homepage.
   app.get('/',
     setRedirect({auth: '/home'}),
@@ -79,6 +74,7 @@ module.exports = function(app, passport) {
 
   // Sessions.
   app.get('/auth/google',
+    setRedirect({auth: '/home'}),
     isUnauthenticated,
     sessions.login);
   app.get('/auth/google/callback',
@@ -89,71 +85,81 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/', success: '/'}),
     isAuthenticated,
     sessions.logout);
-
   // Pages.
   app.get('/home',
     setRender('home'),
+    setRedirect({auth: '/'}),
     isAuthenticated,
     users.getHome);
   app.get('/profile',
     setRender('profile'),
+    setRedirect({auth: '/'}),
     isAuthenticated,
     users.getDefault);
   app.get('/profile/edit',
     setRender('profile-edit'),
+    setRedirect({auth: '/'}),
     isAuthenticated,
     users.getDefault);
   app.get('/billing',
     setRender('billing'),
+    setRedirect({auth: '/'}),
     isAuthenticated,
     users.getDefault);
   app.get('/subscription',
     setRender('subscription'),
+    setRedirect({auth: '/'}),
     isAuthenticated,
     users.getSubscription);
   app.get('/invoice',
     setRender('invoice'),
+    setRedirect({auth: '/'}),
     isAuthenticated,
     users.getInvoice);
-  app.get('/files/:fileId', files.get);
+  app.get('/files/:fileId',
+    setRedirect({auth: '/'}),
+    isAuthenticated,
+    files.get);
   app.get('/members',
     setRender('members'),
+    setRedirect({auth: '/'}),
     isAuthenticated,
     users.getMembers);
   app.get('/guests(/:guest_id)?',
     setRender('guests'),
+    setRedirect({auth: '/'}),
     isAuthenticated,
     guests.get);
 
   // User API.
   app.post('/user/profile',
-    setRedirect({success: '/profile', failure: '/profile/edit'}),
+    setRedirect({auth: '/', success: '/profile', failure: '/profile/edit'}),
     isAuthenticated,
     upload.single('avatar'),
     users.postProfile);
   app.post('/user/billing',
-    setRedirect({success: '/subscription', failure: '/billing'}),
+    setRedirect({auth: '/', success: '/subscription', failure: '/billing'}),
     isAuthenticated,
     users.postBilling);
   app.post('/user/subscription',
-    setRedirect({success: '/home', failure: '/subscription'}),
+    setRedirect({auth: '/', success: '/home', failure: '/subscription'}),
     isAuthenticated,
     users.postSubscription);
   app.post('/user/subscription/cancel',
-    setRedirect({success: '/home', failure: '/subscription'}),
+    setRedirect({auth: '/', success: '/home', failure: '/subscription'}),
     isAuthenticated,
     users.postCancelSubscription);
   // Guests API.
   app.post('/guests/create',
-    setRedirect({success: '/guests', failure: '/guests'}),
+    setRedirect({auth: '/', success: '/guests', failure: '/guests'}),
     isAuthenticated,
     guests.create);
   app.post('/guests/edit/:guest_id',
-    setRedirect({success: '/guests', failure: '/guests'}),
+    setRedirect({auth: '/', success: '/guests', failure: '/guests'}),
     isAuthenticated,
     guests.edit);
   app.post('/guests/delete/:guest_id',
-    setRedirect({success: '/guests', failure: '/guests'}),
+    setRedirect({auth: '/', success: '/guests', failure: '/guests'}),
     isAuthenticated,
     guests.delete);
 
