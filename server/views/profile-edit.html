@@ -56,7 +56,7 @@ Step 1 of 3: Create your profile
     </div>
     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-cell mdl-cell--4-col" for="mailing-address-private">
       <input type="checkbox" id="mailing-address-private" class="mdl-switch__input" {% if user.profile.mailingAddress.isPrivate %}checked{% endif %} name="mailingAddressPrivate" value="1">
-      <span class="mdl-switch__label" id="mailing-address-private-label">Private</span>
+      <span class="mdl-switch__label" id="mailing-address-private-label">Private<span class="small-screen"> (Make mailing address visible only to admins)</span></span>
       <div class="mdl-tooltip" data-mdl-for="mailing-address-private-label">
         Make mailing address visible only to admins
       </div>
@@ -73,7 +73,7 @@ Step 1 of 3: Create your profile
     </div>
     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-cell mdl-cell--4-col" for="mobile-phone-private">
       <input type="checkbox" id="mobile-phone-private" class="mdl-switch__input" {% if user.profile.mobilePhone.isPrivate %}checked{% endif %} name="mobilePhonePrivate" value="1">
-      <span class="mdl-switch__label" id="mobile-phone-private-label">Private</span>
+      <span class="mdl-switch__label" id="mobile-phone-private-label">Private<span class="small-screen"> (Make mobile phone visible only to admins)</span></span>
       <div class="mdl-tooltip" data-mdl-for="mobile-phone-private-label">
         Make mobile phone visible only to admins
       </div>

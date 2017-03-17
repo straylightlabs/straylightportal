@@ -2,8 +2,10 @@ html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
 }
 
+/* TODO(ryok): Clean up these card styles. */
 .welcome-card.mdl-card {
-  width: 512px;
+  width: auto;
+  max-width: 512px;
   margin: 50px auto;
 }
 .welcome-card > .mdl-card__title {
@@ -13,7 +15,8 @@ html, body {
 }
 
 .wide-card.mdl-card {
-  width: 512px;
+  width: auto;
+  max-width: 512px;
   margin-bottom: 20px;
 }
 .wide-card > .mdl-card__title {
@@ -24,7 +27,7 @@ html, body {
 .short-card.mdl-card {
   min-height: 0;
   width: auto;
-  max-width: 500px;
+  max-width: 512px;
   margin-bottom: 20px;
 }
 
@@ -119,12 +122,26 @@ html, body {
   margin: 0;
 }
 
-#profile-form .mdl-switch {
-  margin-top: 25px;
+@media (max-width: 800px) {
+  #profile-form .mdl-switch {
+    margin-bottom: 25px;
+  }
+  .small-screen {
+    display: inline;
+  }
+}
+
+@media (min-width: 800px) {
+  #profile-form .mdl-switch {
+    margin-top: 25px;
+  }
+  .small-screen {
+    display: none;
+  }
 }
 
 .invoice-table {
-  width: 400px;
+  max-width: 400px;
 }
 
 .payment-table {
@@ -161,7 +178,7 @@ html, body {
   opacity: 0;
   position: absolute;
   top: 0;
-  width: 300px;
+  max-width: 300px;
   z-index: 4;
 }
 

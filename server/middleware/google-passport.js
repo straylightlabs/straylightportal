@@ -51,7 +51,8 @@ function createNewUser(googleProfile, accessToken, refreshToken, cb) {
           isPrivate: true
         },
         mobilePhone: {
-          value: mobilePhone,
+          countryCode: mobilePhone.split(' ')[0].replace('+', ''),
+          number: mobilePhone.split(' ')[1],
           isPrivate: true
         }
       },
