@@ -67,7 +67,7 @@ Step 3 of 3: Confirm your subscription
         <tr>
           <td class="mdl-data-table__cell--non-numeric">{{moment(invoice.date * 1000).format('YYYY-MM-DD')}}</td>
           <td>{{invoice.currency_symbol}}{{invoice.amount_due}}</td>
-          <td class="mdl-data-table__cell--non-numeric"><a href="{{base_url}}/invoice?id={{invoice.id}}">link</a></td>
+          <td class="mdl-data-table__cell--non-numeric"><a href="{{base_url}}/invoice?id={{invoice.id}}">View receipt</a></td>
         </tr>
         {% endif %}
         {% endfor %}
