@@ -205,7 +205,7 @@ exports.getSubscription = function(req, res, next) {
         user: req.user,
         oneTimeInvoice: oneTimeInvoice,
         upcomingInvoice: upcomingInvoice,
-        invoices: invoices,
+        invoices: invoices.filter(invoice => invoice.amount_due > 0),
       });
     });
   });
