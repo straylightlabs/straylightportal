@@ -10,7 +10,7 @@
   <div class="mdl-card__supporting-text">
     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-cell mdl-cell--2-col" for="lock-switch">
       <input type="checkbox" id="lock-switch" class="mdl-switch__input" disabed="disabled" {% if locked %}checked="checked"{% endif %}>
-      <span class="mdl-switch__label">{{ locked && lockedLabel || unlockedLabel}}</span>
+      <span class="mdl-switch__label">{{ locked && 'Locked' || 'Unlocked' }}</span>
     </label>
   </div>
 </div>

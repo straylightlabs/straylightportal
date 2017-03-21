@@ -17,6 +17,7 @@ const guests = require('./controllers/guests-controller');
 const index = require('./controllers/index-controller');
 const sessions = require('./controllers/sessions-controller');
 const files = require('./controllers/files-controller');
+const one = require('./controllers/one-controller');
 
 var stripeWebhook = new StripeWebhook({
   stripeApiKey: secrets.stripeOptions.apiKey,
@@ -134,7 +135,7 @@ module.exports = function(app, passport) {
     setRender('one'),
     setRedirect({auth: '/'}),
     isAuthenticated,
-    users.getDefault);
+    one.getDefault);
 
   // User API.
   app.post('/user/profile',
