@@ -9,7 +9,7 @@
   </header> <!-- header -->
   <div class="mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
     <header>
-      <img src="{{ user.profile.imageUrl }}" class="avatar">
+      <img src="{{ user.profileImageAbsoluteUrl(base_url) }}" class="avatar">
       <div class="avatar-dropdown">
         <span>{{ user.email }}</span>
         <div class="mdl-layout-spacer"></div>
