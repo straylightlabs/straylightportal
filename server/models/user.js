@@ -55,6 +55,14 @@ var userSchema = new mongoose.Schema({
   }
 });
 
+userSchema.methods.profileImageAbsoluteUrl = function(baseUrl) {
+  const url = this.profile.imageUrl;
+  if (url.match(new RegExp('https?://'))) {
+    return url;
+  }
+  return baseUrl + url;
+};
+
 userSchema.plugin(timestamps);
 userSchema.plugin(stripeCustomer, secrets.stripeOptions);
 

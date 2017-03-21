@@ -33,7 +33,7 @@ Step 1: Profile
       </div>
     </div>
     {% if user.profile.imageUrl %}
-    <img src="{{user.profile.imageUrl}}" alt="profile image" class="avatar mdl-cell mdl-cell--4-col">
+    <img src="{{ user.profileImageAbsoluteUrl(base_url) }}" alt="profile image" class="avatar mdl-cell mdl-cell--4-col">
     {% endif %}
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" id="address_line1" name="addressStreet" value="{{user.profile.mailingAddress.street}}" data-required>
