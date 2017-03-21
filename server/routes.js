@@ -130,6 +130,11 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/'}),
     isAuthenticated,
     guests.get);
+  app.get('/one',
+    setRender('one'),
+    setRedirect({auth: '/'}),
+    isAuthenticated,
+    users.getDefault);
 
   // User API.
   app.post('/user/profile',
