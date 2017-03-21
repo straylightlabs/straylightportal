@@ -135,7 +135,7 @@ module.exports = function(app, passport) {
     setRender('one'),
     setRedirect({auth: '/'}),
     isAuthenticated,
-    one.getDefault);
+    one.get);
 
   // User API.
   app.post('/user/profile',
@@ -168,6 +168,11 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/', success: '/guests', failure: '/guests'}),
     isAuthenticated,
     guests.delete);
+  // One JSON API.
+  app.post('/one/lock',
+    setRedirect({auth: '/', success: '/one', failure: '/one'}),
+    isAuthenticated,
+    one.postLockState);
 
   // Stripe webhook events.
   app.post('/stripe/events',

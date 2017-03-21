@@ -5,11 +5,13 @@
 
 <script>
 function showToast(message) {
-  var notification = document.querySelector('.mdl-js-snackbar');
-  notification.MaterialSnackbar.showSnackbar({
-    message: message,
-    timeout: 5000
-  });
+  setTimeout(function() {
+    var notification = document.querySelector('.mdl-js-snackbar');
+    notification.MaterialSnackbar.showSnackbar({
+      message: message,
+      timeout: 5000
+    });
+  }, 100);
 }
 
 $(function() {
@@ -22,10 +24,8 @@ $(function() {
     {% endfor %}
   ];
 
-  setTimeout(function() {
-    messages.forEach(function(msg) {
-      showToast(msg);
-    });
-  }, 500);
+  messages.forEach(function(msg) {
+    showToast(msg);
+  });
 });
 </script>

@@ -15,9 +15,10 @@ html, body {
 }
 
 .wide-card.mdl-card {
-  width: auto;
-  max-width: 512px;
   margin-bottom: 20px;
+  max-width: 512px;
+  min-height: 0;
+  width: auto;
 }
 .wide-card > .mdl-card__title {
   color: #fff;

@@ -8,35 +8,20 @@
     <h2 class="mdl-card__title-text">Front door</h2>
   </div>
   <div class="mdl-card__supporting-text">
-    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-cell mdl-cell--2-col" for="lock-switch">
-      <input type="checkbox" id="lock-switch" class="mdl-switch__input" disabed="disabled" {% if locked %}checked="checked"{% endif %}>
-      <span class="mdl-switch__label">{{ locked && 'Locked' || 'Unlocked' }}</span>
-    </label>
+    {% if !fromTrustedNetwork %}
+    <p>We were not able to verify your proximity to Straylight One. Please make
+    sure you are close to the space and connected to its WiFi network
+    (STRAYLIGHT or STRAYLIGHT_5G). We currently approximate your proximity by
+    looking at your IP.</p>
+    {% endif %}
+    <p>The front door of Straylight One is currently <strong>{{ locked && 'locked' || 'unlocked' }}</strong>.<p>
+    <form action="{{ base_url }}/one/lock" method="post">
+      <input type="hidden" name="action" value="{{ locked && 'unlock' || 'lock' }}" />
+      <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+        <i class="material-icons" role="presentation" style="font-size: 18px">{{ locked && 'lock_open' || 'lock' }}</i> {{ locked && 'Unlock' || 'Lock' }}
+      </button>
+    </form>
   </div>
 </div>
-<script>
-jQuery(function($) {
-  var URL_BASE = 'http://192.168.0.3:8080';
-  $.ajax(URL_BASE + '/status', {
-    success: function(res) {
-      $('#lock-switch').removeAttr('disabled');
-    },
-    timeout: 5000,
-    error: function() {
-      showToast('Failed to connect to the lock system');
-    }
-  });
-  $('#lock-switch').change(function() {
-    var action = this.checked ? '/lock' : '/unlock';
-    $.ajax(URL_BASE + action, {
-      timeout: 5000,
-      error: function() {
-        $('#lock-switch').attr('disabled', 'disabled');
-        showToast('Failed to connect to the lock system');
-      }
-    });
-  });
-});
-</script>
 {% endblock %}
 
