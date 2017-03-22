@@ -17,6 +17,7 @@ const guests = require('./controllers/guests-controller');
 const index = require('./controllers/index-controller');
 const sessions = require('./controllers/sessions-controller');
 const files = require('./controllers/files-controller');
+const one = require('./controllers/one-controller');
 
 var stripeWebhook = new StripeWebhook({
   stripeApiKey: secrets.stripeOptions.apiKey,
@@ -130,6 +131,11 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/'}),
     isAuthenticated,
     guests.get);
+  app.get('/one',
+    setRender('one'),
+    setRedirect({auth: '/'}),
+    isAuthenticated,
+    one.get);
 
   // User API.
   app.post('/user/profile',
@@ -162,6 +168,15 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/', success: '/guests', failure: '/guests'}),
     isAuthenticated,
     guests.delete);
+  // One JSON API.
+  app.get('/one/lock',
+    setRedirect({auth: '/'}),
+    isAuthenticated,
+    one.getLockState);
+  app.post('/one/lock',
+    setRedirect({auth: '/', success: '/one', failure: '/one'}),
+    isAuthenticated,
+    one.postLockState);
 
   // Stripe webhook events.
   app.post('/stripe/events',
