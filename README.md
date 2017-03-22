@@ -1,20 +1,28 @@
 # Straylight Portal
 
-This project is an expressjs app, largely based on [eddywashere's template](https://github.com/eddywashere/node-stripe-membership-saas) as of now. It handles basic authentication with Google OAuth2 and management of membership subscription through [Stripe](https://stripe.com/) API.
+Straylight Portal is a web server based on expressjs framework. It handles
+basic authentication with Google OAuth2 and management of membership
+subscription through [Stripe](https://stripe.com/) API.
 
 ### Requirements
 
-- nodejs & npm
-- mongodb
-- nodemon (for faster development)
+- nodejs & yarn
+- mongodb (consider [mlab](https://www.mlab.com/) if you want managed solution)
+- nodemon (for "dev" script)
 
 ### Getting Started
 
 First update `/server/config/secrets.js` with the following credentials:
-- Stripe [API keys](https://dashboard.stripe.com/account/apikeys) and [plan info](https://dashboard.stripe.com/test/plans)
-- Session secret
+- Stripe [API keys](https://dashboard.stripe.com/account/apikeys)
+- Session secret (some random string)
 - Google Analytics ID
 - Google OAuth2 client ID and secret
+- Asana access token
 
-Install dependencies with `npm install`.
-Start the server with `nodemon server`.
+Install dependencies with `yarn install`.
+Start the server with `yarn dev`.
+
+### TODOs
+
+- Move to client-side rendering & API server
+- Isolate Straylight specific code
