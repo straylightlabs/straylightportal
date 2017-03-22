@@ -1,0 +1,33 @@
+{
+  "name": "straylightportal-client",
+  "version": "0.0.1",
+  "description": "Straylight Membership Portal",
+  "main": "src/index.jsx",
+  "repository": "https://github.com/straylightlabs/straylightportal",
+  "author": "ryo@straylight.jp, jake@straylight.jp et al",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "webpack-dev-server --port 3000 --hot --host 0.0.0.0",
+    "flow": "flow; test $? -eq 0 -o $? -eq 2"
+  },
+  "dependencies": {
+    "axios": "^0.15.3",
+    "html-webpack-plugin": "^2.28.0",
+    "immutability-helper": "^2.1.2",
+    "material-ui": "^0.17.1",
+    "path": "^0.12.7",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-tap-event-plugin": "^2.0.1",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.4.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-1": "^6.22.0",
+    "flow-bin": "^0.42.0"
+  }
+}
+
