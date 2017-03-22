@@ -8,19 +8,21 @@
     <h2 class="mdl-card__title-text">Front door</h2>
   </div>
   <div class="mdl-card__supporting-text">
-    {% if !fromTrustedNetwork %}
-    <p>We were not able to verify your proximity to Straylight One. Please make
-    sure you are close to the space and connected to its WiFi network
-    (STRAYLIGHT or STRAYLIGHT_5G). We currently approximate your proximity by
-    looking at your IP.</p>
-    {% endif %}
     <p>The front door of Straylight One is currently <strong>{{ locked && 'locked' || 'unlocked' }}</strong>.<p>
-    <form action="{{ base_url }}/one/lock" method="post">
-      <input type="hidden" name="action" value="{{ locked && 'unlock' || 'lock' }}" />
-      <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
-        <i class="material-icons" role="presentation" style="font-size: 18px">{{ locked && 'lock_open' || 'lock' }}</i> {{ locked && 'Unlock' || 'Lock' }}
-      </button>
-    </form>
+    <p>
+      <form action="{{ base_url }}/one/lock" method="post">
+        <input type="hidden" name="action" value="{{ locked && 'unlock' || 'lock' }}" />
+        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+          <i class="material-icons" role="presentation" style="font-size: 18px">{{ locked && 'lock_open' || 'lock' }}</i> {{ locked && 'Unlock' || 'Lock' }}
+        </button>
+      </form>
+    </p>
+    {% if !fromTrustedNetwork %}
+    <p style="color: red">We were not able to verify your proximity to
+    Straylight One. Please make sure you are close to the space and connected to
+    its WiFi network (STRAYLIGHT or STRAYLIGHT_5G). We currently approximate
+    your proximity by looking at your IP.</p>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

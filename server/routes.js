@@ -169,6 +169,10 @@ module.exports = function(app, passport) {
     isAuthenticated,
     guests.delete);
   // One JSON API.
+  app.get('/one/lock',
+    setRedirect({auth: '/'}),
+    isAuthenticated,
+    one.getLockState);
   app.post('/one/lock',
     setRedirect({auth: '/', success: '/one', failure: '/one'}),
     isAuthenticated,
