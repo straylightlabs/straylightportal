@@ -3,7 +3,7 @@
 {% block title %}Guests{% endblock %}
 
 {% block content %}
-{% if guests.length %}
+{% if upcomingGuests.length %}
 <div class="wide-card no-padding mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
     <h2 class="mdl-card__title-text">Upcoming visits</h2>
@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for guest in guests %}
+        {% for guest in upcomingGuests %}
         <tr>
           <td class="mdl-data-table__cell--non-numeric">{{guest.name}}</td>
           <td class="mdl-data-table__cell--non-numeric">{{moment(guest.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
@@ -118,6 +118,33 @@
   </div>
 </form>
 {% endif %}
+
+{% if pastGuests.length %}
+<div class="wide-card no-padding mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Past visits</h2>
+  </div>
+  <div class="mdl-card__supporting-text">
+    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+      <thead>
+        <tr>
+          <th class="mdl-data-table__cell--non-numeric">Guest name</th>
+          <th class="mdl-data-table__cell--non-numeric">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for guest in pastGuests %}
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">{{guest.name}}</td>
+          <td class="mdl-data-table__cell--non-numeric">{{moment(guest.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
 <script>
 // TODO(ryok): Reuse code from subscription.html
 jQuery(function($) {

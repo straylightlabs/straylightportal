@@ -143,9 +143,11 @@ function getAsanaProjects() {
 
 exports.get = function(req, res, next) {
   getAsanaProjects().then(function(projects) {
+    const now = new Date().getTime();
     res.render(req.render, {
       user: req.user,
-      guests: req.user.guests,
+      upcomingGuests: req.user.guests.filter(g => g.dateStart.getTime() > now),
+      pastGuests: req.user.guests.filter(g => g.dateStart.getTime() <= now),
       guest: req.params.guest_id && req.user.guests.id(req.params.guest_id),
       projects: projects,
       exampleDate: new Date('2017-12-09T15:00:00+0900')
