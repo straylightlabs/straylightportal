@@ -99,8 +99,8 @@ exports.postProfile = function(req, res, next) {
   req.checkBody('addressState', 'Mailing Address is required').notEmpty();
   req.checkBody('addressZip', 'Mailing Address is required').notEmpty();
   req.checkBody('addressCountry', 'Mailing Address is required').notEmpty();
-  req.checkBody('mobilePhone', 'Mobile Phone is required').notEmpty().isInt();
-  req.checkBody('mobilePhoneCountryCode', 'Country Code is required').notEmpty().isInt();
+  req.checkBody('mobilePhone', 'Mobile Phone is required').notEmpty().matches('[0-9]{1,15}');
+  req.checkBody('mobilePhoneCountryCode', 'Country Code is required').notEmpty().matches('[0-9]{1,3}');
 
   var errors = req.validationErrors();
   if (errors) {
