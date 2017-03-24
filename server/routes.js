@@ -1,8 +1,7 @@
-const UPLOAD_DIR = 'uploads/';
-
 const url = require('url');
 
 const secrets = require('./config/secrets');
+const config = require('./config/main');
 // middleware
 const StripeWebhook = require('stripe-webhook-middleware');
 const isAuthenticated = require('./middleware/auth').isAuthenticated;
@@ -10,7 +9,7 @@ const isUnauthenticated = require('./middleware/auth').isUnauthenticated;
 const setRender = require('middleware-responder').setRender;
 const setRedirect = require('middleware-responder').setRedirect;
 const stripeEvents = require('./middleware/stripe-events');
-const upload = require('multer')({ dest: UPLOAD_DIR });
+const upload = require('multer')({ dest: config.fileUploadDir });
 // controllers
 const users = require('./controllers/users-controller');
 const guests = require('./controllers/guests-controller');
