@@ -4,6 +4,7 @@ module.exports = {
   port: PORT,
   baseUrl: process.env.PORTAL_BASE_URL || 'http://localhost:' + PORT,
   serviceName: 'Straylight Connect',
-  shortServiceName: 'Connect'
+  shortServiceName: 'Connect',
+  fileUploadDir: process.env.PORTAL_UPLOAD_DIR || 'uploads/'
 };
 
