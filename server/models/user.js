@@ -51,7 +51,8 @@ var userSchema = new mongoose.Schema({
   }],
   oauth2: {
     accessToken: String,
-    refreshToken: String
+    refreshToken: String,
+    scopes: [String]
   }
 });
 

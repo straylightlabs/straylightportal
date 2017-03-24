@@ -5,6 +5,7 @@ const secrets = require('../config/secrets');
 
 const EXTERNAL_CAL_ID = 'primary';
 const INTERNAL_CAL_ID = 'straylight.jp_dvovuo73ok4pjq7qf6q5vg76lg@group.calendar.google.com';
+const CAL_SCOPE = 'https://www.googleapis.com/auth/calendar';
 
 function isValidDate(date) {
   var daysApart = Math.abs(new Date().getTime() - date.getTime()) / 86400000;
@@ -142,6 +143,10 @@ function getAsanaProjects() {
 }
 
 exports.get = function(req, res, next) {
+  if (!req.user.oauth2.scopes.includes(CAL_SCOPE)) {
+    return res.redirect(req.redirect.requestScopes +
+        '?scope=' + encodeURIComponent(CAL_SCOPE));
+  }
   getAsanaProjects().then(function(projects) {
     res.render(req.render, {
       user: req.user,
