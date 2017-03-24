@@ -30,7 +30,7 @@ Start the server with `yarn dev`.
 ### How to contribute
 
 ##### For the first time
-File a task in (Asana)[https://app.asana.com/0/260679654120467/list] to have you added to the collaborator list of straylightlabs Github repo. Then;
+File a task in [Asana](https://app.asana.com/0/260679654120467/list) and assign it to @ryo to have you added to the collaborator list of straylightlabs Github repo. Then;
 ```
 git clone https://github.com/straylightlabs/straylightportal
 cd straylightportal
