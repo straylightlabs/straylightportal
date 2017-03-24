@@ -1,5 +1,13 @@
 var passport = require('passport');
 
+const CAL_SCOPE = 'https://www.googleapis.com/auth/calendar';
+exports.CAL_SCOPE = CAL_SCOPE;
+
+// Limit the scope as much as possible to reduce bug surface.
+const SCOPE_WHITELIST = [
+  CAL_SCOPE
+];
+
 function parseCSV(str) {
   return str
     .split(',')
@@ -11,7 +19,8 @@ exports.login = function(req, res, next) {
   // Logout to support requesting additional scopes within a live session.
   req.logout();
 
-  const additionalScopes = parseCSV(req.query.scope || '');
+  const additionalScopes = parseCSV(req.query.scope || '')
+    .filter(s => SCOPE_WHITELIST.includes(s));
   const scopes = [
     'profile',
     'email',

@@ -2,10 +2,10 @@ const asana = require('asana');
 const google = require('googleapis');
 const calendar = google.calendar('v3');
 const secrets = require('../config/secrets');
+const sessions = require('./sessions-controller');
 
 const EXTERNAL_CAL_ID = 'primary';
 const INTERNAL_CAL_ID = 'straylight.jp_dvovuo73ok4pjq7qf6q5vg76lg@group.calendar.google.com';
-const CAL_SCOPE = 'https://www.googleapis.com/auth/calendar';
 
 function isValidDate(date) {
   var daysApart = Math.abs(new Date().getTime() - date.getTime()) / 86400000;
@@ -143,9 +143,12 @@ function getAsanaProjects() {
 }
 
 exports.get = function(req, res, next) {
-  if (!req.user.oauth2.scopes.includes(CAL_SCOPE)) {
+  // TODO(ryok): https://app.asana.com/0/260679654120467/302073946971240
+  // Use robot accounts to manage calendars instead of requesting calendar scope
+  // from signed in users.
+  if (!req.user.oauth2.scopes.includes(sessions.CAL_SCOPE)) {
     return res.redirect(req.redirect.requestScopes +
-        '?scope=' + encodeURIComponent(CAL_SCOPE));
+        '?scope=' + encodeURIComponent(sessions.CAL_SCOPE));
   }
   getAsanaProjects().then(function(projects) {
     res.render(req.render, {
