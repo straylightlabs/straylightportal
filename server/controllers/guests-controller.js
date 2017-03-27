@@ -151,10 +151,18 @@ exports.get = function(req, res, next) {
         '?scope=' + encodeURIComponent(sessions.CAL_SCOPE));
   }
   getAsanaProjects().then(function(projects) {
+    const now = new Date().getTime();
+    const upcomingGuests = req.user.guests.filter(g => g.dateStart.getTime() > now);
+    const pastGuests = req.user.guests.filter(g => g.dateStart.getTime() <= now);
+    const guestById = req.params.guest_id && req.user.guests.id(req.params.guest_id);
+    if (guestById) {
+      guestById.upcoming = guestById.dateStart.getTime() > now;
+    }
     res.render(req.render, {
       user: req.user,
-      guests: req.user.guests,
-      guest: req.params.guest_id && req.user.guests.id(req.params.guest_id),
+      upcomingGuests: upcomingGuests,
+      pastGuests: pastGuests,
+      guest: guestById,
       projects: projects,
       exampleDate: new Date('2017-12-09T15:00:00+0900')
     });
