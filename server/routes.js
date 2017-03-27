@@ -1,8 +1,7 @@
-const UPLOAD_DIR = 'uploads/';
-
 const url = require('url');
 
 const secrets = require('./config/secrets');
+const config = require('./config/main');
 // middleware
 const StripeWebhook = require('stripe-webhook-middleware');
 const isAuthenticated = require('./middleware/auth').isAuthenticated;
@@ -10,7 +9,7 @@ const isUnauthenticated = require('./middleware/auth').isUnauthenticated;
 const setRender = require('middleware-responder').setRender;
 const setRedirect = require('middleware-responder').setRedirect;
 const stripeEvents = require('./middleware/stripe-events');
-const upload = require('multer')({ dest: UPLOAD_DIR });
+const upload = require('multer')({ dest: config.fileUploadDir });
 // controllers
 const users = require('./controllers/users-controller');
 const guests = require('./controllers/guests-controller');
@@ -75,8 +74,6 @@ module.exports = function(app, passport) {
 
   // Sessions.
   app.get('/auth/google',
-    setRedirect({auth: '/home'}),
-    isUnauthenticated,
     sessions.login);
   app.get('/auth/google/callback',
     setRedirect({auth: '/home', success: '/home', failure: '/'}),
@@ -128,7 +125,7 @@ module.exports = function(app, passport) {
     users.getMembers);
   app.get('/guests(/:guest_id)?',
     setRender('guests'),
-    setRedirect({auth: '/'}),
+    setRedirect({auth: '/', requestScopes: '/request_scopes'}),
     isAuthenticated,
     guests.get);
   app.get('/one',
@@ -136,6 +133,11 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/'}),
     isAuthenticated,
     one.get);
+  app.get('/request_scopes',
+    setRedirect({auth: '/'}),
+    isAuthenticated,
+    setRender('request_scopes'),
+    sessions.getRequestScopes);
 
   // User API.
   app.post('/user/profile',
