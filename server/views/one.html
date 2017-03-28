@@ -1,14 +1,14 @@
 {% extends 'layouts/dashboard.html' %}
 
-{% block title %}Straylight One{% endblock %}
+{% block title %}Straylight One Devices{% endblock %}
 
 {% block content %}
 <div class="wide-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Front door</h2>
+    <h2 class="mdl-card__title-text">Door</h2>
   </div>
   <div class="mdl-card__supporting-text">
-    <p>The front door of Straylight One is currently <strong>{{ locked && 'locked' || 'unlocked' }}</strong>.<p>
+    <p>The door of Straylight One is currently <strong>{{ locked && 'locked' || 'unlocked' }}</strong>.<p>
     <p>
       <form action="{{ base_url }}/one/lock" method="post">
         <input type="hidden" name="action" value="{{ locked && 'unlock' || 'lock' }}" />
@@ -18,10 +18,9 @@
       </form>
     </p>
     {% if !fromTrustedNetwork %}
-    <p style="color: red">We were not able to verify your proximity to
-    Straylight One. Please make sure you are close to the space and connected to
-    its WiFi network (STRAYLIGHT or STRAYLIGHT_5G). We currently approximate
-    your proximity by looking at your IP.</p>
+    <p style="color: red">We cannot verify your proximity to Straylight One.
+    Please make sure you are nearby and connected to the STRAYLIGHT wifi
+    network.</p>
     {% endif %}
   </div>
 </div>
