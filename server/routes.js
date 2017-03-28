@@ -74,6 +74,8 @@ module.exports = function(app, passport) {
 
   // Sessions.
   app.get('/auth/google',
+    setRedirect({auth: '/home'}),   
+    isUnauthenticated,
     sessions.login);
   app.get('/auth/google/callback',
     setRedirect({auth: '/home', success: '/home', failure: '/'}),
@@ -125,7 +127,7 @@ module.exports = function(app, passport) {
     users.getMembers);
   app.get('/guests(/:guest_id)?',
     setRender('guests'),
-    setRedirect({auth: '/', requestScopes: '/request_scopes'}),
+    setRedirect({auth: '/'}),
     isAuthenticated,
     guests.get);
   app.get('/one',
@@ -133,11 +135,6 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/'}),
     isAuthenticated,
     one.get);
-  app.get('/request_scopes',
-    setRedirect({auth: '/'}),
-    isAuthenticated,
-    setRender('request_scopes'),
-    sessions.getRequestScopes);
 
   // User API.
   app.post('/user/profile',
