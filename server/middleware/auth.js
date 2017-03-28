@@ -1,24 +1,27 @@
-var secrets = require('../config/secrets');
-var config = require('../config/main');
-var google = require('googleapis');
-var OAuth2 = google.auth.OAuth2;
+const secrets = require('../config/secrets');
+const config = require('../config/main');
+const google = require('googleapis');
+const googleKey = require('../config/google-key.json');
 
-exports.setOAuth2Client = function(req, res, next) {
+const googleAuthClient = new google.auth.JWT(
+    googleKey.client_email,
+    null,
+    googleKey.private_key,
+    ['https://www.googleapis.com/auth/calendar'],
+    'connect@straylight.jp'
+    );
+
+exports.setGoogleAuthClient = function(req, res, next) {
   if (!req.user) return next();
 
-  // TODO(ryok): Handle expiration of access token.
-  var clientID = secrets.googleOAuth.clientID;
-  var clientSecret = secrets.googleOAuth.clientSecret;
-  var callbackURL = config.baseUrl + '/auth/google/callback';
-  var oauth2Client = new OAuth2(clientID, clientSecret, callbackURL);
-  oauth2Client.setCredentials({
-    access_token: req.user.oauth2.accessToken,
-    refresh_token: req.user.oauth2.refreshToken
+  googleAuthClient.authorize(function(err, tokens) {
+    if (err) return next(err);
+
+    google.options({
+      auth: googleAuthClient
+    });
+    next();
   });
-  google.options({
-    auth: oauth2Client
-  });
-  next();
 };
 
 exports.isAuthenticated = function(req, res, next) {

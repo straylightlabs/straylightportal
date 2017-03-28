@@ -3,18 +3,9 @@ const google = require('googleapis');
 const calendar = google.calendar('v3');
 const secrets = require('../config/secrets');
 const sessions = require('./sessions-controller');
-const googleAuthKey = require('../config/google-service-key.json');
 
 const EXTERNAL_CAL_ID = 'primary';
 const INTERNAL_CAL_ID = 'straylight.jp_dvovuo73ok4pjq7qf6q5vg76lg@group.calendar.google.com';
-
-const googleAuthClient = new google.auth.JWT(
-    googleAuthKey.client_email,
-    null,
-    googleAuthKey.private_key,
-    ['https://www.googleapis.com/auth/calendar'],
-    'connect@straylight.jp'
-    );
 
 function isValidDate(date) {
   var daysApart = Math.abs(new Date().getTime() - date.getTime()) / 86400000;
@@ -52,22 +43,15 @@ function parseGuestData(req, res, next) {
 
 function postCalendarEvent(event) {
   return new Promise(function(resolve, reject) {
-    googleAuthClient.authorize(function(err, tokens) {
+    const next = function(err, event) {
       if (err) return reject(err);
-
-      const options = {
-	auth: googleClient
-      };
-      const next = function(err, event) {
-	if (err) return reject(err);
-	resolve(event);
-      };
-      if (event.eventId) {
-	calendar.events.update(event, options, next);
-      } else {
-	calendar.events.insert(event, options, next);
-      }
-    });
+      resolve(event);
+    };
+    if (event.eventId) {
+      calendar.events.update(event, next);
+    } else {
+      calendar.events.insert(event, next);
+    }
   });
 }
 
@@ -131,19 +115,13 @@ function postExternalCalendarEvent(user, guest) {
 
 function deleteCalendarEvent(calendarId, eventId) {
   return new Promise(function(resolve, reject) {
-    googleAuthClient.authorize(function(err, tokens) {
+    calendar.events.delete({
+      calendarId: calendarId,
+      eventId: eventId,
+      sendNotifications: true
+    }, function(err, event) {
       if (err) return reject(err);
-
-      calendar.events.delete({
-	calendarId: calendarId,
-	eventId: eventId,
-	sendNotifications: true
-      }, {
-	auth: googleAuthClient
-      }, function(err, event) {
-	if (err) return reject(err);
-	resolve(event);
-      });
+      resolve(event);
     });
   });
 }
