@@ -2,7 +2,6 @@ const asana = require('asana');
 const google = require('googleapis');
 const calendar = google.calendar('v3');
 const secrets = require('../config/secrets');
-const sessions = require('./sessions-controller');
 
 const EXTERNAL_CAL_ID = 'primary';
 const INTERNAL_CAL_ID = 'straylight.jp_dvovuo73ok4pjq7qf6q5vg76lg@group.calendar.google.com';

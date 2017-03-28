@@ -98,8 +98,7 @@ module.exports = function(passport) {
             accessToken: accessToken,
             // TODO(ryok): Currently refreshToken is undefined. We need to set
             // Offline mode to retrieve refreshToken.
-            refreshToken: refreshToken,
-            scopes: req.session.scopes
+            refreshToken: refreshToken
           };
           if (user) {
             user.oauth2 = oauth2Info;
