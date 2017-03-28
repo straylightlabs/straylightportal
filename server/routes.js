@@ -125,7 +125,7 @@ module.exports = function(app, passport) {
     users.getMembers);
   app.get('/guests(/:guest_id)?',
     setRender('guests'),
-    setRedirect({auth: '/', requestScopes: '/request_scopes'}),
+    setRedirect({auth: '/'}),
     isAuthenticated,
     guests.get);
   app.get('/one',

@@ -18,7 +18,6 @@ var lodash = require('lodash');
 var expressValidator = require('express-validator');
 var errorHandler = require('./middleware/error');
 var passportMiddleware = require('./middleware/google-passport');
-var setOAuth2Client = require('./middleware/auth').setOAuth2Client;
 var viewHelper = require('./middleware/view-helper');
 var flash = require('express-flash');
 var cors = require('cors');
@@ -79,7 +78,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 passportMiddleware(passport);
-app.use(setOAuth2Client);
 
 // other
 app.use(flash());

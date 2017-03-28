@@ -3,9 +3,18 @@ const google = require('googleapis');
 const calendar = google.calendar('v3');
 const secrets = require('../config/secrets');
 const sessions = require('./sessions-controller');
+const googleAuthKey = require('../config/google-service-key.json');
 
 const EXTERNAL_CAL_ID = 'primary';
 const INTERNAL_CAL_ID = 'straylight.jp_dvovuo73ok4pjq7qf6q5vg76lg@group.calendar.google.com';
+
+const googleAuthClient = new google.auth.JWT(
+    googleAuthKey.client_email,
+    null,
+    googleAuthKey.private_key,
+    ['https://www.googleapis.com/auth/calendar'],
+    'connect@straylight.jp'
+    );
 
 function isValidDate(date) {
   var daysApart = Math.abs(new Date().getTime() - date.getTime()) / 86400000;
@@ -43,15 +52,22 @@ function parseGuestData(req, res, next) {
 
 function postCalendarEvent(event) {
   return new Promise(function(resolve, reject) {
-    var next = function(err, event) {
-      if (err) reject(err);
-      resolve(event);
-    };
-    if (event.eventId) {
-      calendar.events.update(event, next);
-    } else {
-      calendar.events.insert(event, next);
-    }
+    googleAuthClient.authorize(function(err, tokens) {
+      if (err) return reject(err);
+
+      const options = {
+	auth: googleClient
+      };
+      const next = function(err, event) {
+	if (err) return reject(err);
+	resolve(event);
+      };
+      if (event.eventId) {
+	calendar.events.update(event, options, next);
+      } else {
+	calendar.events.insert(event, options, next);
+      }
+    });
   });
 }
 
@@ -115,13 +131,19 @@ function postExternalCalendarEvent(user, guest) {
 
 function deleteCalendarEvent(calendarId, eventId) {
   return new Promise(function(resolve, reject) {
-    calendar.events.delete({
-      calendarId: calendarId,
-      eventId: eventId,
-      sendNotifications: true
-    }, function(err, event) {
+    googleAuthClient.authorize(function(err, tokens) {
       if (err) return reject(err);
-      resolve(event);
+
+      calendar.events.delete({
+	calendarId: calendarId,
+	eventId: eventId,
+	sendNotifications: true
+      }, {
+	auth: googleAuthClient
+      }, function(err, event) {
+	if (err) return reject(err);
+	resolve(event);
+      });
     });
   });
 }
@@ -143,13 +165,6 @@ function getAsanaProjects() {
 }
 
 exports.get = function(req, res, next) {
-  // TODO(ryok): https://app.asana.com/0/260679654120467/302073946971240
-  // Use robot accounts to manage calendars instead of requesting calendar scope
-  // from signed in users.
-  if (!req.user.oauth2.scopes.includes(sessions.CAL_SCOPE)) {
-    return res.redirect(req.redirect.requestScopes +
-        '?scope=' + encodeURIComponent(sessions.CAL_SCOPE));
-  }
   getAsanaProjects().then(function(projects) {
     const now = new Date().getTime();
     const upcomingGuests = req.user.guests.filter(g => g.dateStart.getTime() > now);
