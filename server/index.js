@@ -28,9 +28,10 @@ var corsOptions = {
 
 // setup db
 mongoose.Promise = global.Promise;
-mongoose.connect(secrets.db);
-mongoose.connection.on('error', function() {
-  console.error('MongoDB Connection Error. Make sure MongoDB is running.');
+mongoose.connect(secrets.db).then(() => {
+  console.error('Connected to MongoDB.');
+}).catch(err => {
+  console.error('MongoDB connection Error. Make sure MongoDB is running.');
 });
 
 // express setup

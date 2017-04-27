@@ -1,5 +1,5 @@
 module.exports = {
-  db: process.env.MONGO_DB_URL || 'mongodb://localhost:27017/straylightportal',
+  db: process.env.MONGO_DB_URL || `mongodb://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASS}@localhost:27017/straylightportal`,
 
   sessionSecret: process.env.SESSION_SECRET,
 
