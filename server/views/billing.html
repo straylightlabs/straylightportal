@@ -63,19 +63,19 @@ Step 2: Billing
       <label class="mdl-textfield__label" for="company_name">Company name (optional)</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_line1" id="address_line1" name="addressStreet" value="{{user.billing.address.street}}" data-required>
+      <input class="mdl-textfield__input" type="text" data-stripe="address_line1" id="address_line1" name="addressStreet" value="{{user.billing.address.street || user.profile.mailingAddress.street}}" data-required>
       <label class="mdl-textfield__label" for="address_line1">Billing address</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--8-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_city" id="address_city" name="addressCity" value="{{user.billing.address.city}}" data-required>
+      <input class="mdl-textfield__input" type="text" data-stripe="address_city" id="address_city" name="addressCity" value="{{user.billing.address.city || user.profile.mailingAddress.city}}" data-required>
       <label class="mdl-textfield__label" for="address_city">City</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_state" id="address_state" name="addressState" value="{{user.billing.address.state}}" data-required>
+      <input class="mdl-textfield__input" type="text" data-stripe="address_state" id="address_state" name="addressState" value="{{user.billing.address.state || user.profile.mailingAddress.state}}" data-required>
       <label class="mdl-textfield__label" for="address_state">Prefecture / state</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_zip" id="address_zip" pattern="[-0-9]{1,8}" name="addressZip" value="{{user.billing.address.zip}}" data-required>
+      <input class="mdl-textfield__input" type="text" data-stripe="address_zip" id="address_zip" pattern="[-0-9]{1,8}" name="addressZip" value="{{user.billing.address.zip || user.profile.mailingAddress.zip}}" data-required>
       <label class="mdl-textfield__label" for="address_zip">Postal code</label>
       <span class="mdl-textfield__error">Please input valid postal code</span>
     </div>
