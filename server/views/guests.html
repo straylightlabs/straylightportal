@@ -23,7 +23,8 @@
           <td class="mdl-data-table__cell--non-numeric">{{guest.name}}</td>
           <td class="mdl-data-table__cell--non-numeric">{{moment(guest.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
           <td class="mdl-data-table__cell--non-numeric">
-            <a href="{{base_url}}/guests/{{guest.id}}#form">Edit</a>
+            <a href="{{base_url}}/guests/{{guest.id}}#form">Edit</a> &middot;
+            <a href="{{base_url}}/guests/{{guest.id}}?copy=true#form">Duplicate</a>
           </td>
         </tr>
         {% endfor %}
@@ -142,7 +143,8 @@
           <td class="mdl-data-table__cell--non-numeric">{{guest.name}}</td>
           <td class="mdl-data-table__cell--non-numeric">{{moment(guest.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
           <td class="mdl-data-table__cell--non-numeric">
-            <a href="{{base_url}}/guests/{{guest.id}}#form">Edit</a>
+            <a href="{{base_url}}/guests/{{guest.id}}#form">Edit</a> &middot;
+            <a href="{{base_url}}/guests/{{guest.id}}?copy=true#form">Duplicate</a>
           </td>
         </tr>
         {% endfor %}

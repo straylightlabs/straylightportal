@@ -142,6 +142,8 @@ function getAsanaProjects() {
 }
 
 exports.get = function(req, res, next) {
+  req.sanitizeQuery('copy').toBoolean();
+
   getAsanaProjects().then(function(projects) {
     const now = new Date().getTime();
     const upcomingGuests = req.user.guests.filter(g => g.dateStart.getTime() > now);
@@ -149,6 +151,10 @@ exports.get = function(req, res, next) {
     const guestById = req.params.guest_id && req.user.guests.id(req.params.guest_id);
     if (guestById) {
       guestById.upcoming = guestById.dateStart.getTime() > now;
+    }
+    if (req.query.copy) {
+      // Nullifying the ID effectively treats the data as a new record.
+      guestById._id = null;
     }
     res.render(req.render, {
       user: req.user,
