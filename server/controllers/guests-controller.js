@@ -146,8 +146,12 @@ exports.get = function(req, res, next) {
 
   getAsanaProjects().then(function(projects) {
     const now = new Date().getTime();
-    const upcomingGuests = req.user.guests.filter(g => g.dateStart.getTime() > now);
-    const pastGuests = req.user.guests.filter(g => g.dateStart.getTime() <= now);
+    const upcomingGuests = req.user.guests
+        .filter(g => g.dateStart.getTime() > now)
+        .sort((a, b) => a.dateStart.getTime() - b.dateStart.getTime());
+    const pastGuests = req.user.guests
+        .filter(g => g.dateStart.getTime() <= now)
+        .sort((a, b) => b.dateStart.getTime() - a.dateStart.getTime());
     const guestById = req.params.guest_id && req.user.guests.id(req.params.guest_id);
     if (guestById) {
       guestById.upcoming = guestById.dateStart.getTime() > now;
