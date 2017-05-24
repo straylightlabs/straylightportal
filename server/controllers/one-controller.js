@@ -2,6 +2,7 @@ const axios = require('axios');
 
 const LOCK_CONTROLLER_URL = 'http://localhost:8083';
 const DOOR_CONTROLLER_URL = 'http://localhost:8084';
+const SLACK_URL = 'https://hooks.slack.com/services/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';
 const RES_CODE_LOCKED = 'LOCKED';
 const RES_CODE_UNLOCKED = 'UNLOCKED';
 
@@ -39,6 +40,14 @@ exports.postLockState = function(req, res, next) {
   if (action != 'lock' && action != 'unlock') {
     return next('Unknown action: ' + action);
   }
+
+  const firstName = req.user.profile.displayName.split(' ')[0];
+  const state = action == 'lock' ? 'left' : 'arrived';
+  axios.post(SLACK_URL, {
+    channel: '#logs',
+    text: `${firstName} has ${state}.`,
+    username: 'Front door'
+  });
 
   axios.get(`${LOCK_CONTROLLER_URL}/${action}`).then(response => {
     req.flash('success', 'Request sent to the Lock');
