@@ -9,7 +9,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prod": "PORTAL_BASE_URL='https://straylight.jp/connect' PORTAL_PORT=8081 pm2 restart index.js --name=portal --update-env --merge-logs --log-date-format='YYYY-MM-DD HH:mm:ss Z'",
-    "dev": "MONGO_DB_URL='mongodb://localhost:27017/straylightportal-dev' PORTAL_BASE_URL='https://straylight.jp/connect-dev' PORTAL_PORT=9081 nodemon index.js"
+    "dev": "MONGO_DB_URL='mongodb://straylightportal-dev:83j7gw7W@localhost:27017/straylightportal-dev' PORTAL_BASE_URL='https://straylight.jp/connect-dev' PORTAL_PORT=9081 nodemon index.js"
   },
   "dependencies": {
     "airtable": "^0.4.5",

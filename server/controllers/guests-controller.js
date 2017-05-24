@@ -6,22 +6,37 @@ const secrets = require('../config/secrets');
 const EXTERNAL_CAL_ID = 'primary';
 const INTERNAL_CAL_ID = 'straylight.jp_dvovuo73ok4pjq7qf6q5vg76lg@group.calendar.google.com';
 
+function joinPhrases(phrases) {
+  var joined = phrases.slice(0, -1).join(', ');
+  if (phrases.length > 1) {
+    joined += ' and ';
+  }
+  if (phrases.length > 0) {
+    joined += phrases[phrases.length - 1];
+  }
+  return joined;
+}
+
 function isValidDate(date) {
   var daysApart = Math.abs(new Date().getTime() - date.getTime()) / 86400000;
   return daysApart < 365;
 }
 
 function parseGuestData(req, res, next) {
-  req.sanitizeBody('name').trim();
-  req.sanitizeBody('email').trim();
   req.sanitizeBody('date').trim();
   req.sanitizeBody('timeStart').trim();
   req.sanitizeBody('timeEnd').trim();
 
-  req.checkBody('name', 'Guest Name is required').notEmpty();
-  req.checkBody('email', 'Guest Email is required').notEmpty();
-
   var errors = req.validationErrors();
+
+  var names = req.body.names.map(n => n.trim()).filter(n => n);
+  var emails = req.body.emails.map(n => n.trim()).filter(n => n);
+  if (names.length === 0) {
+    errors.push('Please enter at least one guest name');
+  }
+  if (names.length !== emails.length) {
+    errors.push('Please provide one email for each guest');
+  }
 
   var dateStart = new Date(`${req.body.date} ${req.body.timeStart}`);
   var dateEnd = new Date(`${req.body.date} ${req.body.timeEnd}`);
@@ -31,8 +46,8 @@ function parseGuestData(req, res, next) {
 
   next(errors, {
     id: req.params.guest_id,
-    name: req.body.name,
-    email: req.body.email,
+    names: names,
+    emails: emails,
     dateStart: dateStart,
     dateEnd: dateEnd,
     project: req.body.project,
@@ -67,9 +82,9 @@ function postInternalCalendarEvent(user, guest) {
         "dateTime": guest.dateEnd.toISOString()
       },
       "attendees": [],
-      "summary": `Guest - ${guest.name}`,
+      "summary": `Guest - ${joinPhrases(guest.names)}`,
       "description":
-          `Guest: ${guest.name}\n` +
+          `Guest: ${joinPhrases(guest.names)}\n` +
           `Host: ${user.profile.displayName}\n` +
           `Project: ${guest.project}\n\n` +
           `Notes: ${guest.notes}\n`,
@@ -94,13 +109,14 @@ function postExternalCalendarEvent(user, guest) {
         {
           "email": user.email
         },
+      ].concat(guest.emails.map(email => (
         {
-          "email": guest.email
+          "email": email
         }
-      ],
+      ))),
       "summary": "Straylight visit",
       "description":
-        `Dear ${guest.name},\n` +
+        `Dear ${joinPhrases(guest.names)},\n` +
         `${user.profile.displayName} has invited you to visit Straylight.\n\n` +  
         'We are located 1-minute west of Yoyogi-Hachiman Station in the Createur Building. Follow the stairs up to 3rd floor and head to the door on your left.\n\n' +
         'Straylight\n' +
@@ -205,8 +221,8 @@ exports.edit = function(req, res, next) {
     var updatedGuest = req.user.guests.id(guest.id);
     if (!updatedGuest) return next('Invalid or missing guest ID');
 
-    updatedGuest.name = guest.name;
-    updatedGuest.email = guest.email;
+    updatedGuest.names = guest.names;
+    updatedGuest.emails = guest.emails;
     updatedGuest.date = guest.date;
     updatedGuest.dateStart = guest.dateStart;
     updatedGuest.dateEnd = guest.dateEnd;

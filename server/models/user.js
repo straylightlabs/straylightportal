@@ -40,8 +40,10 @@ var userSchema = new mongoose.Schema({
     firstBillingDate: Date
   },
   guests: [{
-    name: String,
-    email: String,
+    name: String,  // deprecated
+    email: String,  // deprecated
+    names: [String],
+    emails: [String],
     dateStart: Date,
     dateEnd: Date,
     project: String,

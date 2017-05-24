@@ -12,7 +12,7 @@
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
       <thead>
         <tr>
-          <th class="mdl-data-table__cell--non-numeric">Guest name</th>
+          <th class="mdl-data-table__cell--non-numeric">Guest names</th>
           <th class="mdl-data-table__cell--non-numeric">Date</th>
           <th class="mdl-data-table__cell--non-numeric">Actions</th>
         </tr>
@@ -20,7 +20,7 @@
       <tbody>
         {% for guest in upcomingGuests %}
         <tr>
-          <td class="mdl-data-table__cell--non-numeric">{{guest.name}}</td>
+          <td class="mdl-data-table__cell--non-numeric">{{guest.names.join(', ')}}</td>
           <td class="mdl-data-table__cell--non-numeric">{{moment(guest.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
           <td class="mdl-data-table__cell--non-numeric">
             <a href="{{base_url}}/guests/{{guest.id}}#form">Edit</a> &middot;
@@ -57,14 +57,25 @@
     <form action="{{base_url}}/guests/create" method="post">
     {% endif %}
       <div class="mdl-grid">
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-          <input class="mdl-textfield__input" type="text" value="{{guest.name}}" id="name" name="name" data-required>
-          <label class="mdl-textfield__label" for="name">Guest name</label>
+        <div id="name0-container" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
+          <input class="mdl-textfield__input" type="text" value="{{guest.names[0] || ''}}" id="name0" name="names" data-required>
+          <label class="mdl-textfield__label" for="name0">Guest name</label>
         </div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-          <input class="mdl-textfield__input" type="text" value="{{guest.email}}" id="email" name="email" data-required>
-          <label class="mdl-textfield__label" for="email">Guest email</label>
+          <input class="mdl-textfield__input" type="text" value="{{guest.emails[0] || ''}}" id="email0" name="emails" data-required>
+          <label class="mdl-textfield__label" for="email0">Guest email</label>
         </div>
+        {% for i in [1,2,3,4,5] %}
+        <div id="name{{i}}-container" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col{% if !guest.names[i] %} hidden{% endif %}">
+          <input class="mdl-textfield__input" type="text" value="{{guest.names[i] || ''}}" id="name{{i}}" name="names" data-required{% if !guest.names[i] %} disabled{% endif %}>
+          <label class="mdl-textfield__label" for="name{{i}}">Guest {{i + 1}} name</label>
+        </div>
+        <div id="email{{i}}-container" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col{% if !guest.names[i] %} hidden{% endif %}">
+          <input class="mdl-textfield__input" type="text" value="{{guest.emails[i] || ''}}" id="email{{i}}" name="emails" data-required{% if !guest.names[i] %} disabled{% endif %}>
+          <label class="mdl-textfield__label" for="email{{i}}">Guest {{i + 1}} email</label>
+        </div>
+        {% endfor %}
+        <div class="mdl-cell mdl-cell--12-col"><a href="#" id="add-another-guest">Add another guest</a></div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
           <input class="mdl-textfield__input" type="text" {% if guest.dateStart %}value="{{moment(guest.dateStart).format('YYYY/MM/DD')}}"{% endif %} id="date" name="date" pattern="20[0-9]{2}/[0-1]?[0-9]/[0-3]?[0-9]" data-required>
           <label class="mdl-textfield__label" for="date">Date</label>
@@ -132,7 +143,7 @@
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
       <thead>
         <tr>
-          <th class="mdl-data-table__cell--non-numeric">Guest name</th>
+          <th class="mdl-data-table__cell--non-numeric">Guest names</th>
           <th class="mdl-data-table__cell--non-numeric">Date</th>
           <th class="mdl-data-table__cell--non-numeric">Actions</th>
         </tr>
@@ -140,7 +151,7 @@
       <tbody>
         {% for guest in pastGuests %}
         <tr>
-          <td class="mdl-data-table__cell--non-numeric">{{guest.name}}</td>
+          <td class="mdl-data-table__cell--non-numeric">{{guest.names.join(', ')}}</td>
           <td class="mdl-data-table__cell--non-numeric">{{moment(guest.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
           <td class="mdl-data-table__cell--non-numeric">
             <a href="{{base_url}}/guests/{{guest.id}}#form">Edit</a> &middot;
@@ -170,7 +181,26 @@ jQuery(function($) {
     button.attr('confirmed', 'true');
   });
   $('form').submit(function() {
-    $(this).find("button[type='submit']").prop('disabled',true);
+    $(this).find("button[type='submit']").prop('disabled', true);
+  });
+
+  $('#add-another-guest').click(function(e) {
+    var shown = false;
+    for (var i = 1; ; i++) {
+      var container = $('#name' + i + '-container, #email' + i + '-container');
+      if (container.length === 0) {
+        $(this).hide();
+        return;
+      }
+      if (shown) {
+        return;
+      }
+      if (container.hasClass('hidden')) {
+        container.removeClass('hidden');
+        container.find('input').prop('disabled', false);
+        shown = true;
+      }
+    }
   });
 });
 </script>
