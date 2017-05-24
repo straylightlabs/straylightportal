@@ -8,7 +8,7 @@
   <div class="mdl-card__title">
     <h2 class="mdl-card__title-text">Upcoming visits</h2>
   </div>
-  <div class="mdl-card__supporting-text">
+  <div class="mdl-card__supporting-text" style="overflow: scroll">
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
       <thead>
         <tr>
@@ -51,7 +51,7 @@
     <h2 class="mdl-card__title-text">Registration form</h2>
   </div>
   <div class="mdl-card__supporting-text">
-    {% if guest.id %}
+    {% if guest.id and !guest.copy %}
     <form action="{{base_url}}/guests/edit/{{guest.id}}" method="post">
     {% else %}
     <form action="{{base_url}}/guests/create" method="post">
@@ -111,12 +111,12 @@
         </div>
         <div class="col s12 caption spacing">Please describe a few details about your guest and the purpose/context of the visit. Bonus points for linking to a personal or company website.</div>
         <button class="btn waves-effect waves-light blue-grey col s12" type="submit" name="action">
-          {% if guest.id %}Update{% else %}Register{% endif %}
+          {% if guest.id and !guest.copy %}Update{% else %}Register{% endif %}
         </button>
       </div>
     </form>
 
-    {% if guest.id && guest.upcoming %}
+    {% if guest.id and !guest.copy %}
     <form role="form" action="{{base_url}}/guests/delete/{{guest.id}}" method="post" class="confirmation">
       <div class="mdl-grid">
         <div class="short-card mdl-card mdl-shadow--2dp hidden mdl-cell mdl-cell--12-col">
@@ -139,7 +139,7 @@
   <div class="mdl-card__title">
     <h2 class="mdl-card__title-text">Past visits</h2>
   </div>
-  <div class="mdl-card__supporting-text">
+  <div class="mdl-card__supporting-text" style="overflow: scroll">
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
       <thead>
         <tr>

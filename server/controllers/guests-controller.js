@@ -184,15 +184,12 @@ exports.get = function(req, res, next) {
     const pastGuests = req.user.guests
         .filter(g => g.dateStart.getTime() <= now)
         .sort((a, b) => b.dateStart.getTime() - a.dateStart.getTime());
-    const guestById = req.params.guest_id && req.user.guests.id(req.params.guest_id);
+    var guestById = req.params.guest_id && req.user.guests.id(req.params.guest_id);
     if (guestById) {
       guestById.upcoming = guestById.dateStart.getTime() > now;
       guestById.timeStart = moment(guestById.dateStart).format('HH:mm');
       guestById.timeEnd = moment(guestById.dateEnd).format('HH:mm');
-      if (req.query.copy) {
-        // Nullifying the ID effectively treats the data as a new record.
-        guestById._id = null;
-      }
+      guestById.copy = req.query.copy;
     }
     res.render(req.render, {
       user: req.user,
