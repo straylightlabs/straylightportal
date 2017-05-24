@@ -56,61 +56,61 @@
     {% else %}
     <form action="{{base_url}}/guests/create" method="post">
     {% endif %}
-      <div class="mdl-grid">
-        <div id="name0-container" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-          <input class="mdl-textfield__input" type="text" value="{{guest.names[0] || ''}}" id="name0" name="names" data-required>
-          <label class="mdl-textfield__label" for="name0">Guest name</label>
+      <div class="row">
+        <div class="input-field col s12">
+          <input type="text" value="{{guest.names[0] || ''}}" id="name0" name="names" class="validate">
+          <label for="name0">Guest name</label>
         </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-          <input class="mdl-textfield__input" type="text" value="{{guest.emails[0] || ''}}" id="email0" name="emails" data-required>
-          <label class="mdl-textfield__label" for="email0">Guest email</label>
+        <div class="input-field col s12">
+          <input type="email" value="{{guest.emails[0] || ''}}" id="email0" name="emails" class="validate">
+          <label for="email0">Guest email</label>
         </div>
         {% for i in [1,2,3,4,5] %}
-        <div id="name{{i}}-container" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col{% if !guest.names[i] %} hidden{% endif %}">
-          <input class="mdl-textfield__input" type="text" value="{{guest.names[i] || ''}}" id="name{{i}}" name="names" data-required{% if !guest.names[i] %} disabled{% endif %}>
-          <label class="mdl-textfield__label" for="name{{i}}">Guest {{i + 1}} name</label>
+        <div id="name{{i}}-container" class="input-field col s12{% if !guest.names[i] %} hidden{% endif %}">
+          <input type="text" value="{{guest.names[i] || ''}}" id="name{{i}}" name="names" class="validate" {% if !guest.names[i] %} disabled{% endif %}>
+          <label for="name{{i}}">Guest {{i + 1}} name</label>
         </div>
-        <div id="email{{i}}-container" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col{% if !guest.names[i] %} hidden{% endif %}">
-          <input class="mdl-textfield__input" type="text" value="{{guest.emails[i] || ''}}" id="email{{i}}" name="emails" data-required{% if !guest.names[i] %} disabled{% endif %}>
-          <label class="mdl-textfield__label" for="email{{i}}">Guest {{i + 1}} email</label>
+        <div id="email{{i}}-container" class="input-field col s12{% if !guest.names[i] %} hidden{% endif %}">
+          <input type="text" value="{{guest.emails[i] || ''}}" id="email{{i}}" name="emails" class="validate" {% if !guest.names[i] %} disabled{% endif %}>
+          <label for="email{{i}}">Guest {{i + 1}} email</label>
         </div>
         {% endfor %}
-        <div class="mdl-cell mdl-cell--12-col"><a href="#" id="add-another-guest">Add another guest</a></div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-          <input class="mdl-textfield__input" type="text" {% if guest.dateStart %}value="{{moment(guest.dateStart).format('YYYY/MM/DD')}}"{% endif %} id="date" name="date" pattern="20[0-9]{2}/[0-1]?[0-9]/[0-3]?[0-9]" data-required>
-          <label class="mdl-textfield__label" for="date">Date</label>
-          <span class="mdl-textfield__error">Example: {{moment(exampleDate).format('YYYY/MM/DD')}}</span>
+        <div class="col s12 spacing"><a href="#" id="add-another-guest">Add another guest</a></div>
+        <div class="input-field col s12 m6">
+          <input class="datepicker" type="date" {% if guest.dateStart %}value="{{moment(guest.dateStart).format('YYYY-MM-DD')}}"{% endif %} id="date" name="date" class="validate" placeholder="Date">
         </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-          <input class="mdl-textfield__input" type="text" {% if guest.dateStart %}value="{{moment(guest.dateStart).format('HH:mm')}}"{% endif %} id="timeStart" name="timeStart" pattern="[0-2]?[0-9]:[0-5]?[0-9]" data-required>
-          <label class="mdl-textfield__label" for="timeStart">Start time</label>
-          <span class="mdl-textfield__error">Example: {{moment(exampleDate).format('HH:mm')}}</span>
+        <div class="input-field col s12 m3">
+          <select id="timeStart" name="timeStart" class="validate">
+            {% for time in timeOptions %}
+            <option value="{{time}}"{% if time == guest.timeStart %} selected{% endif %}>{{time}}</option>
+            {% endfor %}
+          </select>
+          <label for="timeStart">Start time</label>
         </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-          <input class="mdl-textfield__input" type="text" {% if guest.dateEnd %}value="{{moment(guest.dateEnd).format('HH:mm')}}"{% endif %} id="timeEnd" name="timeEnd" pattern="[0-2]?[0-9]:[0-5]?[0-9]" data-required>
-          <label class="mdl-textfield__label" for="timeEnd">End time</label>
-          <span class="mdl-textfield__error">Example: {{moment(exampleDate).format('HH:mm')}}</span>
+        <div class="input-field col s12 m3">
+          <select id="timeEnd" name="timeEnd" class="validate">
+            {% for time in timeOptions %}
+            <option value="{{time}}"{% if time == guest.timeEnd %} selected{% endif %}>{{time}}</option>
+            {% endfor %}
+          </select>
+          <label for="timeEnd">End time</label>
         </div>
-        <div class="mdl-cell mdl-cell--12-col">
-          <div class="mdl-selectfield mdl-js-selectfield full-width">
-            <select class="mdl-selectfield__select" id="project" name="project">
-              {% for project in projects %}
-              <option value="{{project}}">{{project}}</option>
-              {% endfor %}
-              <option value="Not Listed">Not Listed</option>
-            </select>
-            <label class="mdl-selectfield__label" for="project">Project</label>
-          </div>
-          <div class="caption">Select the project you plan to work on with your guest. New projects can be added via Asana in the 'Projects / Incubation' team. If selecting 'Not Listed', please add additional commentary in the Notes.</div>
+        <div class="input-field col s12">
+          <select id="project" name="project" class="validate">
+            {% for project in projects %}
+            <option value="{{project}}">{{project}}</option>
+            {% endfor %}
+            <option value="Not Listed">Not Listed</option>
+          </select>
+          <label for="project">Project</label>
         </div>
-        <div class="mdl-cell mdl-cell--12-col">
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-width">
-            <textarea class="mdl-textfield__input" type="text" id="notes" name="notes" rows="5">{{guest.notes}}</textarea>
-            <label class="mdl-textfield__label" for="notes">Notes</label>
-          </div>
-          <div class="caption">Please describe a few details about your guest and the purpose/context of the visit. Bonus points for linking to a personal or company website.</div>
+        <div class="col s12 caption spacing">Select the project you plan to work on with your guest. New projects can be added via Asana in the 'Projects / Incubation' team. If selecting 'Not Listed', please add additional commentary in the Notes.</div>
+        <div class="input-field col s12">
+          <textarea class="materialize-textarea" id="notes" name="notes">{{guest.notes}}</textarea>
+          <label for="notes">Notes</label>
         </div>
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-cell mdl-cell--12-col">
+        <div class="col s12 caption spacing">Please describe a few details about your guest and the purpose/context of the visit. Bonus points for linking to a personal or company website.</div>
+        <button class="btn waves-effect waves-light blue-grey col s12" type="submit" name="action">
           {% if guest.id %}Update{% else %}Register{% endif %}
         </button>
       </div>

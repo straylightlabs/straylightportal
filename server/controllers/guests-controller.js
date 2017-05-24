@@ -1,10 +1,12 @@
 const asana = require('asana');
 const google = require('googleapis');
+const moment = require('moment');
 const calendar = google.calendar('v3');
 const secrets = require('../config/secrets');
 
 const EXTERNAL_CAL_ID = 'primary';
 const INTERNAL_CAL_ID = 'straylight.jp_dvovuo73ok4pjq7qf6q5vg76lg@group.calendar.google.com';
+const DEFAULT_TIME = '15:00';
 
 function joinPhrases(phrases) {
   var joined = phrases.slice(0, -1).join(', ');
@@ -15,6 +17,20 @@ function joinPhrases(phrases) {
     joined += phrases[phrases.length - 1];
   }
   return joined;
+}
+
+function getTimeOptions() {
+  var options = [];
+  var time = moment().startOf('day');
+  while (true) {
+    time.add(1800, 'seconds');
+    const option = time.format('HH:mm');
+    if (option === '00:00') {
+      break;
+    }
+    options.push(option);
+  }
+  return options;
 }
 
 function isValidDate(date) {
@@ -171,18 +187,23 @@ exports.get = function(req, res, next) {
     const guestById = req.params.guest_id && req.user.guests.id(req.params.guest_id);
     if (guestById) {
       guestById.upcoming = guestById.dateStart.getTime() > now;
-    }
-    if (req.query.copy) {
-      // Nullifying the ID effectively treats the data as a new record.
-      guestById._id = null;
+      guestById.timeStart = moment(guestById.dateStart).format('HH:mm');
+      guestById.timeEnd = moment(guestById.dateEnd).format('HH:mm');
+      if (req.query.copy) {
+        // Nullifying the ID effectively treats the data as a new record.
+        guestById._id = null;
+      }
     }
     res.render(req.render, {
       user: req.user,
       upcomingGuests: upcomingGuests,
       pastGuests: pastGuests,
-      guest: guestById,
+      guest: guestById || {
+        timeStart: DEFAULT_TIME,
+        timeEnd: DEFAULT_TIME
+      },
       projects: projects,
-      exampleDate: new Date('2017-12-09T15:00:00+0900')
+      timeOptions: getTimeOptions()
     });
   }).catch(next);
 };

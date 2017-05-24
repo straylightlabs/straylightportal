@@ -32,9 +32,6 @@ Step 1: Profile
 	<i class="material-icons">attach_file</i><input type="file" name="avatar" id="upload-button">
       </div>
     </div>
-    {% if user.profile.imageUrl %}
-    <img src="{{ user.profileImageAbsoluteUrl(base_url) }}" alt="profile image" class="avatar mdl-cell mdl-cell--4-col">
-    {% endif %}
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" id="address_line1" name="addressStreet" value="{{user.profile.mailingAddress.street}}" data-required>
       <label class="mdl-textfield__label" for="address_line1">Mailing address</label>
