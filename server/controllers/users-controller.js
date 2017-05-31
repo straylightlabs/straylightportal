@@ -66,8 +66,7 @@ function handleOneTimeInvoice(user, req, res, next) {
 
 function handleStripeError(err, req, res, next) {
   if (err.message) {
-    req.flash('error', err.message);
-    return res.redirect(req.redirect.failure);
+    return next(err.message);
   }
   next(err);
 }
