@@ -176,6 +176,12 @@ html, body {
   margin-bottom: 15px;
 }
 
+.no-space {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: inherit !important;
+}
+
 .mdl-textfield {
   padding: 20px 0 0 0;
 }

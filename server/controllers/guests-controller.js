@@ -45,8 +45,16 @@ function parseGuestData(req, res, next) {
 
   var errors = req.validationErrors();
 
-  var names = req.body.names.map(n => n.trim()).filter(n => n);
-  var emails = req.body.emails.map(n => n.trim()).filter(n => n);
+  var names = req.body.names;
+  var emails = req.body.emails;
+  if (!Array.isArray(names)) {
+    names = [names];
+  }
+  if (!Array.isArray(emails)) {
+    emails = [emails];
+  }
+  names = names.map(n => n.trim()).filter(n => n);
+  emails = emails.map(n => n.trim()).filter(n => n);
   if (names.length === 0) {
     errors.push('Please enter at least one guest name');
   }

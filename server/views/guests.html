@@ -4,163 +4,183 @@
 
 {% block content %}
 {% if upcomingGuests.length %}
-<div class="wide-card no-padding mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Upcoming visits</h2>
-  </div>
-  <div class="mdl-card__supporting-text" style="overflow: scroll">
-    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-      <thead>
-        <tr>
-          <th class="mdl-data-table__cell--non-numeric">Guest names</th>
-          <th class="mdl-data-table__cell--non-numeric">Date</th>
-          <th class="mdl-data-table__cell--non-numeric">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for guest in upcomingGuests %}
-        <tr>
-          <td class="mdl-data-table__cell--non-numeric">{{guest.names.join(', ')}}</td>
-          <td class="mdl-data-table__cell--non-numeric">{{moment(guest.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
-          <td class="mdl-data-table__cell--non-numeric">
-            <a href="{{base_url}}/guests/{{guest.id}}#form">Edit</a> &middot;
-            <a href="{{base_url}}/guests/{{guest.id}}?copy=true#form">Duplicate</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+<div class="row">
+  <div class="col s12 m8">
+    <div class="card">
+      <div class="card-content blue-grey darken-3 white-text">
+        <span class="card-title no-space">Upcoming visits</span>
+      </div>
+      <div class="card-content">
+        <table>
+          <thead>
+            <tr>
+              <th>Guest names</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for guest in upcomingGuests %}
+            <tr>
+              <td>{{guest.names.join(', ')}}</td>
+              <td>{{moment(guest.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
+              <td>
+                <a href="{{base_url}}/guests/{{guest.id}}#form">Edit</a> &middot;
+                <a href="{{base_url}}/guests/{{guest.id}}?copy=true#form">Duplicate</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 {% endif %}
 
-<div class="wide-card mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Guest policy</h2>
-  </div>
-  <div class="mdl-card__supporting-text">
-    <p>A reminder about our guest policy:</p>
-    <p>Non-event time at Straylight is essentially work time, and so we encourage members to invite guests with the intention of collaborating on a project relevant to our community. If using the space for a formal discussion or group meeting, please check the Straylight One calendar to avoid scheduling during times when other visits or events are occurring.</p>
-    <p>If you’d like to invite a guest to tour Straylight and meet our community as a prospective member, please consult with Core about our invitation process, or consider inviting your guest to an upcoming event. To plan an event, get started in <a href="https://app.asana.com/0/253868425842275/list" target="_blank">Asana</a>.</p>
+<div class="row">
+  <div class="col s12 m8">
+    <div class="card">
+      <div class="card-content blue-grey darken-3 white-text">
+        <span class="card-title no-space">Guest policy</span>
+      </div>
+      <div class="card-content">
+        <p>A reminder about our guest policy:</p><br />
+        <p>Non-event time at Straylight is essentially work time, and so we encourage members to invite guests with the intention of collaborating on a project relevant to our community. If using the space for a formal discussion or group meeting, please check the Straylight One calendar to avoid scheduling during times when other visits or events are occurring.</p><br />
+        <p>If you’d like to invite a guest to tour Straylight and meet our community as a prospective member, please consult with Core about our invitation process, or consider inviting your guest to an upcoming event. To plan an event, get started in <a href="https://app.asana.com/0/253868425842275/list" target="_blank">Asana</a>.</p>
+      </div>
+    </div>
   </div>
 </div>
 
 <a name="form"></a>
-<div class="wide-card mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Registration form</h2>
-  </div>
-  <div class="mdl-card__supporting-text">
-    {% if guest.id and !guest.copy %}
-    <form action="{{base_url}}/guests/edit/{{guest.id}}" method="post">
-    {% else %}
-    <form action="{{base_url}}/guests/create" method="post">
-    {% endif %}
-      <div class="row">
-        <div class="input-field col s12">
-          <input type="text" value="{{guest.names[0] || ''}}" id="name0" name="names" class="validate">
-          <label for="name0">Guest name</label>
-        </div>
-        <div class="input-field col s12">
-          <input type="email" value="{{guest.emails[0] || ''}}" id="email0" name="emails" class="validate">
-          <label for="email0">Guest email</label>
-        </div>
-        {% for i in [1,2,3,4,5] %}
-        <div id="name{{i}}-container" class="input-field col s12{% if !guest.names[i] %} hidden{% endif %}">
-          <input type="text" value="{{guest.names[i] || ''}}" id="name{{i}}" name="names" class="validate" {% if !guest.names[i] %} disabled{% endif %}>
-          <label for="name{{i}}">Guest {{i + 1}} name</label>
-        </div>
-        <div id="email{{i}}-container" class="input-field col s12{% if !guest.names[i] %} hidden{% endif %}">
-          <input type="text" value="{{guest.emails[i] || ''}}" id="email{{i}}" name="emails" class="validate" {% if !guest.names[i] %} disabled{% endif %}>
-          <label for="email{{i}}">Guest {{i + 1}} email</label>
-        </div>
-        {% endfor %}
-        <div class="col s12 spacing"><a href="#" id="add-another-guest">Add another guest</a></div>
-        <div class="input-field col s12 m6">
-          <input class="datepicker" type="date" {% if guest.dateStart %}value="{{moment(guest.dateStart).format('YYYY-MM-DD')}}"{% endif %} id="date" name="date" class="validate" placeholder="Date">
-        </div>
-        <div class="input-field col s12 m3">
-          <select id="timeStart" name="timeStart" class="validate">
-            {% for time in timeOptions %}
-            <option value="{{time}}"{% if time == guest.timeStart %} selected{% endif %}>{{time}}</option>
-            {% endfor %}
-          </select>
-          <label for="timeStart">Start time</label>
-        </div>
-        <div class="input-field col s12 m3">
-          <select id="timeEnd" name="timeEnd" class="validate">
-            {% for time in timeOptions %}
-            <option value="{{time}}"{% if time == guest.timeEnd %} selected{% endif %}>{{time}}</option>
-            {% endfor %}
-          </select>
-          <label for="timeEnd">End time</label>
-        </div>
-        <div class="input-field col s12">
-          <select id="project" name="project" class="validate">
-            {% for project in projects %}
-            <option value="{{project}}">{{project}}</option>
-            {% endfor %}
-            <option value="Not Listed">Not Listed</option>
-          </select>
-          <label for="project">Project</label>
-        </div>
-        <div class="col s12 caption spacing">Select the project you plan to work on with your guest. New projects can be added via Asana in the 'Projects / Incubation' team. If selecting 'Not Listed', please add additional commentary in the Notes.</div>
-        <div class="input-field col s12">
-          <textarea class="materialize-textarea" id="notes" name="notes">{{guest.notes}}</textarea>
-          <label for="notes">Notes</label>
-        </div>
-        <div class="col s12 caption spacing">Please describe a few details about your guest and the purpose/context of the visit. Bonus points for linking to a personal or company website.</div>
-        <button class="btn waves-effect waves-light blue-grey col s12" type="submit" name="action">
-          {% if guest.id and !guest.copy %}Update{% else %}Register{% endif %}
-        </button>
+<div class="row">
+  <div class="col s12 m8">
+    <div class="card">
+      <div class="card-content blue-grey darken-3 white-text">
+        <span class="card-title no-space">Registration form</span>
       </div>
-    </form>
-
-    {% if guest.id and !guest.copy %}
-    <form role="form" action="{{base_url}}/guests/delete/{{guest.id}}" method="post" class="confirmation">
-      <div class="mdl-grid">
-        <div class="short-card mdl-card mdl-shadow--2dp hidden mdl-cell mdl-cell--12-col">
-          <div class="mdl-card__supporting-text" style="color: red">
-            Please confirm that you are canceling this visit. This will
-            remove corresponding calender entries and send notifications to the guest and other attendees.
+      <div class="card-content">
+        {% if guest.id and !guest.copy %}
+        <form action="{{base_url}}/guests/edit/{{guest.id}}" method="post">
+        {% else %}
+        <form action="{{base_url}}/guests/create" method="post">
+        {% endif %}
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" value="{{guest.names[0] || ''}}" id="name0" name="names" class="validate">
+              <label for="name0">Guest name</label>
+            </div>
+            <div class="input-field col s12">
+              <input type="email" value="{{guest.emails[0] || ''}}" id="email0" name="emails" class="validate">
+              <label for="email0">Guest email</label>
+            </div>
+            {% for i in [1,2,3,4,5] %}
+            <div id="name{{i}}-container" class="input-field col s12{% if !guest.names[i] %} hidden{% endif %}">
+              <input type="text" value="{{guest.names[i] || ''}}" id="name{{i}}" name="names" class="validate" {% if !guest.names[i] %} disabled{% endif %}>
+              <label for="name{{i}}">Guest {{i + 1}} name</label>
+            </div>
+            <div id="email{{i}}-container" class="input-field col s12{% if !guest.names[i] %} hidden{% endif %}">
+              <input type="text" value="{{guest.emails[i] || ''}}" id="email{{i}}" name="emails" class="validate" {% if !guest.names[i] %} disabled{% endif %}>
+              <label for="email{{i}}">Guest {{i + 1}} email</label>
+            </div>
+            {% endfor %}
+            <div class="col s12 spacing"><a href="#" id="add-another-guest">Add another guest</a></div>
+            <div class="input-field col s12 m6">
+              <input class="datepicker" type="date" {% if guest.dateStart %}value="{{moment(guest.dateStart).format('YYYY-MM-DD')}}"{% endif %} id="date" name="date" class="validate" placeholder="Date">
+            </div>
+            <div class="input-field col s12 m3">
+              <select id="timeStart" name="timeStart" class="validate">
+                {% for time in timeOptions %}
+                <option value="{{time}}"{% if time == guest.timeStart %} selected{% endif %}>{{time}}</option>
+                {% endfor %}
+              </select>
+              <label for="timeStart">Start time</label>
+            </div>
+            <div class="input-field col s12 m3">
+              <select id="timeEnd" name="timeEnd" class="validate">
+                {% for time in timeOptions %}
+                <option value="{{time}}"{% if time == guest.timeEnd %} selected{% endif %}>{{time}}</option>
+                {% endfor %}
+              </select>
+              <label for="timeEnd">End time</label>
+            </div>
+            <div class="input-field col s12">
+              <select id="project" name="project" class="validate">
+                {% for project in projects %}
+                <option value="{{project}}">{{project}}</option>
+                {% endfor %}
+                <option value="Not Listed">Not Listed</option>
+              </select>
+              <label for="project">Project</label>
+            </div>
+            <div class="col s12 caption spacing">Select the project you plan to work on with your guest. New projects can be added via Asana in the 'Projects / Incubation' team. If selecting 'Not Listed', please add additional commentary in the Notes.</div>
+            <div class="input-field col s12">
+              <textarea class="materialize-textarea" id="notes" name="notes">{{guest.notes}}</textarea>
+              <label for="notes">Notes</label>
+            </div>
+            <div class="col s12 caption spacing">Please describe a few details about your guest and the purpose/context of the visit. Bonus points for linking to a personal or company website.</div>
+            <button class="btn waves-effect waves-light blue-grey col s12" type="submit" name="action">
+              {% if guest.id and !guest.copy %}Update{% else %}Register{% endif %}
+            </button>
           </div>
-        </div>
-        <button type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored mdl-cell mdl-cell--12-col">
-          Cancel visit
-        </button>
+        </form>
+
+        {% if guest.id and !guest.copy %}
+        <form role="form" action="{{base_url}}/guests/delete/{{guest.id}}" method="post" class="confirmation">
+          <div class="row hidden">
+            <div class="col s12">
+              <div class="card-panel">
+                <p class="red-text">
+                  Please confirm that you are canceling this visit. This will
+                  remove corresponding calender entries and send notifications to the guest and other attendees.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn-flat waves-effect waves-light col s12" type="submit" name="cancel">
+              Cancel visit
+            </button>
+          </div>
+        </form>
+        {% endif %}
       </div>
-    </form>
-    {% endif %}
+    </div>
   </div>
 </div>
 
 {% if pastGuests.length %}
-<div class="wide-card no-padding mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Past visits</h2>
-  </div>
-  <div class="mdl-card__supporting-text" style="overflow: scroll">
-    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-      <thead>
-        <tr>
-          <th class="mdl-data-table__cell--non-numeric">Guest names</th>
-          <th class="mdl-data-table__cell--non-numeric">Date</th>
-          <th class="mdl-data-table__cell--non-numeric">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for guest in pastGuests %}
-        <tr>
-          <td class="mdl-data-table__cell--non-numeric">{{guest.names.join(', ')}}</td>
-          <td class="mdl-data-table__cell--non-numeric">{{moment(guest.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
-          <td class="mdl-data-table__cell--non-numeric">
-            <a href="{{base_url}}/guests/{{guest.id}}#form">Edit</a> &middot;
-            <a href="{{base_url}}/guests/{{guest.id}}?copy=true#form">Duplicate</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+<div class="row">
+  <div class="col s12 m8">
+    <div class="card">
+      <div class="card-content blue-grey darken-3 white-text">
+        <span class="card-title no-space">Past visits</span>
+      </div>
+      <div class="card-content">
+        <table>
+          <thead>
+            <tr>
+              <th>Guest names</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for guest in pastGuests %}
+            <tr>
+              <td>{{guest.names.join(', ')}}</td>
+              <td>{{moment(guest.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
+              <td>
+                <a href="{{base_url}}/guests/{{guest.id}}#form">Edit</a> &middot;
+                <a href="{{base_url}}/guests/{{guest.id}}?copy=true#form">Duplicate</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 {% endif %}
@@ -175,9 +195,10 @@ jQuery(function($) {
     }
 
     e.preventDefault();
-    $('.confirmation .short-card').removeClass('hidden');
+    $('.confirmation div').removeClass('hidden');
     button.html('Confirm cancellation');
-    button.addClass('mdl-button--raised');
+    button.removeClass('btn-flat');
+    button.addClass('btn red');
     button.attr('confirmed', 'true');
   });
   $('form').submit(function() {
