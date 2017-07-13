@@ -13,32 +13,38 @@ function isImageMime(mime) {
       mime == 'image/gif');
 }
 
-function getTrialEnd() {
-  var trialEnd = new Date();
-  if (trialEnd.getMonth() == 11) {
-    trialEnd.setMonth(0);
-    trialEnd.setYear(trialEnd.getYear() + 1);
+function getEndOfMonth() {
+  var endOfMonth = new Date();
+  if (endOfMonth.getMonth() == 11) {
+    endOfMonth.setMonth(0);
+    endOfMonth.setYear(endOfMonth.getYear() + 1);
   } else {
-    trialEnd.setMonth(trialEnd.getMonth() + 1);
+    endOfMonth.setMonth(endOfMonth.getMonth() + 1);
   }
-  trialEnd.setDate(1);
-  trialEnd.setHours(23);
-  trialEnd.setMinutes(59);
-  trialEnd.setSeconds(59);
-  trialEnd.setMilliseconds(0);
-  return trialEnd;
+  endOfMonth.setDate(1);
+  endOfMonth.setHours(23);
+  endOfMonth.setMinutes(59);
+  endOfMonth.setSeconds(59);
+  endOfMonth.setMilliseconds(0);
+  return endOfMonth;
 }
 
-function createOneTimeInvoice(firstBillingDate, baseInvoice) {
-  var trialEnd = getTrialEnd();
-  var daysToBill = Math.floor((trialEnd.getTime() - firstBillingDate.getTime()) / MSECS_PER_DAY);
+function getNextBillingDate(user) {
+  const endOfMonth = getEndOfMonth();
+  return user.billing.firstBillingDate > endOfMonth
+    ? user.billing.firstBillingDate
+    : endOfMonth;
+}
+
+function createOneTimeInvoice(firstBillingDate, nextBillingDate, baseInvoice) {
+  var daysToBill = Math.floor((nextBillingDate.getTime() - firstBillingDate.getTime()) / MSECS_PER_DAY);
   if (daysToBill <= 0) {
     return null;
   }
   var amountDue = Math.floor(baseInvoice.subtotal / 31 * daysToBill);
   var planName = baseInvoice.lines.data[0].plan.name;
   var fromDate = moment(firstBillingDate).format('YYYY/MM/DD');
-  var toDate = moment(new Date(trialEnd.getTime() - MSECS_PER_DAY)).format('YYYY/MM/DD');
+  var toDate = moment(new Date(nextBillingDate.getTime() - MSECS_PER_DAY)).format('YYYY/MM/DD');
   var amountDueTax = Math.floor(amountDue * 1.08);
   var subscriptionRate = baseInvoice.subtotal;
   var description = `${planName} (${fromDate} - ${toDate})`;
@@ -57,7 +63,7 @@ function createOneTimeInvoice(firstBillingDate, baseInvoice) {
 
 function handleOneTimeInvoice(user, req, res, next) {
   if (!req.body.oneTimeInvoice) {
-    next();
+    return next();
   }
   // TODO(ryok): Insecure. Use session.
   var oneTimeInvoice = JSON.parse(decodeURIComponent(req.body.oneTimeInvoice));
@@ -195,10 +201,13 @@ exports.getSubscription = function(req, res, next) {
 
       var oneTimeInvoice;
       if (!user.stripe.plan) {
+        var nextBillingDate = getNextBillingDate(user);
         // The date needs to be adjusted if subscription hasn't been created.
-        upcomingInvoice.date = getTrialEnd().getTime() / 1000;
-        // One-time, prorated invoice for the membership until the trial ends.
-        oneTimeInvoice = createOneTimeInvoice(user.billing.firstBillingDate, upcomingInvoice);
+        upcomingInvoice.date = nextBillingDate.getTime() / 1000;
+        // One-time, prorated invoice for the membership until the next
+        // subscription billing.
+        oneTimeInvoice = createOneTimeInvoice(
+            user.billing.firstBillingDate, nextBillingDate, upcomingInvoice);
       }
       return res.render(req.render, {
         user: req.user,
@@ -216,7 +225,7 @@ exports.postSubscription = function(req, res, next) {
 
     user.setPlan({
       plan: user.membershipPlan,
-      trialEnd: getTrialEnd()
+      trialEnd: getNextBillingDate(user)
     }, function(err) {
       if (err) return handleStripeError(err, req, res, next);
 
