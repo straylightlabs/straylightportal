@@ -7,6 +7,7 @@ var userSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true },
   membershipPlan: String,
   isOnboarded: Boolean,
+  isAdmin: Boolean,
   profile: {
     displayName: String,
     imageUrl: String,

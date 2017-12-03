@@ -286,11 +286,13 @@ exports.getMembers = function(req, res, next) {
   User.find({}, function(err, users) {
     if (err) return next(err);
 
-    users.forEach(function(u) {
-      if (u.id != req.user.id) {
-        u.hidePrivateInfo = true;
-      }
-    });
+    if (!req.user.isAdmin) {
+      users.forEach(function(u) {
+        if (u.id != req.user.id) {
+          u.hidePrivateInfo = true;
+        }
+      });
+    }
     users.sort(function(lhs, rhs) {
       lhs = lhs.profile.displayName.toUpperCase();
       rhs = rhs.profile.displayName.toUpperCase();
