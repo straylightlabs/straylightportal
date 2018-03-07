@@ -52,6 +52,17 @@ var userSchema = new mongoose.Schema({
     internalEventId: String,
     externalEventId: String
   }],
+  events: [{
+    name: String,
+    names: [String],
+    emails: [String],
+    dateStart: Date,
+    dateEnd: Date,
+    details: String,
+    eventId: String,
+    addStraylightMembers: Boolean,
+    url: String,
+  }],
   oauth2: {
     accessToken: String,
     refreshToken: String

@@ -222,6 +222,15 @@ nav i.material-icons {
 }
 /* END iOS Safari specific workaround */
 
+textarea.materialize-textarea.tall {
+  height: 10rem;
+}
+
+/* TODO(ryok): Fix the issue overlay hiding dialogs. */
+.modal-overlay {
+  display: none !important;
+}
+
 @media print {
   .mdl-layout__header,
   .mdl-layout__drawer {

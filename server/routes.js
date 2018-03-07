@@ -13,6 +13,8 @@ const upload = require('multer')({ dest: config.fileUploadDir });
 // controllers
 const users = require('./controllers/users-controller');
 const guests = require('./controllers/guests-controller');
+const events = require('./controllers/events-controller');
+const library = require('./controllers/library-controller');
 const index = require('./controllers/index-controller');
 const sessions = require('./controllers/sessions-controller');
 const files = require('./controllers/files-controller');
@@ -130,6 +132,16 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/'}),
     isAuthenticated,
     guests.get);
+  app.get('/events(/:event_id)?',
+    setRender('events'),
+    setRedirect({auth: '/'}),
+    isAuthenticated,
+    events.get);
+  app.get('/library',
+    setRender('library'),
+    setRedirect({auth: '/'}),
+    isAuthenticated,
+    library.get);
   app.get('/one',
     setRender('one'),
     setRedirect({auth: '/'}),
@@ -167,6 +179,19 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/', success: '/guests', failure: '/guests'}),
     isAuthenticated,
     guests.delete);
+  // Events API.
+  app.post('/events/create',
+    setRedirect({auth: '/', success: '/events', failure: '/events'}),
+    isAuthenticated,
+    events.create);
+  app.post('/events/edit/:event_id',
+    setRedirect({auth: '/', success: '/events', failure: '/events'}),
+    isAuthenticated,
+    events.edit);
+  app.post('/events/delete/:event_id',
+    setRedirect({auth: '/', success: '/events', failure: '/events'}),
+    isAuthenticated,
+    events.delete);
   // One JSON API.
   app.post('/one/lock',
     setRedirect({auth: '/', success: '/one', failure: '/one'}),

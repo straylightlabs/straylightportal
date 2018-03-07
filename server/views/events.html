@@ -1,0 +1,213 @@
+{% extends 'layouts/dashboard.html' %}
+
+{% block title %}Events{% endblock %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col s12 m8">
+    <div class="card">
+      <div class="card-content blue-grey darken-3 white-text">
+        <span class="card-title no-space">Events at Straylight One</span>
+      </div>
+      <div class="card-content">
+        <p>Straylight One is a private space primarily for the benefit of our
+        members, and should be considered like a shared home. We encourage all
+        members to take turns hosting workshops, social events, and casual
+        meetups for the benefit of our community, close friends and family, and
+        potential new members.<p>
+        <br />
+        <p>When organizing an event for a larger external audience, please
+        communicate the private and communal nature of our space with your
+        guests. In most cases, we recommend setting an attendance limit,
+        requiring pre-registration, and asking guests to not invite others
+        without permission from the organizer(s). Please ensure the space is
+        returned to its prior state after the event, and that any beer, food,
+        drinks, or materials used are paid or replaced.</p>
+        <br />
+        <p><a href="https://calendar.google.com/calendar?cid=c3RyYXlsaWdodC5qcF9kdm92dW83M29rNHBqcTdxZjZxNXZnNzZsZ0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t" target="_blank">View upcoming events</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<a name="form"></a>
+<div class="row">
+  <div class="col s12 m8">
+    <div class="card">
+      <div class="card-content blue-grey darken-3 white-text">
+        <span class="card-title no-space">Create an event</span>
+      </div>
+      <div class="card-content">
+        <p>This form creates an event on the Straylight One calendar, allowing
+        other members to see upcoming events and when our space is being
+        used.<p>
+        <br />
+        <p>If you invite members or guests through this form, they will each
+        receive an event invitation via email, and you will be able to see their
+        RSVPs in Google Calendar.</p>
+        <br />
+        <p>If you prefer to track guest registration for your event with another
+        tool, feel free to untoggle “Add Straylight members” and submit the form
+        without adding any guests.</p>
+        <br />
+
+        {% if event.id %}
+        <form action="{{base_url}}/events/edit/{{event.id}}" method="post">
+        {% else %}
+        <form action="{{base_url}}/events/create" method="post">
+        {% endif %}
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" value="{{event.name || ''}}" id="name" name="name" class="validate">
+              <label for="name">Event name</label>
+            </div>
+            <div class="input-field col s12 m6">
+              <input class="datepicker" type="date" {% if event.dateStart %}value="{{moment(event.dateStart).format('YYYY-MM-DD')}}"{% endif %} id="date" name="date" class="validate" placeholder="Date">
+            </div>
+            <div class="input-field col s12 m3">
+              <select id="timeStart" name="timeStart" class="validate">
+                {% for time in timeOptions %}
+                <option value="{{time}}"{% if time == event.timeStart %} selected{% endif %}>{{time}}</option>
+                {% endfor %}
+              </select>
+              <label for="timeStart">Start time</label>
+            </div>
+            <div class="input-field col s12 m3">
+              <select id="timeEnd" name="timeEnd" class="validate">
+                {% for time in timeOptions %}
+                <option value="{{time}}"{% if time == event.timeEnd %} selected{% endif %}>{{time}}</option>
+                {% endfor %}
+              </select>
+              <label for="timeEnd">End time</label>
+            </div>
+            <div class="input-field col s12">
+              <textarea class="materialize-textarea tall" id="details" name="details">{{event.details}}{% if !event.details %}
+[Your description here]
+
+-----
+
+Straylight is a private space for our members and guests. If you
+are a guest and would like to invite someone, please contact the
+organizer(s).
+
+We are located 1-minute west of Yoyogi-Hachiman Station in the
+Createur Building. Follow the stairs up to 3rd floor and head to
+the door on your left.
+
+https://goo.gl/maps/nd3kzhkqAax{% endif %}</textarea>
+              <label for="notes">Details</label>
+            </div>
+            <div class="input-field col s12 m6">
+              <input type="text" value="{{event.names[0] || ''}}" id="name0" name="names" class="validate">
+              <label for="name0">Guest name</label>
+            </div>
+            <div class="input-field col s12 m6">
+              <input type="email" value="{{event.emails[0] || ''}}" id="email0" name="emails" class="validate">
+              <label for="email0">Guest email</label>
+            </div>
+            {% for i in [1,2,3,4,5] %}
+            <div id="name{{i}}-container" class="input-field col s12 m6{% if !event.names[i] %} hidden{% endif %}">
+              <input type="text" value="{{event.names[i] || ''}}" id="name{{i}}" name="names" class="validate" {% if !event.names[i] %} disabled{% endif %}>
+              <label for="name{{i}}">Guest name ({{i + 1}})</label>
+            </div>
+            <div id="email{{i}}-container" class="input-field col s12 m6{% if !event.names[i] %} hidden{% endif %}">
+              <input type="text" value="{{event.emails[i] || ''}}" id="email{{i}}" name="emails" class="validate" {% if !event.names[i] %} disabled{% endif %}>
+              <label for="email{{i}}">Guest email ({{i + 1}})</label>
+            </div>
+            {% endfor %}
+            <div class="col s12"><a href="#" id="add-another-guest">Add another guest</a></div>
+            <div class="input-field col s12 spacing">
+              <input type="checkbox" class="filled-in" id="addStraylightMembers" name="addStraylightMembers"{% if !event.id || event.addStraylightMembers %} checked="checked"{% endif %} />
+              <label for="addStraylightMembers">Add Straylight members</label>
+            </div>
+            <div class="input-field col s12">
+              <button class="btn waves-effect waves-light blue-grey col s12" type="submit" name="action">
+                {% if event.id %}Update{% else %}Create{% endif %}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if events.length %}
+<div class="row">
+  <div class="col s12 m8">
+    <div class="card">
+      <div class="card-content blue-grey darken-3 white-text">
+        <span class="card-title no-space">Your events</span>
+      </div>
+      <div class="card-content">
+        <table>
+          <thead>
+            <tr>
+              <th>Event name</th>
+              <th>Date and time</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for event in events %}
+            <tr>
+              <td>{{event.name}}</td>
+              <td>{{moment(event.dateStart).format('YYYY/MM/DD HH:mm')}}</td>
+              <td>
+                <a href="{{event.url}}" target="_blank">View</a> &middot;
+                <a href="{{base_url}}/events/{{event.id}}#form">Modify</a> &middot;
+                <a class="modal-trigger" href="#modal-delete-event" onclick="$('#delete-form').attr('action', '{{base_url}}/events/delete/{{event.id}}');">Delete</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div id="modal-delete-event" class="modal">
+  <div class="modal-content">
+    <h4>Cancel the event</h4>
+    <p>Please confirm that you are canceling this event. This will remove
+    corresponding calender entries and send notifications to the guest and other
+    attendees.</p>
+  </div>
+  <div class="modal-footer">
+    <form role="form" action="#" method="post" id="delete-form">
+      <a href="#!" class="modal-action modal-close waves-effect waves-light btn-flat">Close</a>
+      <a href="#!" class="modal-action modal-close waves-effect waves-light btn-flat" onclick="$('#delete-form').submit();">Confirm cancellation</a>
+    </form>
+  </div>
+</div>
+
+<script>
+jQuery(function($) {
+  $('form').submit(function() {
+    $(this).find("button[type='submit']").prop('disabled', true);
+  });
+
+  $('#add-another-guest').click(function(e) {
+    var shown = false;
+    for (var i = 1; ; i++) {
+      var container = $('#name' + i + '-container, #email' + i + '-container');
+      if (container.length === 0) {
+        $(this).hide();
+        return;
+      }
+      if (shown) {
+        return;
+      }
+      if (container.hasClass('hidden')) {
+        container.removeClass('hidden');
+        container.find('input').prop('disabled', false);
+        shown = true;
+      }
+    }
+  });
+});
+</script>
+{% endblock %}
