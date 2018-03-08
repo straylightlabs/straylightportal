@@ -5,23 +5,31 @@ const DOOR_CONTROLLER_URL = 'http://localhost:8084';
 const SLACK_URL = 'https://hooks.slack.com/services/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';
 const RES_CODE_LOCKED = 'LOCKED';
 const RES_CODE_UNLOCKED = 'UNLOCKED';
+const FETCH_CONFIG = { timeout: 2000 };
 
 function isFromTrustedNetwork(req) {
   return req.headers['x-real-ip'] === process.env.PORTAL_TRUSTED_NETWORK_IP;
 }
 
 exports.get = function(req, res, next) {
-  axios.get(LOCK_CONTROLLER_URL + '/status').then(response => {
+  axios.get(LOCK_CONTROLLER_URL + '/status', FETCH_CONFIG).then(response => {
     res.render(req.render, {
       user: req.user,
       locked: response.data == RES_CODE_LOCKED,
       fromTrustedNetwork: isFromTrustedNetwork(req)
     });
-  }).catch(next);
+  }).catch(err => {
+    res.render(req.render, {
+      user: req.user,
+      locked: false,
+      lockUnreachable: true,
+      fromTrustedNetwork: isFromTrustedNetwork(req)
+    });
+  });
 };
 
 exports.getLockState = function(req, res, next) {
-  axios.get(LOCK_CONTROLLER_URL + '/status').then(response => {
+  axios.get(LOCK_CONTROLLER_URL + '/status', FETCH_CONFIG).then(response => {
     res.json({
       state: response.data
     });
@@ -49,7 +57,7 @@ exports.postLockState = function(req, res, next) {
     username: 'Front door'
   });
 
-  axios.get(`${LOCK_CONTROLLER_URL}/${action}`).then(response => {
+  axios.get(`${LOCK_CONTROLLER_URL}/${action}`, FETCH_CONFIG).then(response => {
     req.flash('success', 'Request sent to the Lock');
     res.redirect(req.redirect.success);
   }).catch(next);

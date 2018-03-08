@@ -2,6 +2,7 @@ const google = require('googleapis');
 const moment = require('moment');
 const calendar = google.calendar('v3');
 const secrets = require('../config/secrets');
+const User = require('../models/user');
 
 const STRAYLIGHT_CALENDAR_ID = 'straylight.jp_dvovuo73ok4pjq7qf6q5vg76lg@group.calendar.google.com';
 const DEFAULT_TIME = '15:00';
@@ -71,46 +72,51 @@ function parseEventData(req, res) {
   } ];
 }
 
-function postCalendarEvent(event) {
+function postCalendarEvent(user, event) {
   return new Promise(function(resolve, reject) {
-    const next = function(err, event) {
+    User.find({}, function(err, users) {
       if (err) return reject(err);
-      resolve(event);
-    };
-    if (event.eventId) {
-      calendar.events.update(event, next);
-    } else {
-      calendar.events.insert(event, next);
-    }
-  });
-}
 
-function postStraylightCalendarEvent(user, event) {
-  const emails = [user.email].concat(event.emails);
-  // TODO(ryok): Expand to individual members.
-  if (event.addStraylightMembers) {
-    emails.push('makers@straylight.jp');
-  }
-  return postCalendarEvent({
-    calendarId: STRAYLIGHT_CALENDAR_ID,
-    sendNotifications: true,
-    eventId: event.eventId,
-    resource: {
-      "start": {
-        "dateTime": event.dateStart.toISOString()
-      },
-      "end": {
-        "dateTime": event.dateEnd.toISOString()
-      },
-      "attendees": emails.map(email => (
-        {
-          "email": email
-        }
-      )),
-      "summary": event.name,
-      "description": event.details,
-      "location": "Straylight, Shibuya, Tokyo"
-    },
+      var emails = [user.email].concat(event.emails);
+      if (event.addStraylightMembers) {
+        emails = emails.concat(
+            users
+            .filter(user => !user.isDisabled)
+            .map(user => user.email));
+      }
+      // Sort and deduplicate.
+      emails = [...new Set(emails)];
+      const calendarEvent = {
+        calendarId: STRAYLIGHT_CALENDAR_ID,
+        sendNotifications: true,
+        eventId: event.eventId,
+        resource: {
+          "start": {
+            "dateTime": event.dateStart.toISOString()
+          },
+          "end": {
+            "dateTime": event.dateEnd.toISOString()
+          },
+          "attendees": emails.map(email => (
+            {
+              "email": email
+            }
+          )),
+          "summary": event.name,
+          "description": event.details,
+          "location": "Straylight, Shibuya, Tokyo"
+        },
+      };
+      const next = function(err, calendarEvent) {
+        if (err) return reject(err);
+        resolve(calendarEvent);
+      };
+      if (calendarEvent.eventId) {
+        calendar.events.update(calendarEvent, next);
+      } else {
+        calendar.events.insert(calendarEvent, next);
+      }
+    });
   });
 }
 
@@ -155,7 +161,7 @@ exports.create = function(req, res, next) {
     return res.redirect(req.redirect.failure);
   }
 
-  postStraylightCalendarEvent(req.user, event)
+  postCalendarEvent(req.user, event)
   .then(function(calendarEvent) {
     event.eventId = calendarEvent.id;
     event.url = calendarEvent.htmlLink;
@@ -191,7 +197,7 @@ exports.edit = function(req, res, next) {
   req.user.save(function(err) {
     if (err) return next(err);
 
-    postStraylightCalendarEvent(req.user, updatedEvent)
+    postCalendarEvent(req.user, updatedEvent)
     .then(function() {
       req.flash('success', 'Your event registration has been updated');
       res.redirect(req.redirect.success);

@@ -12,7 +12,7 @@
     <p>
       <form action="{{ base_url }}/one/lock" method="post">
         <input type="hidden" name="action" value="{{ locked && 'unlock' || 'lock' }}" />
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork || lockUnreachable %}disabled="disabled"{% endif %}>
           <i class="material-icons" role="presentation" style="font-size: 18px">{{ locked && 'lock_open' || 'lock' }}</i> {{ locked && 'Unlock' || 'Lock' }}
         </button>
       </form>
@@ -21,6 +21,10 @@
     <p style="color: red">We cannot verify your proximity to Straylight One.
     Please make sure you are nearby and connected to the STRAYLIGHT wifi
     network.</p>
+    {% endif %}
+    {% if lockUnreachable %}
+    <p style="color: red">Lock server is currently unreachable. This is a known
+    issue, and Ryo is looking into it.</p>
     {% endif %}
   </div>
 </div>
