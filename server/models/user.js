@@ -8,6 +8,7 @@ var userSchema = new mongoose.Schema({
   membershipPlan: String,
   isOnboarded: Boolean,
   isAdmin: Boolean,
+  isDisabled: Boolean,
   profile: {
     displayName: String,
     imageUrl: String,

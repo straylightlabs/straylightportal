@@ -293,21 +293,23 @@ exports.getMembers = function(req, res, next) {
         }
       });
     }
-    users.sort(function(lhs, rhs) {
-      lhs = lhs.profile.displayName.toUpperCase();
-      rhs = rhs.profile.displayName.toUpperCase();
-      if (lhs < rhs) {
-        return -1;
-      }
-      if (lhs > rhs) {
-        return 1;
-      }
-      return 0;
-    });
+    const sortedUsers = users
+      .filter((user) => !user.isDisabled)
+      .sort((lhs, rhs) => {
+        lhs = lhs.profile.displayName.toUpperCase();
+        rhs = rhs.profile.displayName.toUpperCase();
+        if (lhs < rhs) {
+          return -1;
+        }
+        if (lhs > rhs) {
+          return 1;
+        }
+        return 0;
+      });
 
     res.render(req.render, {
       user: req.user,
-      users: users
+      users: sortedUsers
     });
   });
 };

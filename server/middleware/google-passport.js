@@ -74,6 +74,9 @@ module.exports = function(passport) {
 
   passport.deserializeUser(function(id, done) {
     User.findById(id, function(err, user) {
+      if (user.isDisabled) {
+        return done('Your account is disabled');
+      }
       done(err, user);
     });
   });

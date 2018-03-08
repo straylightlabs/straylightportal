@@ -116,11 +116,14 @@ https://goo.gl/maps/nd3kzhkqAax{% endif %}</textarea>
               <label for="email{{i}}">Guest email ({{i + 1}})</label>
             </div>
             {% endfor %}
-            <div class="col s12"><a href="#" id="add-another-guest">Add another guest</a></div>
-            <div class="input-field col s12 spacing">
-              <input type="checkbox" class="filled-in" id="addStraylightMembers" name="addStraylightMembers"{% if !event.id || event.addStraylightMembers %} checked="checked"{% endif %} />
-              <label for="addStraylightMembers">Add Straylight members</label>
+            <div class="col s12 spacing"><a href="#" id="add-another-guest">Add another guest</a></div>
+            <div class="col s12 spacing">
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="addStraylightMembers">
+                <input type="checkbox" id="addStraylightMembers" name="addStraylightMembers" class="mdl-checkbox__input"{% if !event.id || event.addStraylightMembers %} checked="checked"{% endif %} />
+                <span class="mdl-checkbox__label">Add Straylight members</span>
+              </label>
             </div>
+
             <div class="input-field col s12">
               <button class="btn waves-effect waves-light blue-grey col s12" type="submit" name="action">
                 {% if event.id %}Update{% else %}Create{% endif %}

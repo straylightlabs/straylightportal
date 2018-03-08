@@ -1,5 +1,6 @@
 html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
+  background-color: #f5f5f5;
 }
 
 /* TODO(ryok): Clean up these card styles. */

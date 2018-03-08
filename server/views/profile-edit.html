@@ -106,6 +106,10 @@ jQuery(function($) {
     $('#upload-file').val(this.files[0].name);
   });
   $('form').submit(function() {
+    if ($('#bio').val().length === 0 || $('#interests').val().length === 0) {
+      Materialize.toast('Please fill your short bio and area of interests', 4000);
+      return false;
+    }
     $(this).find("button[type='submit']").prop('disabled',true);
   });
 });
