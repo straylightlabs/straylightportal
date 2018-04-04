@@ -31,7 +31,7 @@ class MemberPresence {
     const limit = new Date() - MAX_MSEC_SINCE_LAST_SEEN;
     return [...this.lastSeenTimeMap.entries()]
       .filter(([id, time]) => time > limit) 
-      .map(([id, time]) => this.memberMap.get(id))
+      .map(([id, time]) => this.memberMap.get(id).firstName)
       .sort();
   }
 

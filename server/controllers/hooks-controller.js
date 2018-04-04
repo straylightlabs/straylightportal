@@ -5,9 +5,9 @@ const straylightNetwork = require('./utils/StraylightNetwork');
 
 exports.lock = (req, res, next) => {
   console.debug(req.body);
-  if (req.body.locked) {
+  if (req.body.locked === true) {
     lockController.lock();
-  } else {
+  } else if (req.body.locked === false) {
     lockController.unlock();
   }
   res.end();

@@ -7,8 +7,7 @@ var previousMembers = [];
 setInterval(() => {
   const members = memberPresence.getPresentMembers();
   if (JSON.stringify(previousMembers) !== JSON.stringify(members)) {
-    const memberNames = members.map(m => m.firstName).join(', ');
-    console.info('Current members: ' + memberNames);
+    console.info('Current members: ' + members.join(', '));
     if (previousMembers.length === 0 && members.length > 0) {
       lockController.unlock();
     }
