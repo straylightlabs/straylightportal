@@ -1,7 +1,7 @@
 {
   "name": "straylight-portal-server",
   "description": "Straylight Portal Nodejs server",
-  "version": "0.2.0",
+  "version": "0.2.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/straylightlabs/straylightportal"
