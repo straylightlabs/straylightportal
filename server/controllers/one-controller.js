@@ -18,6 +18,17 @@ setInterval(() => {
   previousMembers = members;
 }, 1000);
 
+var previousLocked = true;
+setInterval(() => {
+  lockController.getStatus()
+    .then((locked) => {
+      if (!previousLocked && locked) {
+        lockController.lock();
+      }
+      previousLocked = locked;
+    });
+}, 30 * 1000);
+
 exports.get = (req, res, next) => {
   lockController.getStatus()
     .then(locked => {

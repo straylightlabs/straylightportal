@@ -30,7 +30,6 @@ function put(url) {
     console.debug(`PUT: ${url}`);
 
     if (rateLimit(url)) {
-      console.debug('Rate-limited.');
       return reject('Rate-limited.');
     }
 
