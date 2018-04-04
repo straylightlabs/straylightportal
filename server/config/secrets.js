@@ -26,5 +26,6 @@ module.exports = {
     clientSecret: process.env.GOOGLE_CLIENT_SECRET
   },
 
-  asanaAccessToken: process.env.ASANA_ACCESS_TOKEN
+  asanaAccessToken: process.env.ASANA_ACCESS_TOKEN,
+  augustAccessToken: process.env.AUGUST_ACCESS_TOKEN
 };

@@ -19,6 +19,7 @@ const index = require('./controllers/index-controller');
 const sessions = require('./controllers/sessions-controller');
 const files = require('./controllers/files-controller');
 const one = require('./controllers/one-controller');
+const hooks = require('./controllers/hooks-controller');
 
 var stripeWebhook = new StripeWebhook({
   stripeApiKey: secrets.stripeOptions.apiKey,
@@ -200,11 +201,14 @@ module.exports = function(app, passport) {
   app.post('/one/door',
     setRedirect({auth: '/', success: '/one', failure: '/one'}),
     isAuthenticated,
-    one.postDoorState);
+    one.postLEDState);
 
   // Stripe webhook events.
   app.post('/stripe/events',
     stripeWebhook.middleware,
     stripeEvents
   );
+  // Other hooks.
+  app.post('/hooks/lock', hooks.lock);
+  app.post('/hooks/blescan', hooks.blescan);
 };
