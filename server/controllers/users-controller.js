@@ -213,7 +213,9 @@ exports.getSubscription = function(req, res, next) {
         user: req.user,
         oneTimeInvoice: oneTimeInvoice,
         upcomingInvoice: upcomingInvoice,
-        invoices: invoices.filter(invoice => invoice.amount_due > 0),
+        invoices: invoices.filter(invoice => (
+          invoice.amount_due > 0 &&
+          invoice.amount_due === invoice.amount_paid)),
       });
     });
   });

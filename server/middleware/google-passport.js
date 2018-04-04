@@ -73,6 +73,10 @@ module.exports = function(passport) {
   });
 
   passport.deserializeUser(function(id, done) {
+    if (process.env.PRETEND_USER_EMAIL) {
+      return User.findOne({ email: process.env.PRETEND_USER_EMAIL }, done);
+    }
+
     User.findById(id, function(err, user) {
       if (user.isDisabled) {
         return done('Your account is disabled');
