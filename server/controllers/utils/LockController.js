@@ -1,5 +1,7 @@
 const fetch = require('node-fetch');
+const { Set } = require('immutable');
 const secrets = require('../../config/secrets');
+const memberPresence = require('./MemberPresence').singleton;
 
 const DOOR_3C_ID = '394D1ABD12AF4886A5331C0652713448';
 const DOOR_3D_ID = 'BBD5DDBBADE948DCA163DE5245279F31';
@@ -14,6 +16,35 @@ const HEADERS = {
   'x-august-access-token': secrets.augustAccessToken,
   'x-august-api-key': '14445b6a2dba',
 };
+
+var previousMembers = Set();
+setInterval(() => {
+  const members = memberPresence.getPresentMembers();
+  if (!previousMembers.equals(members)) {
+    console.info('Current members: ' + members.map(m => m.firstName).join(', '));
+    if (!members.subtract(previousMembers).isEmpty() &&
+        new Date() - previousLockTime > 10 * 60 * 1000) {
+      unlock();
+    }
+    if (!previousMembers.isEmpty() && members.isEmpty()) {
+      lock();
+    }
+  }
+  previousMembers = members;
+}, 1000);
+
+var previousLocked = true;
+var previousLockTime = 0;
+setInterval(() => {
+  getStatus(DOOR_3C_URL)
+    .then((locked) => {
+      if (!previousLocked && locked) {
+        lock();
+        previousLockTime = new Date();
+      }
+      previousLocked = locked;
+    });
+}, 30 * 1000);
 
 const lastTimeAccessed = new Map();
 function rateLimit(token) {
@@ -68,11 +99,11 @@ function getStatus(url) {
   });
 }
 
-exports.lock = () => Promise.all([
+const lock = exports.lock = () => Promise.all([
   put(DOOR_3C_LOCK_URL),
   put(DOOR_3D_LOCK_URL)]);
 
-exports.unlock = () => Promise.all([
+const unlock = exports.unlock = () => Promise.all([
   put(DOOR_3C_UNLOCK_URL),
   put(DOOR_3D_UNLOCK_URL)]);
 

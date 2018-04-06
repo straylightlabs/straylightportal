@@ -1,11 +1,20 @@
 "use strict";
 
+const { hash, Set } = require('immutable');
 const base = require('airtable').base('appI5wbax01HyDamh');
 
 class Member {
   constructor(record) {
     this.id = record.get('Beacon ID');
     this.firstName = record.get('First Name');
+  }
+
+  equals(other) {
+    return this.id === other.id;
+  }
+
+  hashCode() {
+    return hash(this.id);
   }
 }
 
@@ -29,10 +38,10 @@ class MemberPresence {
 
   getPresentMembers() {
     const limit = new Date() - MAX_MSEC_SINCE_LAST_SEEN;
-    return [...this.lastSeenTimeMap.entries()]
+    const members = [...this.lastSeenTimeMap.entries()]
       .filter(([id, time]) => time > limit) 
-      .map(([id, time]) => this.memberMap.get(id).firstName)
-      .sort();
+      .map(([id, time]) => this.memberMap.get(id));
+    return Set(members);
   }
 
   reload() {

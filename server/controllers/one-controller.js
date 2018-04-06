@@ -1,49 +1,27 @@
 const lockController = require('./utils/LockController');
 const ledController = require('./utils/LEDController');
-const memberPresence = require('./utils/MemberPresence').singleton;
 const straylightNetwork = require('./utils/StraylightNetwork');
-
-var previousMembers = [];
-setInterval(() => {
-  const members = memberPresence.getPresentMembers();
-  if (JSON.stringify(previousMembers) !== JSON.stringify(members)) {
-    console.info('Current members: ' + members.join(', '));
-    if (previousMembers.length === 0 && members.length > 0) {
-      lockController.unlock();
-    }
-    if (previousMembers.length > 0 && members.length === 0) {
-      lockController.lock();
-    }
-  }
-  previousMembers = members;
-}, 1000);
-
-var previousLocked = true;
-setInterval(() => {
-  lockController.getStatus()
-    .then((locked) => {
-      if (!previousLocked && locked) {
-        lockController.lock();
-      }
-      previousLocked = locked;
-    });
-}, 30 * 1000);
+const memberPresence = require('./utils/MemberPresence').singleton;
 
 exports.get = (req, res, next) => {
+  const commonData = {
+    user: req.user,
+    presentMembers: memberPresence.getPresentMembers(),
+    fromTrustedNetwork: straylightNetwork.getFromNetwork(req),
+  };
+
   lockController.getStatus()
     .then(locked => {
       res.render(req.render, {
         locked,
-        user: req.user,
-        fromTrustedNetwork: straylightNetwork.getFromNetwork(req)
+        ...commonData,
       });
     })
     .catch(err => {
       res.render(req.render, {
-        user: req.user,
         locked: false,
         lockUnreachable: true,
-        fromTrustedNetwork: straylightNetwork.getFromNetwork(req)
+        ...commonData,
       });
     });
 };

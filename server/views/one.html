@@ -66,5 +66,22 @@
     {% endif %}
   </div>
 </div>
+
+<div class="wide-card mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Present Members</h2>
+  </div>
+  <div class="mdl-card__supporting-text">
+    {% if presentMembers %}
+    <ul>
+      {% for member in presentMembers %}
+      <li>- {{member}}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    No one is at Straylight now.
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
 
