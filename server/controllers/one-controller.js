@@ -6,7 +6,7 @@ const memberPresence = require('./utils/MemberPresence').singleton;
 exports.get = (req, res, next) => {
   const commonData = {
     user: req.user,
-    presentMembers: memberPresence.getPresentMembers(),
+    presentMembers: [...memberPresence.getPresentMembers()],
     fromTrustedNetwork: straylightNetwork.getFromNetwork(req),
   };
 
