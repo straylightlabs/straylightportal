@@ -20,20 +20,29 @@ class Member {
 
 const RELOAD_INTERVAL_MSEC = 10 * 60 * 1000;
 const MAX_MSEC_SINCE_LAST_SEEN = 5 * 60 * 1000;
+const MAX_SCAN_LOGS = 200;
 
 class MemberPresence {
   constructor() {
     this.memberMap = new Map();
     this.lastSeenTimeMap = new Map();
+    this.scanLogs = [];
     this.reload();
     setInterval(this.reload.bind(this), RELOAD_INTERVAL_MSEC);
   }
 
   addScanEvent(id) {
-    if (!this.memberMap.has(id)) {
-      return;
+    this.logScan(id);
+    if (this.memberMap.has(id)) {
+      this.lastSeenTimeMap.set(id, new Date());
     }
-    this.lastSeenTimeMap.set(id, new Date());
+  }
+
+  logScan(id) {
+    this.scanLogs.push([new Date(), id]);
+    if (this.scanLogs.length > MAX_SCAN_LOGS) {
+      this.scanLogs.splice(0, MAX_SCAN_LOGS / 2);
+    }
   }
 
   getPresentMembers() {
@@ -42,6 +51,16 @@ class MemberPresence {
       .filter(([id, time]) => time > limit) 
       .map(([id, time]) => this.memberMap.get(id));
     return Set(members);
+  }
+
+  getScanLogs() {
+    return this.scanLogs
+      .map(([date, id]) => ({
+        id,
+        date,
+        member: this.memberMap.get(id),
+      }))
+      .reverse();
   }
 
   reload() {

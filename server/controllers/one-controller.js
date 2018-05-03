@@ -7,6 +7,7 @@ exports.get = (req, res, next) => {
   const commonData = {
     user: req.user,
     presentMembers: [...memberPresence.getPresentMembers()],
+    scanLogs: memberPresence.getScanLogs(),
     fromTrustedNetwork: straylightNetwork.getFromNetwork(req),
   };
 
