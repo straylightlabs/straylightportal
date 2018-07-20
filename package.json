@@ -1,16 +1,15 @@
 {
   "name": "straylight-portal-server",
   "description": "Straylight Portal Nodejs server",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/straylightlabs/straylightportal"
   },
   "license": "UNLICENSED",
   "scripts": {
-    "prod": "PORTAL_BASE_URL='https://straylight.jp/connect' PORTAL_PORT=8081 pm2 start index.js --name=portal --update-env --merge-logs --log-date-format='YYYY-MM-DD HH:mm:ss Z'",
-    "qa": "PORTAL_BASE_URL='https://straylight.jp/connect-dev' PORTAL_PORT=9081 nodemon index.js",
-    "dev": "MONGO_DB_URL='mongodb://straylightportal-dev:83j7gw7W@localhost:27017/straylightportal-dev' PORTAL_BASE_URL='https://straylight.jp/connect-dev' PORTAL_PORT=9081 STRIPE_KEY=sk_test_2BV9M8v6KTaorg80tWNFvAye STRIPE_PUB_KEY=pk_test_pkUbqe9TDp39w3ecVbBpizrI nodemon index.js"
+    "start": "PORTAL_PORT=8080 node index.js",
+    "dev": "MONGO_DB_URL='mongodb://straylightportal-dev:83j7gw7W@localhost:27017/straylightportal-dev' PORTAL_BASE_URL='https://localhost' PORTAL_PORT=8080 STRIPE_KEY=sk_test_2BV9M8v6KTaorg80tWNFvAye STRIPE_PUB_KEY=pk_test_pkUbqe9TDp39w3ecVbBpizrI nodemon index.js"
   },
   "dependencies": {
     "airtable": "^0.4.5",

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    name: express-controller
+  name: express-controller
+spec:
+  replicas: 2
+  selector:
+    name: express-controller
+  template:
+    metadata:
+      labels:
+        name: express-controller
+    spec:
+      containers:
+      - image: gcr.io/straylightlabs/straylightportal:live
+        name: express
+        ports:
+        - name: express
+          containerPort: 8080
+          
