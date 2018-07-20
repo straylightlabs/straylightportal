@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Straylight Campout</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <link href="/images/icon.png" rel="icon" type="image/png">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/css/materialize.min.css" rel="stylesheet">
+  <link href="/campout/main.css" rel="stylesheet">
+</head>
+<body class="{{class}}">
+
+<div id="background"></div>
+
+<div id="header">
+  <h2>STRAYLIGHT CAMPOUT</h2>
+  <h3>October 7-8, Manazuru</h3>
+</div>
+
+<div id="main">
+{{#passwordPage}}
+  {{> campout-password-page}}
+{{/passwordPage}}
+{{#formPage}}
+  {{> campout-form-page}}
+{{/formPage}}
+{{#paymentPage}}
+  {{> campout-payment-page}}
+{{/paymentPage}}
+{{#confirmationPage}}
+  {{> campout-confirmation-page}}
+{{/confirmationPage}}
+{{#noCardPage}}
+  {{> campout-no-card-page}}
+{{/noCardPage}}
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/js/materialize.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('select').material_select();
+  $('.modal').modal();
+});
+{{#messages.error}}
+  Materialize.toast('{{msg}}', 4000);
+{{/messages.error}}
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,28 @@
+{
+  "name": "straylightweb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prod": "pm2 start index.js --name=portal --update-env --merge-logs --log-date-format='YYYY-MM-DD HH:mm:ss Z'",
+    "dev": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "airtable": "^0.4.3",
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.1",
+    "dateformat": "^2.0.0",
+    "express": "^4.14.0",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.15.5",
+    "express-validator": "^3.2.1",
+    "mustache-express": "^1.2.4",
+    "node-cron": "^1.1.2",
+    "nodemailer": "^2.7.0",
+    "sendmail": "^1.1.1",
+    "stripe": "^4.24.0"
+  }
+}

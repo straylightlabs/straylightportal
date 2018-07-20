@@ -1,0 +1,66 @@
+<p>To complete your registration, please make an advanced payment of 6000 yen.
+This payment helps cover the costs of campsite rental, shared meals, audio and
+visual equipment, decorations, shipments, and other event-related expenses.</p>
+
+<p>予約を完了するには、事前に6000円の参加費をお支払いいただく必要があります。回収した参加費は、キャンプサイトの貸し切り、食事や音響設備、飾り付け、ご案内の配送等、イベントの潤滑な運営のために使われます。</p>
+
+<div class="notes">
+<p>Notes about payment / お支払について</p>
+
+<p>Your credit card information will be sent directly to Stripe using a
+secure channel. No sensitive card or billing information will be transmitted
+or stored by Straylight.</p>
+<p>Straylight is a non-profit collective. All accounting will be transparent
+and shared with the community. Any surplus will be saved towards future
+community events and activities.</p>
+<p>In the case of severe weather, this event will be canceled and all
+payments will be refunded. If you need to cancel your registration for any
+other reason, please contact the organizers via campout@straylight.jp before
+September 30 to receive a full refund.</p>
+
+<p>入力されたクレジットカード情報は暗号化され Stripe に送られます。イベントの運営があなたのカード情報に直接アクセスすることはありません。</p>
+<p>Straylightは実質上非営利の団体です。今回の参加費とその使用目的についても、メンバーであれば誰でも知ることができ、もし超過が発生した場合には、以降のイベントやアクティビティの運営に繰り越されます。</p>
+<p>悪天候の場合はイベントはキャンセルとなり、お支払いただいた参加費は全額返金いたします。他の理由で予約をキャンセルする必要がございましたら、campout@straylight.jpまでご連絡ください。9月30日以前であれば全額返金いたします。</p>
+</div>
+
+<form action="/campout/payment" method="POST">
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key="{{stripePubKey}}"
+    data-label="Pay now and complete registration / お支払"
+    data-amount="6000"
+    data-email="{{email}}"
+    data-name="Straylight Campout"
+    data-description="Straylight Campout Registration Fee"
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-locale="auto"
+    data-currency="jpy"
+    data-zip-code="true"
+    data-allow-remember-me="false">
+  </script>
+</form>
+
+<p>
+<a class="modal-trigger weak" href="#no-card-confirmation">Pay later by cash / 後ほど現金で支払う</a>
+</p>
+
+<form action="/campout/payment" method="POST" id="nocard-form">
+  <div id="no-card-confirmation" class="modal">
+    <div class="modal-content">
+      <h4>Are you sure?</h4>
+      <p>If you have a credit card and can pay immediately, it helps us greatly
+      with our planning and finances for this event. That said, we understand this
+      option may not work for everyone, and will allow you to proceed with
+      registration and pay later if necessary.</p>
+
+      <p>もしクレジットカードをお持ちであれば、できるだけ事前にお支払をお済ませ下さい。イベントの準備をすすめていく上で非常に助かります。クレジットカードでのお支払いが難しい場合は、下記のリンクより予約を完了してください。後ほど運営よりお支払についてご連絡いたします。</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Go back / 戻る</a>
+      <a href="#!" class="modal-action waves-effect waves-green btn-flat"
+        onclick="$('#nocard-form').submit();"
+        >Proceed without payment / 支払いをせず予約を完了する</a>
+    </div>
+  </div>
+</form>
+
