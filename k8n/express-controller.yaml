@@ -14,7 +14,7 @@ spec:
         name: express-controller
     spec:
       containers:
-      - image: gcr.io/straylight-portal-184012/straylightportal:latest
+      - image: gcr.io/straylight-portal-184012/github-straylightlabs-straylightportal:latest
         name: express
         ports:
         - name: express

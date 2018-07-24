@@ -9,7 +9,7 @@ spec:
   capacity:
     storage: 10Gi
   hostPath:
-    path: "/mnt/data"
+    path: "/data/mongo-volume"
 
 ---
 apiVersion: v1
