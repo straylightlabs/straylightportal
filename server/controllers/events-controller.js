@@ -62,14 +62,34 @@ function parseEventData(req, res) {
 
   return [ errors, {
     id: req.params.event_id,
+    eventType: req.body.eventType,
     name: req.body.name,
     names: names,
     emails: emails,
     dateStart: dateStart,
     dateEnd: dateEnd,
     details: req.body.details,
-    addStraylightMembers: req.body.addStraylightMembers === 'on',
+    organizers: req.body.organizers,
   } ];
+}
+
+function createEventDescription(event) {
+  const policy =
+    event.eventType === 'public' ? 'This event is open to Straylight members and our guests. If you are a guest and would like to invite someone, please contact the host.'
+    : event.eventType === 'members' ? 'This event is open to Straylight members only. If you would like to invite someone who is not a member, please contact the host.'
+    : 'Straylight is a private space run by our community. Please seek permission from the host before inviting other guests.';
+
+  return `${event.details.replace(/\s+$/g,'')}
+
+Hosted by: ${event.organizers}
+
+-----
+
+${policy}
+
+We are located 1-minute west of Yoyogi-Hachiman Station in the Createur Building. Follow the stairs up to 3rd floor and head to the door on your left.
+
+https://goo.gl/maps/nd3kzhkqAax`;
 }
 
 function postCalendarEvent(user, event) {
@@ -78,7 +98,7 @@ function postCalendarEvent(user, event) {
       if (err) return reject(err);
 
       var emails = [user.email].concat(event.emails);
-      if (event.addStraylightMembers) {
+      if (event.eventType !== 'private') {
         emails = emails.concat(
             users
             .filter(user => !user.isDisabled)
@@ -103,7 +123,7 @@ function postCalendarEvent(user, event) {
             }
           )),
           "summary": event.name,
-          "description": event.details,
+          "description": createEventDescription(event),
           "location": "Straylight, Shibuya, Tokyo"
         },
       };
@@ -185,6 +205,7 @@ exports.edit = function(req, res, next) {
   var updatedEvent = req.user.events.id(event.id);
   if (!updatedEvent) return next('Invalid or missing event ID');
 
+  updatedEvent.eventType = event.eventType;
   updatedEvent.name = event.name;
   updatedEvent.names = event.names;
   updatedEvent.emails = event.emails;
@@ -192,7 +213,7 @@ exports.edit = function(req, res, next) {
   updatedEvent.dateStart = event.dateStart;
   updatedEvent.dateEnd = event.dateEnd;
   updatedEvent.details = event.details;
-  updatedEvent.addStraylightMembers = event.addStraylightMembers;
+  updatedEvent.organizers = event.organizers;
 
   req.user.save(function(err) {
     if (err) return next(err);

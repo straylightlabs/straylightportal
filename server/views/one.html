@@ -5,7 +5,7 @@
 {% block content %}
 <div class="wide-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Lock</h2>
+    <h2 class="mdl-card__title-text">{{ locked && 'Unlock' || 'Lock' }}</h2>
   </div>
   <div class="mdl-card__supporting-text">
     <p>The door of Straylight One is currently <strong>{{ locked && 'locked' || 'unlocked' }}</strong>.<p>
@@ -31,7 +31,7 @@
 
 <div class="wide-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Door</h2>
+    <h2 class="mdl-card__title-text">Door lighting</h2>
   </div>
   <div class="mdl-card__supporting-text">
     <p>LED installation on the door has a few pre-programmed patterns that can be played. We are looking forward to <a href="https://app.asana.com/0/249990253550854/list" target="_blank">suggestions</a> for new patterns.</p>
@@ -65,35 +65,6 @@
     network.</p>
     {% endif %}
   </div>
-</div>
-
-<div class="wide-card mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Present members</h2>
-  </div>
-  <div class="mdl-card__supporting-text">
-    {% if presentMembers %}
-    <ul>
-      {% for member in presentMembers %}
-      <li>- {{member.firstName}}</li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    No one is at Straylight now.
-    {% endif %}
-  </div>
-</div>
-
-<div class="wide-card mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">Beacon scan logs</h2>
-  </div>
-  <div class="mdl-card__supporting-text">
-    <div style="max-height: 400px; overflow: scroll;">
-      {% for log in scanLogs %}
-      {{moment(log.date).format('YYYY/MM/DD HH:mm:ss')}}: {{log.member.firstName || log.id}}<br />
-      {% endfor %}
-    </div>
 </div>
 
 {% endblock %}

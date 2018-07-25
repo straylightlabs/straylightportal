@@ -25,7 +25,7 @@
         returned to its prior state after the event, and that any beer, food,
         drinks, or materials used are paid or replaced.</p>
         <br />
-        <p><a href="https://calendar.google.com/calendar?cid=c3RyYXlsaWdodC5qcF9kdm92dW83M29rNHBqcTdxZjZxNXZnNzZsZ0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t" target="_blank">View upcoming events</a></p>
+        <p><a href="https://calendar.google.com/calendar?cid=c3RyYXlsaWdodC5qcF9kdm92dW83M29rNHBqcTdxZjZxNXZnNzZsZ0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t" target="_blank" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">View upcoming events</a></p>
       </div>
     </div>
   </div>
@@ -39,25 +39,20 @@
         <span class="card-title no-space">Create an event</span>
       </div>
       <div class="card-content">
-        <p>This form creates an event on the Straylight One calendar, allowing
-        other members to see upcoming events and when our space is being
-        used.<p>
-        <br />
-        <p>If you invite members or guests through this form, they will each
-        receive an event invitation via email, and you will be able to see their
-        RSVPs in Google Calendar.</p>
-        <br />
-        <p>If you prefer to track guest registration for your event with another
-        tool, feel free to untoggle “Add Straylight members” and submit the form
-        without adding any guests.</p>
-        <br />
-
         {% if event.id %}
         <form action="{{base_url}}/events/edit/{{event.id}}" method="post">
         {% else %}
         <form action="{{base_url}}/events/create" method="post">
         {% endif %}
           <div class="row">
+            <div class="input-field col s12">
+              <select id="eventType" name="eventType" class="validate">
+                <option value="public"{% if event.eventType == 'public' %} selected{% endif %}>Members + guests</option>
+                <option value="members"{% if event.eventType == 'members' %} selected{% endif %}>Members only</option>
+                <option value="private"{% if event.eventType == 'private' %} selected{% endif %}>Private / other</option>
+              </select>
+              <label for="eventType">Who is it for?</label>
+            </div>
             <div class="input-field col s12">
               <input type="text" value="{{event.name || ''}}" id="name" name="name" class="validate">
               <label for="name">Event name</label>
@@ -82,20 +77,11 @@
               <label for="timeEnd">End time</label>
             </div>
             <div class="input-field col s12">
-              <textarea class="materialize-textarea tall" id="details" name="details">{{event.details}}{% if !event.details %}
-[Your description here]
-
------
-
-Straylight is a private space for our members and guests. If you
-are a guest and would like to invite someone, please contact the
-organizer(s).
-
-We are located 1-minute west of Yoyogi-Hachiman Station in the
-Createur Building. Follow the stairs up to 3rd floor and head to
-the door on your left.
-
-https://goo.gl/maps/nd3kzhkqAax{% endif %}</textarea>
+              <input type="text" value="{{user.profile.displayName}}" id="organizers" name="organizers" class="validate">
+              <label for="organizers">Hosted by</label>
+            </div>
+            <div class="input-field col s12">
+              <textarea class="materialize-textarea tall" id="details" name="details">{{event.details}}</textarea>
               <label for="notes">Details</label>
             </div>
             <div class="input-field col s12 m6">
@@ -117,12 +103,6 @@ https://goo.gl/maps/nd3kzhkqAax{% endif %}</textarea>
             </div>
             {% endfor %}
             <div class="col s12 spacing"><a href="#" id="add-another-guest">Add another guest</a></div>
-            <div class="col s12 spacing">
-              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="addStraylightMembers">
-                <input type="checkbox" id="addStraylightMembers" name="addStraylightMembers" class="mdl-checkbox__input"{% if !event.id || event.addStraylightMembers %} checked="checked"{% endif %} />
-                <span class="mdl-checkbox__label">Add Straylight members</span>
-              </label>
-            </div>
 
             <div class="input-field col s12">
               <button class="btn waves-effect waves-light blue-grey col s12" type="submit" name="action">

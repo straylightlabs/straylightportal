@@ -54,6 +54,7 @@ var userSchema = new mongoose.Schema({
     externalEventId: String
   }],
   events: [{
+    eventType: String,
     name: String,
     names: [String],
     emails: [String],
