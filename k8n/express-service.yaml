@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: express-service
+  labels:
+    name: express-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: express
+  selector:
+    name: express-controller

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="43px" height="22px" viewBox="0 0 43 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
+    <title>arrow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Online-Stores-Copy" transform="translate(-969.000000, -1251.000000)" fill="#FFFFFF">
+            <path d="M1000.53196,1261.99432 L1000.50127,1262.0001 L981.421991,1282.40989 C981.112069,1282.74143 980.592124,1282.75895 980.260586,1282.44903 C979.929049,1282.13911 979.911525,1281.61908 980.221446,1281.28754 L998.503687,1261.73039 L980.398823,1242.37285 C980.091037,1242.04371 980.108383,1241.5275 980.437697,1241.21981 C980.766922,1240.9122 981.283398,1240.92955 981.591273,1241.25868 L1000.54095,1261.51947 L1000.53196,1261.99432 Z" id="arrow" transform="translate(990.270474, 1261.835239) rotate(90.000000) translate(-990.270474, -1261.835239) "></path>
+        </g>
+    </g>
+</svg>
