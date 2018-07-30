@@ -12,7 +12,6 @@ exports.lock = (req, res, next) => {
 }
 
 exports.blescan = (req, res, next) => {
-  console.debug(JSON.stringify(req.body));
   memberPresence.addScanEvent(req.body.macAddress);
   straylightNetwork.setFromNetwork(req);
   res.end();
