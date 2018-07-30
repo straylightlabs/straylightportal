@@ -1,9 +1,12 @@
-const base = require('airtable').base('app9sEiwyXY9fXFbQ');
+const base = require('airtable').base('appOG2GGxOP6vcVkn');
 const fs = require('fs');
 const mustache = require('mustache');
 const path = require('path');
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 const sendmail = require('sendmail')();
+
+const EARLY_REGISTRATION_DEADLINE = new Date(2018, 7, 23, 0, 0, 0);
+console.info('EARLY_REGISTRATION_DEADLINE:', EARLY_REGISTRATION_DEADLINE);
 
 function sendEmail(email, name, textFile) {
   const templatePath = path.join(__dirname, '../views/' + textFile);
@@ -62,15 +65,18 @@ exports.getFormPage = function(req, res, next) {
 }
 
 exports.getPaymentPage = function(req, res, next) {
-  if (req.query.email && req.query.name && req.query.customerId) {
+  if (req.query.email) {
     req.session.email = req.query.email;
     req.session.name = req.query.name;
+    req.session.inviter = req.query.inviter;
     req.session.customerId = req.query.customerId;
   }
   const data = {
     paymentPage: true,
     email: req.session.email,
+    inviter: req.session.inviter,
     stripePubKey: process.env.STRIPE_PUB_KEY,
+    amountYen: new Date() > EARLY_REGISTRATION_DEADLINE ? 11000 : 9000,
   };
   res.render('campout-index', data);
 }
@@ -101,8 +107,6 @@ exports.postFormPage = function(req, res, next) {
   req.checkBody('name', 'Name is required.').notEmpty();
   req.checkBody('email', 'Email is required.').isEmail();
   req.checkBody('phone', 'Phone is required.').notEmpty();
-  req.checkBody('address', 'Address is required.').notEmpty();
-  req.checkBody('zipcode', 'Zipcode is required.').notEmpty();
 
   req.getValidationResult().then((result) => {
     if (!result.isEmpty()) {
@@ -115,8 +119,6 @@ exports.postFormPage = function(req, res, next) {
       'Invited by': [req.body.inviter],
       'Email': req.body.email,
       'Phone': req.body.phone,
-      'Postal Address 1': req.body.address,
-      'Postal Code': req.body.zipcode,
       'Children': req.body.children,
       'Favorite moment': req.body.q1,
       'Participation': req.body.q2,
@@ -128,6 +130,7 @@ exports.postFormPage = function(req, res, next) {
       }
       req.session.email = req.body.email;
       req.session.name = req.body.name;
+      req.session.inviter = req.body.inviter;
       req.session.customerId = record.getId();
       res.redirect('/campout/payment')
     });
@@ -135,15 +138,29 @@ exports.postFormPage = function(req, res, next) {
 }
 
 exports.postPaymentPage = function(req, res, next) {
+  function complete(req, res) {
+    sendEmail(req.session.email, req.session.name, 'campout-confirmation-email.txt');
+    res.redirect('/campout/confirmation');
+  }
+
+  function completePayLater(req, res) {
+    sendEmail(req.session.email, req.session.name, 'campout-no-card-email.txt');
+    res.redirect('/campout/confirmation-nocard');
+  }
+
   if (!req.body.stripeEmail) {
+    const gifted = req.body.gifted === 'Yes';
     base('Attendees').update(req.session.customerId, {
-      'Payment Status': 'Unpaid',
+      'Payment Status': gifted ? 'Gifted' : 'Unpaid',
     }, (error, record) => {
       if (error) {
         return res.status(500).send('Broken backend response');
       }
-      sendEmail(req.session.email, req.session.name, 'campout-no-card-email.txt');
-      res.redirect('/campout/confirmation-nocard');
+      if (gifted) {
+        complete(req, res);
+      } else {
+        completePayLater(req, res);
+      }
     });
     return;
   }
@@ -167,8 +184,7 @@ exports.postPaymentPage = function(req, res, next) {
       if (error) {
         return res.status(500).send('Broken backend response');
       }
-      sendEmail(req.session.email, req.session.name, 'campout-confirmation-email.txt');
-      res.redirect('/campout/confirmation');
+      complete(req, res);
     }))
   .catch((error) => {
     console.error('Failed to create charge: ' + error);
