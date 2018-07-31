@@ -39,7 +39,7 @@ exports.getPasswordPage = function(req, res, next) {
 }
 
 exports.getFormPage = function(req, res, next) {
-  base('Hosts').select({}).firstPage((error, records) => {
+  base('Hosts').select({view: 'Grid view'}).firstPage((error, records) => {
     if (error) {
       console.error('Failed to fetch Hosts: ' + error);
       return res.status(500).send('Broken backend response');
@@ -47,15 +47,7 @@ exports.getFormPage = function(req, res, next) {
     const straylightMembers = records.map((record) => ({
       id: record.id,
       name: record.get('Name'),
-    })).sort((lhs, rhs) => {
-      if (lhs.name < rhs.name) {
-        return -1;
-      }
-      if (lhs.name > rhs.name) {
-        return 1;
-      }
-      return 0;
-    });
+    }));
     const data = {
       formPage: true,
       straylightMembers: straylightMembers,
@@ -128,11 +120,17 @@ exports.postFormPage = function(req, res, next) {
         console.error('Failed to add Attendee: ' + error);
         return res.status(500).send('Broken backend response');
       }
-      req.session.email = req.body.email;
-      req.session.name = req.body.name;
-      req.session.inviter = req.body.inviter;
-      req.session.customerId = record.getId();
-      res.redirect('/campout/payment')
+      base('Hosts').find(req.body.inviter, (error, inviter) => {
+        if (error) {
+          console.error('Failed to fetch Host: ' + error);
+          return res.status(500).send('Broken backend response');
+        }
+        req.session.email = req.body.email;
+        req.session.name = req.body.name;
+        req.session.inviter = inviter.get('Name');
+        req.session.customerId = record.getId();
+        res.redirect('/campout/payment')
+      });
     });
   });
 }
@@ -171,7 +169,7 @@ exports.postPaymentPage = function(req, res, next) {
   })
   .then((customer) =>
     stripe.charges.create({
-           amount: 6000,
+           amount: parseInt(req.body.amountYen),
       description: 'Straylight Campout Registration Fee',
          currency: 'jpy',
          customer: customer.id

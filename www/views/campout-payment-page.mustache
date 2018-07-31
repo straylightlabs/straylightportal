@@ -24,6 +24,7 @@ to gift your payment to another person.</p>
 </div>
 
 <form action="/campout/payment" method="POST">
+  <input type="hidden" name="amountYen" value="{{amountYen}}" />
   <script
     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
     data-key="{{stripePubKey}}"
@@ -63,9 +64,9 @@ gifted to me / 支払い済み
       gift is unconditional. Gifting does not contemplate a return or an
       exchange for something of equal value.” - <a
       href="https://burningman.org/culture/philosophical-center/10-principles/"
-      target="_blank">The 10 Principles of Burning Man</a>
+      target="_blank">The 10 Principles of Burning Man</a></p>
 
-      What a wonderful gift! Please confirm that {{inviter}} has gifted
+      <p>What a wonderful gift! Please confirm that {{inviter}} has gifted
       your invitation.</p>
 
       <p>あなたは{{inviter}}さんに無料で招待されました。これが正しければ予約を完了してください。</p>
