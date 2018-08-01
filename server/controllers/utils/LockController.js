@@ -14,7 +14,7 @@ const DOOR_3D_UNLOCK_URL = `https://api-production.august.com/remoteoperate/${DO
 const HEADERS = {
   'Content-Type': 'application/json',
   'x-august-access-token': secrets.augustAccessToken,
-  'x-august-api-key': '14445b6a2dba',
+  'x-august-api-key': '727dba56-fe45-498d-b4aa-293f96aae0e5',
 };
 
 const lastTimeAccessed = new Map();
@@ -78,4 +78,6 @@ const unlock = exports.unlock = () => Promise.all([
   put(DOOR_3C_UNLOCK_URL),
   put(DOOR_3D_UNLOCK_URL)]);
 
-exports.getStatus = () => getStatus(DOOR_3C_URL);
+exports.getStatus = () => Promise.all([
+  getStatus(DOOR_3C_URL),
+  getStatus(DOOR_3D_URL)]);

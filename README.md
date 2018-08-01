@@ -26,6 +26,10 @@ Start the server with `yarn dev`.
 
 - Move to client-side rendering & API server
 - Isolate Straylight specific code
+- Automatically cycle August Lock access token.
+  - See more about the access tokens
+    [here](https://github.com/snjoetw/py-august/blob/master/august/api.py) and
+    [here](https://github.com/jmaxxz/keymaker/issues/5).
 
 ### How to contribute
 

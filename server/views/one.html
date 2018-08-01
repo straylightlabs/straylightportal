@@ -3,22 +3,40 @@
 {% block title %}Straylight One Devices{% endblock %}
 
 {% block content %}
+{% if !fromTrustedNetwork %}
+<script>
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(getPosition);
+}
+function getPosition(position) {
+  if (35.666 <= position.coords.latitude && position.coords.latitude <= 35.674 &&
+      139.681 <= position.coords.longitude && position.coords.longitude <= 139.693) {
+    $('.proximity-warning').hide();
+    $('.proximity-locked').removeAttr('disabled');
+  }
+}
+</script>
+{% endif %}
+
 <div class="wide-card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">{{ locked && 'Unlock' || 'Lock' }}</h2>
+    <h2 class="mdl-card__title-text">{{ locked[0] && 'Unlock' || 'Lock' }}</h2>
   </div>
   <div class="mdl-card__supporting-text">
-    <p>The door of Straylight One is currently <strong>{{ locked && 'locked' || 'unlocked' }}</strong>.<p>
+    <p>The doors are currently <strong>{{ locked[0] && 'locked' || 'unlocked' }}</strong>.<p>
     <p>
-      <form action="{{ base_url }}/one/lock" method="post">
-        <input type="hidden" name="action" value="{{ locked && 'unlock' || 'lock' }}" />
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork || lockUnreachable %}disabled="disabled"{% endif %}>
-          <i class="material-icons" role="presentation" style="font-size: 18px">{{ locked && 'lock_open' || 'lock' }}</i> {{ locked && 'Unlock' || 'Lock' }}
+      <form id="lock-form" action="{{ base_url }}/one/lock" method="post">
+        <input type="hidden" name="action" value="{{ locked[0] && 'unlock' || 'lock' }}" />
+        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect{% if !lockUnreachable %} proximity-locked{% endif %}" {% if !fromTrustedNetwork || lockUnreachable %}disabled="disabled"{% endif %} onclick="$(this).attr('disabled', 'disabled'); $('#lock-form').submit();">
+          <i class="material-icons" role="presentation" style="font-size: 18px">{{ locked[0] && 'lock_open' || 'lock' }}</i> {{ locked[0] && 'Unlock' || 'Lock' }}
         </button>
       </form>
     </p>
+    {% if locked[0] != locked[1] %}
+    <p style="color: red">3C door and 3D door are not in sync.</p>
+    {% endif %}
     {% if !fromTrustedNetwork %}
-    <p style="color: red">We cannot verify your proximity to Straylight One.
+    <p class="proximity-warning" style="color: red">We cannot verify your proximity to Straylight One.
     Please make sure you are nearby and connected to the STRAYLIGHT wifi
     network.</p>
     {% endif %}
@@ -26,6 +44,30 @@
     <p style="color: red">Lock server is currently unreachable. This is a known
     issue, and Ryo is looking into it.</p>
     {% endif %}
+
+    <div id="shortcut-tutorial-action" style="display: none;">
+      <hr />
+      <a href="#" onclick="$(this).hide(); $('#shortcut-tutorial').show();">Add this page to Home Screen for quicker access</a>
+    </div>
+    <div id="shortcut-tutorial" style="display: none;">
+      <div id="shortcut-tutorial-ios" style="display: none;">
+        TODO: Show iOS tutorial images
+      </div>
+      <div id="shortcut-tutorial-android" style="display: none;">
+        TODO: Show Android tutorial images
+      </div>
+    </div>
+    <script>
+var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+if (/android/i.test(userAgent)) {
+  $('#shortcut-tutorial-action').show();
+  $('#shortcut-tutorial-android').show();
+}
+if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+  $('#shortcut-tutorial-action').show();
+  $('#shortcut-tutorial-ios').show();
+}
+    </script>
   </div>
 </div>
 
@@ -36,28 +78,25 @@
   <div class="mdl-card__supporting-text">
     <p>LED installation on the door has a few pre-programmed patterns that can be played. We are looking forward to <a href="https://app.asana.com/0/249990253550854/list" target="_blank">suggestions</a> for new patterns.</p>
     <p>
-      <form action="{{ base_url }}/one/door" method="post">
-        <input type="hidden" name="pattern" value="rainbow" />
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
-          Play rainbow pattern
-        </button>
-      </form>
+    <form action="http://192.168.0.6:8080/rainbow()">
+      <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+        Play rainbow pattern
+      </button>
+    </form>
     <p>
     </p>
-      <form action="{{ base_url }}/one/door" method="post">
-        <input type="hidden" name="pattern" value="flicker" />
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
-          Start flicker pattern
-        </button>
-      </form>
+    <form action="http://192.168.0.6:8080/flicker(150,150,150)">
+      <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+        Start flicker pattern
+      </button>
+    </form>
     <p>
     </p>
-      <form action="{{ base_url }}/one/door" method="post">
-        <input type="hidden" name="pattern" value="clear" />
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
-          Clear pattern
-        </button>
-      </form>
+    <form action="http://192.168.0.6:8080/set(0,0,0)">
+      <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+        Clear pattern
+      </button>
+    </form>
     </p>
     {% if !fromTrustedNetwork %}
     <p style="color: red">We cannot verify your proximity to Straylight One.

@@ -135,6 +135,9 @@ li {
   .small-screen {
     display: inline;
   }
+  .content {
+    padding: 20px 10px;
+  }
 }
 
 @media (min-width: 800px) {
