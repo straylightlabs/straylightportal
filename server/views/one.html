@@ -75,25 +75,28 @@ if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
   <div class="mdl-card__supporting-text">
     <p>LED installation on the door has a few pre-programmed patterns that can be played. We are looking forward to <a href="https://app.asana.com/0/249990253550854/list" target="_blank">suggestions</a> for new patterns.</p>
     <p>
-    <form action="http://192.168.0.6:8080/rainbow()">
-      <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
-        Play rainbow pattern
-      </button>
-    </form>
+      <form action="{{ base_url }}/one/doorlighting" method="post">
+        <input type="hidden" name="pattern" value="rainbow" />
+        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+          Play rainbow pattern
+        </button>
+      </form>
     <p>
     </p>
-    <form action="http://192.168.0.6:8080/flicker(150,150,150)">
-      <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
-        Start flicker pattern
-      </button>
-    </form>
+      <form action="{{ base_url }}/one/doorlighting" method="post">
+        <input type="hidden" name="pattern" value="flicker" />
+        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+          Start flicker pattern
+        </button>
+      </form>
     <p>
     </p>
-    <form action="http://192.168.0.6:8080/set(0,0,0)">
-      <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
-        Clear pattern
-      </button>
-    </form>
+      <form action="{{ base_url }}/one/doorlighting" method="post">
+        <input type="hidden" name="pattern" value="clear" />
+        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+          Clear pattern
+        </button>
+      </form>
     </p>
     {% if !fromTrustedNetwork %}
     <p style="color: red">We cannot verify your proximity to Straylight One.

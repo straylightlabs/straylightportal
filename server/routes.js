@@ -198,6 +198,11 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/', success: '/one', failure: '/one'}),
     isAuthenticated,
     one.postLockState);
+  app.get('/one/doorlighting', one.getDoorLighting);
+  app.post('/one/doorlighting',
+    setRedirect({auth: '/', success: '/one', failure: '/one'}),
+    isAuthenticated,
+    one.postDoorLighting);
 
   // Stripe webhook events.
   app.post('/stripe/events',
