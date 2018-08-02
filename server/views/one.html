@@ -36,13 +36,10 @@ function getPosition(position) {
     <p style="color: red">3C door and 3D door are not in sync.</p>
     {% endif %}
     {% if !fromTrustedNetwork %}
-    <p class="proximity-warning" style="color: red">We cannot verify your proximity to Straylight One.
-    Please make sure you are nearby and connected to the STRAYLIGHT wifi
-    network.</p>
+    <p class="proximity-warning" style="color: red">You need to be physically nearby Straylight One or connected to the STRAYLIGHT WiFi network to use this feature. When prompted, pleaes allow location reporting. Your location is never recorded or sent to the servers.</p>
     {% endif %}
     {% if lockUnreachable %}
-    <p style="color: red">Lock server is currently unreachable. This is a known
-    issue, and Ryo is looking into it.</p>
+    <p style="color: red">Lock server is currently unreachable.</p>
     {% endif %}
 
     <div id="shortcut-tutorial-action" style="display: none;">
