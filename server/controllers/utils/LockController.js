@@ -14,7 +14,7 @@ const DOOR_3D_UNLOCK_URL = `https://api-production.august.com/remoteoperate/${DO
 const HEADERS = {
   'Content-Type': 'application/json',
   'x-august-access-token': secrets.augustAccessToken,
-  'x-august-api-key': '727dba56-fe45-498d-b4aa-293f96aae0e5',
+  'x-august-api-key': '79fd0eb6-381d-4adf-95a0-47721289d1d9',
 };
 
 const lastTimeAccessed = new Map();
