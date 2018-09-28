@@ -1571,6 +1571,15 @@
 			impulseR[i] = (Math.random() * 2 - 1) * Math.pow(1 - n / length, this.decay);
 		}
 	
+                if (this.reverbNode.buffer) {
+                  this.inputNode.disconnect(this.reverbNode);
+                  this.reverbNode.disconnect(this.wetGainNode);
+
+                  this.reverbNode = Pizzicato.context.createConvolver();
+                  this.inputNode.connect(this.reverbNode);
+                  this.reverbNode.connect(this.wetGainNode);
+                }
+
 		this.reverbNode.buffer = impulse;
 	}
 	Pizzicato.Effects.DubDelay = function(options) {
