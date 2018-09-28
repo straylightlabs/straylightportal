@@ -41,5 +41,10 @@
     "stripe": "^3.0.2",
     "stripe-webhook-middleware": "^0.2.0",
     "swig": "^1.4.2"
+  },
+  "resolutions": {
+    "//": "CVE-2015-8858 High severity",
+    "uglify-js": "2.6.0",
+    "hoek": "4.2.1"
   }
 }
