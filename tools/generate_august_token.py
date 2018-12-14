@@ -8,7 +8,8 @@ from august.authenticator import Authenticator, AuthenticationState, ValidationR
 api = Api(timeout=20)
 
 print('ENTER PASSWORD:')
-authenticator = Authenticator(api, "email", "ryo@straylight.jp", input())
+password = input()
+authenticator = Authenticator(api, "email", "ryo@straylight.jp", password)
 auth = authenticator.authenticate()
 
 if auth.state == AuthenticationState.BAD_PASSWORD:
@@ -19,7 +20,8 @@ if auth.state == AuthenticationState.REQUIRES_VALIDATION:
     authenticator.send_verification_code()
 
     print('ENTER VERIFICATION CODE:')
-    validation_result = authenticator.validate_verification_code(input())
+    code = input()
+    validation_result = authenticator.validate_verification_code(code)
 
     if validation_result != ValidationResult.VALIDATED:
         print('ERROR: validation failed.')
