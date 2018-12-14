@@ -1,0 +1,121 @@
+<p>A fall campout with Straylight and our kin, in which we come together to
+build a temporary village devoted to community, art, music, and creative
+self-expression.</p>
+
+<p>Straylight Campout 2018 will be hosted October 12-14 at <a
+href="https://goo.gl/maps/pee9ip976582" target="_blank">Gandhara Manazuru</a>, a
+beautiful, private, oceanside campsite situated between Odawara and the Izu
+Peninsula.</p>
+
+<p>Early registration: 9000 yen (until August 22)<br />
+Standard registration: 11,000 yen (until September 28)</p>
+
+<p>Please fill out this brief questionnaire to complete your registration.</p>
+
+<p>秋こそアウトドアのベストシーズン。日常の暮らしから離れて、Straylightの仲間とキャンプに出かけましょう！アート作品、音楽やパフォーマンスなどの自己表現を通して、みんなで素敵な村を創ろう。</p>
+
+<p>Straylight Campout 2018は10月12日～14日の3日間に渡って開催されます。伊豆半島の海岸沿いにある、美しくてプライベートなキャンプサイト、<a href="https://goo.gl/maps/pee9ip976582" target="_blank">真鶴ガンダーラ</a>に是非お越しください。</p>
+
+<p>早期割引: 9000円 (8月22日まで)<br />
+通常価格: 11,000円 (9月28日まで)</p>
+
+<p>イベントの予約を完了するには、以下の質問にご回答下さい。</p>
+
+<div class="notes">
+<p>Notes / 注意事項</p>
+
+<p>Straylight Campout is a small, private event to which you have been specially
+invited. If you would like to invite someone, please seek approval from the
+organizers.</p>
+
+<p>If you are attending with your family, each person must register individually
+through this form. Children under 12 are welcome without registration.</p>
+
+<p>Shared meals will be prepared with help from organizers and volunteers
+(please send a note if you would like to help!). We encourage everyone to bring
+other food and drinks to share, and will send additional guidelines closer to
+the date of the event.</p>
+
+<p>Though this is a 3-day event, the Friday is not a holiday. Because the Friday
+build and activities are integral to the event, we ask you to kindly join as
+early as possible.</p>
+
+<p>Straylight Campoutは招待制の小規模なイベントです。新しく誰かを招待したい方はオーガナイザーまでご連絡ください。</p>
+<p>ご家族やお友達を招待する際にも、ひとりひとりが登録する必要がありますのでご注意ください。同伴の12歳未満の子どもは事前の登録は必要ありません。</p>
+<p>お食事や飲み物は有志が準備しますが、数に限りがございますので、心配な方は持参されることをおすすめします。さらなる詳細は後ほど追ってご連絡いたします。</p>
+<p>イベントの準備や各種アクティビティが金曜日から始まりますので、平日ではございますができるだけ早くご参加頂けますようお願いいたします。</p>
+</div>
+
+<form method="POST" action="/campout/form">
+  <div class="row">
+    <div class="input-field col s12">
+      <input id="name" name="name" type="text" class="validate" required>
+      <label for="name">Name / 姓名</label>
+    </div>
+    <div class="input-field col s12">
+      <select name="inviter" required>
+      <option value="" disabled selected>Choose... / 選んでください</option>
+      {{#straylightMembers}}
+        <option value="{{id}}">{{name}}</option>
+      {{/straylightMembers}}
+      </select>
+      <label>Invited by / 招待者</label>
+    </div>
+    <div class="input-field col s12">
+      <input id="email" name="email" type="email" class="validate" required>
+      <label for="email">Email / メール</label>
+    </div>
+    <div class="input-field col s12">
+      <input id="phone" name="phone" type="text" class="validate" required>
+      <label for="phone">Phone / 電話番号</label>
+    </div>
+    <div class="col s12">
+      <p>Do you plan to bring your children to the event? If
+      so, what are their names and ages?</p>
+      <p>お子さんを連れていらっしゃいますか？もしそうであれば、お名前と年齢をご記入下さい。</p>
+      <div class="input-field">
+        <input id="children" name="children" type="text" class="validate">
+        <label for="children">Enter text here</label>
+      </div>
+    </div>
+    <div class="col s12">
+      <p>Describe one of your favorite or most memorable camping or festival
+      experiences. What made it special for you and those around you?</p>
+      <p>一番記憶に残っているキャンプやフェスティバルに参加したときのことを教えてください。その瞬間があなたや周りの方にとって特別に感じられたのは何が要因でしたか？</p>
+      <div class="input-field">
+        <textarea id="q1" name="q1" class="materialize-textarea" required></textarea>
+        <label for="q1">Enter text here</label>
+      </div>
+    </div>
+    <div class="col s12">
+      <p>The heart of a festival environment is created and felt through the
+      harmonious expressions of many diverse individuals, through creative
+      self-expression, acts of gifting, and moments of deep connection.  What
+      are some of the things you would like to create, perform, give, feel, or
+      accomplish by participating in Straylight Campout?</p>
+      <p>フェスティバルの醍醐味は多種多様な人々が交わり、思い思いに自己を表現し、利他の精神にもとづいて深く通じ合うところにあると思います。あなたが今回のイベントに参加するにあたって、作りたいモノ、表現したいこと、貢献したいこと、感じたり実現したいことを教えて下さい。</p>
+      <div class="input-field">
+        <textarea id="q2" name="q2" class="materialize-textarea" required></textarea>
+        <label for="q2">Enter text here</label>
+      </div>
+    </div>
+    <div class="col s12">
+      <p>Building a successful campout requires many hands, and organizers may
+      reach out to you as we seek volunteers for various roles.  Meanwhile,
+      please let us know if you have specific interests in helping with meals,
+      decorations, music, or art installations, or would like to get involved in
+      organizing other fun performances or activities at the campout.</p>
+      <p>イベントを成功させるために、運営からボランティアのお願いをすることがございます。もし、食事や飾り付け、音楽やアートの展示、アクティビティの企画などで特別にお手伝いいただけることがございましたら、こちらにお寄せ下さい。</p>
+      <div class="input-field">
+        <textarea id="q3" name="q3" class="materialize-textarea" required></textarea>
+        <label for="q3">Enter text here</label>
+      </div>
+    </div>
+    <div class="col s12">
+      <button class="btn waves-effect waves-light orange darken-2" id="proceed-btn">Proceed / 次へ
+      <i class="material-icons right">send</i>
+      </button>
+    </div>
+  </div>
+</form>
+

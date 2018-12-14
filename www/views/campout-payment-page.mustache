@@ -1,0 +1,108 @@
+<p>To complete your registration, please make an advanced payment of {{amountYen}} yen.
+This payment helps cover the costs of campsite rental, shared meals, audio and
+visual equipment, decorations, shipments, and other event-related expenses.</p>
+
+<p>予約を完了するには、事前に{{amountYen}}円の参加費をお支払いいただく必要があります。回収した参加費は、キャンプサイトの貸し切り、食事や音響設備、飾り付け、ご案内の配送等、イベントの潤滑な運営のために使われます。</p>
+
+<div class="notes">
+<p>Notes about payment / お支払について</p>
+
+<p>Your credit card information will be sent directly to Stripe using a
+secure channel. No sensitive card or billing information will be transmitted
+or stored by Straylight.</p>
+<p>Straylight is a non-profit collective. All budgeting and accounting for this
+event can be viewed upon request. Any surplus will be saved towards future
+events and activities.</p>
+<p>If you need to cancel your registration for any reason, please contact the
+organizers via campout@straylight.jp. Though cancellations are generally
+non-refundable, if you cancel within the registration period, we will allow you
+to gift your payment to another person.</p>
+
+<p>入力されたクレジットカード情報は暗号化され Stripe に送られます。イベントの運営があなたのカード情報に直接アクセスすることはありません。</p>
+<p>Straylightは実質上非営利の団体です。今回の参加費とその使用目的についても、メンバーであれば誰でも知る権利があり、もし超過が発生した場合には、以降のイベントやアクティビティの運営に繰り越されます。</p>
+<p>やむを得ない理由で予約をキャンセルする必要がございましたら、campout@straylight.jpまでご連絡ください。原則キャンセルはお断りしておりますが、登録期間中であれば他の方に権利を譲ることができます。</p>
+</div>
+
+<form action="/campout/payment" method="POST">
+  <input type="hidden" name="amountYen" value="{{amountYen}}" />
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key="{{stripePubKey}}"
+    data-label="Pay now and complete registration / お支払"
+    data-amount="{{amountYen}}"
+    data-email="{{email}}"
+    data-name="Straylight Campout"
+    data-description="Straylight Campout Registration Fee"
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-locale="auto"
+    data-currency="jpy"
+    data-zip-code="true"
+    data-allow-remember-me="false">
+  </script>
+  <style>
+    .stripe-button-el {
+      display: none;
+    }
+  </style>
+  <button type="submit" class="btn waves-effect waves-light orange darken-2">Pay now and complete registration / お支払
+  <i class="material-icons right">payment</i>
+  </button>
+</form>
+
+<p>
+<a class="modal-trigger btn waves-effect waves-light orange darken-2" href="#gifted-confirmation">My invitation was
+gifted to me / 支払い済み
+<i class="material-icons right">card_giftcard</i></a>
+</p>
+
+<form action="/campout/payment" method="POST" id="gifted-form">
+  <input type="hidden" name="gifted" value="Yes" />
+  <div id="gifted-confirmation" class="modal">
+    <div class="modal-content">
+      <h4>What a wonderful gift!</h4>
+      <p>Straylight Campout “is devoted to acts of gift giving. The value of a
+      gift is unconditional. Gifting does not contemplate a return or an
+      exchange for something of equal value.” - <a
+      href="https://burningman.org/culture/philosophical-center/10-principles/"
+      target="_blank">The 10 Principles of Burning Man</a></p>
+
+      <p>What a wonderful gift! Please confirm that {{inviter}} has gifted
+      your invitation.</p>
+
+      <p>あなたは{{inviter}}さんに無料で招待されました。これが正しければ予約を完了してください。</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-orange btn-flat">Go back / 戻る</a>
+      <a href="#!" class="modal-action btn waves-effect waves-light orange darken-2"
+        onclick="$('#gifted-form').submit();"
+        >Complete registration / 完了
+        <i class="material-icons right">done</i></a>
+    </div>
+  </div>
+</form>
+
+<p>
+<a class="modal-trigger weak" href="#no-card-confirmation">Pay later by cash / 後ほど現金で支払う</a>
+</p>
+
+<form action="/campout/payment" method="POST" id="nocard-form">
+  <div id="no-card-confirmation" class="modal">
+    <div class="modal-content">
+      <h4>Are you sure?</h4>
+      <p>If you have a credit card and can pay immediately, it helps us greatly
+      with our planning and finances for this event. That said, we understand this
+      option may not work for everyone, and will allow you to proceed with
+      registration and pay later if necessary.</p>
+
+      <p>もしクレジットカードをお持ちであれば、できるだけ事前にお支払をお済ませ下さい。イベントの準備をすすめていく上で非常に助かります。クレジットカードでのお支払いが難しい場合は、下記のリンクより予約を完了してください。後ほど運営よりお支払についてご連絡いたします。</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-orange btn-flat">Go back / 戻る</a>
+      <a href="#!" class="modal-action waves-effect waves-orange btn-flat"
+        onclick="$('#nocard-form').submit();"
+        >Proceed without payment / 支払いをせず予約を完了する
+        <i class="material-icons right">done</i></a>
+    </div>
+  </div>
+</form>
+

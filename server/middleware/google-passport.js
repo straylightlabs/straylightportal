@@ -18,7 +18,7 @@ function fetchProfileFromAirtable(email, cb) {
   });
 }
 
-function createNewUser(googleProfile, accessToken, refreshToken, cb) {
+function createNewUser(googleProfile, oauth2Info, cb) {
   var email = googleProfile.emails[0].value;
   fetchProfileFromAirtable(email, function(err, airtableProfile) {
     if (err) return cb(err);
@@ -59,10 +59,7 @@ function createNewUser(googleProfile, accessToken, refreshToken, cb) {
       billing: {
         firstBillingDate: firstBillingDate
       },
-      oauth2: {
-        accessToken: accessToken,
-        refreshToken: refreshToken
-      }
+      oauth2: oauth2Info
     });
     user.save(function(err) {
       cb(err, user);
@@ -76,7 +73,14 @@ module.exports = function(passport) {
   });
 
   passport.deserializeUser(function(id, done) {
+    if (process.env.PRETEND_USER_EMAIL) {
+      return User.findOne({ email: process.env.PRETEND_USER_EMAIL }, done);
+    }
+
     User.findById(id, function(err, user) {
+      if (user.isDisabled) {
+        return done('Your account is disabled');
+      }
       done(err, user);
     });
   });
@@ -87,25 +91,31 @@ module.exports = function(passport) {
   var strategy = new GoogleStrategy({
       clientID: clientID,
       clientSecret: clientSecret,
-      callbackURL: callbackURL
+      callbackURL: callbackURL,
+      passReqToCallback: true
     },
-    function(accessToken, refreshToken, profile, cb) {
+    function(req, accessToken, refreshToken, profile, cb) {
       process.nextTick(function() {  // wait for all the data from Google
         var email = profile.emails[0].value;
         User.findOne({ email: email }, function (err, user) {
           if (err) {
             return cb(err);
           }
+          const oauth2Info = {
+            accessToken: accessToken,
+            // TODO(ryok): Currently refreshToken is undefined. We need to set
+            // Offline mode to retrieve refreshToken.
+            refreshToken: refreshToken
+          };
           if (user) {
-            user.oauth2.accessToken = accessToken;
-            user.oauth2.refreshToken = refreshToken;
+            user.oauth2 = oauth2Info;
             return user.save(function(err) {
               if (err) return cb(err);
 
               cb(null, user);
             });
           }
-          createNewUser(profile, accessToken, refreshToken, function(err, user) {
+          createNewUser(profile, oauth2Info, function(err, user) {
             return cb(err, user);
           });
         });

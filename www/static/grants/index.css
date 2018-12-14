@@ -1,0 +1,165 @@
+body{ 
+  padding: 0; 
+  margin: 0; 
+  background: #040304;
+}
+
+#top{
+  width: 100%;
+  height: 700px;    
+  background-image: url("blankbg.png");
+  background-repeat: no-repeat;
+  background-position: top left;
+}
+
+
+#content{
+  position:absolute;
+  left: 20%;
+  top: 175px;
+  width:700px;
+}
+
+img{
+  max-width:100%;
+  max-height:100%;
+}
+
+h1{
+  color: white;
+  opacity: 0.9;
+  font-family: proxima_nova;
+  letter-spacing: 10px;
+  font-size: 70px;
+  text-shadow: 0px 0px 10px white;
+  line-height:0.1;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome and Opera */
+}
+
+h2{
+  color: white;
+  opacity: 0.9;
+  font-family: proxima_nova;
+  letter-spacing: 10px;
+  font-weight: 200;
+  font-size: 24px;
+  text-transform: uppercase;
+  text-shadow: 0px 0px 2px white;
+  line-height: 1;
+}
+
+h3{
+  color: white;
+  opacity: 0.9;
+  font-family: proxima_nova;
+  letter-spacing: 5px;
+  font-weight: 200;
+  font-size: 16px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+h4{
+  color: white;
+  font-family: proxima_nova;
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1;
+  display: inline;
+}
+
+p{
+  color: white;
+  font-family: proxima_nova;
+  font-weight: 400;
+  font-size: 16px;
+  opacity: 0.7;
+  line-height: 1.5;
+  display:inline;
+}
+
+li{
+  color: white;
+  font-family: proxima_nova;
+  font-weight: 400;
+  font-size: 16px;
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+.tab { 
+  margin-left :30px; 
+}
+
+.input.wrap{
+
+}
+.input-wrap label{
+  color: white;
+  font-family: proxima_nova;
+  font-weight: 400;
+  font-size: 18px;
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+textarea{
+  background-color: rgba(255, 255, 255, .1); 
+  resize: none;
+  overflow: auto;
+  outline: none;
+  width: 550px;
+  min-height: 150px;
+  border-color: rgba(255,255,255,.5);
+  padding: 30px;
+  color: white;
+  font-family: proxima_nova;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+input[type=text]{
+    background-color: rgba(255, 255, 255, .1); 
+    resize: none;
+    overflow: auto;
+    outline: none;
+    width: 300px;
+    min-height: 50px;
+    border-color: rgba(255,255,255,.5);
+    padding-left: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: white;
+    font-family: proxima_nova;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+
+  .button{
+    background: rgb(255,255,255,.8);
+    color: #040304;
+    border-style: outset;
+    border-color: rgb(255,255,255,0);
+    height: 50px;
+    width: 150px;
+    font-family: proxima_nova;
+    letter-spacing: 5px;
+    font-weight: 800;
+    font-size: 18px;
+    text-transform: uppercase;  
+  }
+
+  .button:hover {background-color: rgb(255,255,255,.9)}
+
+@font-face {
+  font-family: proxima_nova;
+  src: local(proxima_nova), url('proximanova.ttf') format('opentype');
+}

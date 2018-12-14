@@ -15,8 +15,7 @@ Step 2: Billing
     <h2 class="mdl-card__title-text">Step 2 of 3: Add billing information</h2>
   </div>
   <div class="mdl-card__supporting-text">
-    Please enter a credit card and billing information to be used for your monthly membership subscription. 
-    On the next screen, you will confirm your subscription amount and billing cycle before being charged.
+    Please enter a credit card and billing information to be used for your monthly membership subscription. On the next screen, you will confirm your subscription amount and billing cycle before being charged.
   </div>
 </div>
 {% endif %}
@@ -28,6 +27,11 @@ Step 2: Billing
   </div>
 </div>
 {% endif %}
+<div class="short-card mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__supporting-text">
+    Please note that the credit card information you enter here will be sent directly to the <a href="https://stripe.com/docs/security/stripe" target="_blank">Stripe</a> servers using <a href="https://stripe.com/docs/security#tls" target="_blank">secure channel</a>, and your full billing information will never be transmitted to nor stored in the {{shortServiceName}} servers, except <a href="https://stripe.com/docs/security#out-of-scope-card-data" target="_blank">non-sensitive card information</a> such as the last 4 digits of the card.
+  </div>
+</div>
 <form role="form" id="card-form" action="{{base_url}}/user/billing" method="POST">
   <div class="mdl-grid">
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
@@ -59,19 +63,19 @@ Step 2: Billing
       <label class="mdl-textfield__label" for="company_name">Company name (optional)</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_line1" id="address_line1" name="addressStreet" value="{{user.billing.address.street}}" data-required>
+      <input class="mdl-textfield__input" type="text" data-stripe="address_line1" id="address_line1" name="addressStreet" value="{{user.billing.address.street || user.profile.mailingAddress.street}}" data-required>
       <label class="mdl-textfield__label" for="address_line1">Billing address</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--8-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_city" id="address_city" name="addressCity" value="{{user.billing.address.zip}}" data-required>
+      <input class="mdl-textfield__input" type="text" data-stripe="address_city" id="address_city" name="addressCity" value="{{user.billing.address.city || user.profile.mailingAddress.city}}" data-required>
       <label class="mdl-textfield__label" for="address_city">City</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_state" id="address_state" name="addressState" value="{{user.billing.address.state}}" data-required>
+      <input class="mdl-textfield__input" type="text" data-stripe="address_state" id="address_state" name="addressState" value="{{user.billing.address.state || user.profile.mailingAddress.state}}" data-required>
       <label class="mdl-textfield__label" for="address_state">Prefecture / state</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
-      <input class="mdl-textfield__input" type="text" data-stripe="address_zip" id="address_zip" pattern="[-0-9]{1,8}" name="addressZip" value="{{user.billing.address.zip}}" data-required>
+      <input class="mdl-textfield__input" type="text" data-stripe="address_zip" id="address_zip" pattern="[-0-9]{1,8}" name="addressZip" value="{{user.billing.address.zip || user.profile.mailingAddress.zip}}" data-required>
       <label class="mdl-textfield__label" for="address_zip">Postal code</label>
       <span class="mdl-textfield__error">Please input valid postal code</span>
     </div>

@@ -26,15 +26,17 @@ Step 1: Profile
       <input class="mdl-textfield__input" type="text" value="{{user.profile.displayName}}" id="full-name" name="displayName" data-required>
       <label class="mdl-textfield__label" for="full-name">Full name</label>
     </div>
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--file mdl-cell mdl-cell--8-col">
+    {% if user.profile.imageUrl %}
+    <div class="mdl-cell mdl-cell--2-col">
+      <img src="{{ user.profileImageAbsoluteUrl(base_url) }}" alt="profile image" class="avatar" style="margin-top: 20px">
+    </div>
+    {% endif %}
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--file mdl-cell mdl-cell--10-col">
       <input class="mdl-textfield__input" placeholder="Profile photo" type="text" id="upload-file" readonly/>
       <div class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
 	<i class="material-icons">attach_file</i><input type="file" name="avatar" id="upload-button">
       </div>
     </div>
-    {% if user.profile.imageUrl %}
-    <img src="{{ user.profileImageAbsoluteUrl(base_url) }}" alt="profile image" class="avatar mdl-cell mdl-cell--4-col">
-    {% endif %}
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" id="address_line1" name="addressStreet" value="{{user.profile.mailingAddress.street}}" data-required>
       <label class="mdl-textfield__label" for="address_line1">Mailing address</label>
@@ -84,13 +86,13 @@ Step 1: Profile
       <input class="mdl-textfield__input" type="text" value="{{user.profile.currentLocation}}" id="current-location" name="currentLocation">
       <label class="mdl-textfield__label" for="current-location">Current city or location (optional)</label>
     </div>
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-      <textarea class="mdl-textfield__input" type="text" id="bio" name="bio" rows="3">{{user.profile.bio}}</textarea>
-      <label class="mdl-textfield__label" for="bio">Short bio (optional)</label>
+    <div class="input-field mdl-cell mdl-cell--12-col">
+      <textarea class="materialize-textarea" type="text" id="bio" name="bio">{{user.profile.bio}}</textarea>
+      <label for="bio">Short bio (optional)</label>
     </div>
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
-      <textarea class="mdl-textfield__input" type="text" id="interests" name="interests" rows="3">{{user.profile.interests}}</textarea>
-      <label class="mdl-textfield__label" for="interests">Areas of interest (optional)</label>
+    <div class="input-field mdl-cell mdl-cell--12-col">
+      <textarea class="materialize-textarea" type="text" id="interests" name="interests">{{user.profile.interests}}</textarea>
+      <label for="interests">Areas of interest (optional)</label>
     </div>
     <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-cell mdl-cell--6-col">
       Save{% if !user.profile.isConfirmed %} and continue{% endif %}
@@ -104,6 +106,10 @@ jQuery(function($) {
     $('#upload-file').val(this.files[0].name);
   });
   $('form').submit(function() {
+    if ($('#bio').val().length === 0 || $('#interests').val().length === 0) {
+      Materialize.toast('Please fill your short bio and area of interests', 4000);
+      return false;
+    }
     $(this).find("button[type='submit']").prop('disabled',true);
   });
 });

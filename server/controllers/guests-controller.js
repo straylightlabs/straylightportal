@@ -1,10 +1,37 @@
 const asana = require('asana');
 const google = require('googleapis');
+const moment = require('moment');
 const calendar = google.calendar('v3');
 const secrets = require('../config/secrets');
 
 const EXTERNAL_CAL_ID = 'primary';
 const INTERNAL_CAL_ID = 'straylight.jp_dvovuo73ok4pjq7qf6q5vg76lg@group.calendar.google.com';
+const DEFAULT_TIME = '15:00';
+
+function joinPhrases(phrases) {
+  var joined = phrases.slice(0, -1).join(', ');
+  if (phrases.length > 1) {
+    joined += ' and ';
+  }
+  if (phrases.length > 0) {
+    joined += phrases[phrases.length - 1];
+  }
+  return joined;
+}
+
+function getTimeOptions() {
+  var options = [];
+  var time = moment().startOf('day');
+  while (true) {
+    time.add(1800, 'seconds');
+    const option = time.format('HH:mm');
+    if (option === '00:00') {
+      break;
+    }
+    options.push(option);
+  }
+  return options;
+}
 
 function isValidDate(date) {
   var daysApart = Math.abs(new Date().getTime() - date.getTime()) / 86400000;
@@ -12,16 +39,28 @@ function isValidDate(date) {
 }
 
 function parseGuestData(req, res, next) {
-  req.sanitizeBody('name').trim();
-  req.sanitizeBody('email').trim();
   req.sanitizeBody('date').trim();
   req.sanitizeBody('timeStart').trim();
   req.sanitizeBody('timeEnd').trim();
 
-  req.checkBody('name', 'Guest Name is required').notEmpty();
-  req.checkBody('email', 'Guest Email is required').notEmpty();
-
   var errors = req.validationErrors();
+
+  var names = req.body.names;
+  var emails = req.body.emails;
+  if (!Array.isArray(names)) {
+    names = [names];
+  }
+  if (!Array.isArray(emails)) {
+    emails = [emails];
+  }
+  names = names.map(n => n.trim()).filter(n => n);
+  emails = emails.map(n => n.trim()).filter(n => n);
+  if (names.length === 0) {
+    errors.push('Please enter at least one guest name');
+  }
+  if (names.length !== emails.length) {
+    errors.push('Please provide one email for each guest');
+  }
 
   var dateStart = new Date(`${req.body.date} ${req.body.timeStart}`);
   var dateEnd = new Date(`${req.body.date} ${req.body.timeEnd}`);
@@ -31,8 +70,8 @@ function parseGuestData(req, res, next) {
 
   next(errors, {
     id: req.params.guest_id,
-    name: req.body.name,
-    email: req.body.email,
+    names: names,
+    emails: emails,
     dateStart: dateStart,
     dateEnd: dateEnd,
     project: req.body.project,
@@ -42,8 +81,8 @@ function parseGuestData(req, res, next) {
 
 function postCalendarEvent(event) {
   return new Promise(function(resolve, reject) {
-    var next = function(err, event) {
-      if (err) reject(err);
+    const next = function(err, event) {
+      if (err) return reject(err);
       resolve(event);
     };
     if (event.eventId) {
@@ -67,9 +106,9 @@ function postInternalCalendarEvent(user, guest) {
         "dateTime": guest.dateEnd.toISOString()
       },
       "attendees": [],
-      "summary": `Guest - ${guest.name}`,
+      "summary": `Guest - ${joinPhrases(guest.names)}`,
       "description":
-          `Guest: ${guest.name}\n` +
+          `Guest: ${joinPhrases(guest.names)}\n` +
           `Host: ${user.profile.displayName}\n` +
           `Project: ${guest.project}\n\n` +
           `Notes: ${guest.notes}\n`,
@@ -94,13 +133,14 @@ function postExternalCalendarEvent(user, guest) {
         {
           "email": user.email
         },
+      ].concat(guest.emails.map(email => (
         {
-          "email": guest.email
+          "email": email
         }
-      ],
+      ))),
       "summary": "Straylight visit",
       "description":
-        `Dear ${guest.name},\n` +
+        `Dear ${joinPhrases(guest.names)},\n` +
         `${user.profile.displayName} has invited you to visit Straylight.\n\n` +  
         'We are located 1-minute west of Yoyogi-Hachiman Station in the Createur Building. Follow the stairs up to 3rd floor and head to the door on your left.\n\n' +
         'Straylight\n' +
@@ -142,13 +182,33 @@ function getAsanaProjects() {
 }
 
 exports.get = function(req, res, next) {
+  req.sanitizeQuery('copy').toBoolean();
+
   getAsanaProjects().then(function(projects) {
+    const now = new Date().getTime();
+    const upcomingGuests = req.user.guests
+        .filter(g => g.dateStart.getTime() > now)
+        .sort((a, b) => a.dateStart.getTime() - b.dateStart.getTime());
+    const pastGuests = req.user.guests
+        .filter(g => g.dateStart.getTime() <= now)
+        .sort((a, b) => b.dateStart.getTime() - a.dateStart.getTime());
+    var guestById = req.params.guest_id && req.user.guests.id(req.params.guest_id);
+    if (guestById) {
+      guestById.upcoming = guestById.dateStart.getTime() > now;
+      guestById.timeStart = moment(guestById.dateStart).format('HH:mm');
+      guestById.timeEnd = moment(guestById.dateEnd).format('HH:mm');
+      guestById.copy = req.query.copy;
+    }
     res.render(req.render, {
       user: req.user,
-      guests: req.user.guests,
-      guest: req.params.guest_id && req.user.guests.id(req.params.guest_id),
+      upcomingGuests: upcomingGuests,
+      pastGuests: pastGuests,
+      guest: guestById || {
+        timeStart: DEFAULT_TIME,
+        timeEnd: DEFAULT_TIME
+      },
       projects: projects,
-      exampleDate: new Date('2017-12-09T15:00:00+0900')
+      timeOptions: getTimeOptions()
     });
   }).catch(next);
 };
@@ -187,8 +247,8 @@ exports.edit = function(req, res, next) {
     var updatedGuest = req.user.guests.id(guest.id);
     if (!updatedGuest) return next('Invalid or missing guest ID');
 
-    updatedGuest.name = guest.name;
-    updatedGuest.email = guest.email;
+    updatedGuest.names = guest.names;
+    updatedGuest.emails = guest.emails;
     updatedGuest.date = guest.date;
     updatedGuest.dateStart = guest.dateStart;
     updatedGuest.dateEnd = guest.dateEnd;

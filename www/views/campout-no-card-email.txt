@@ -1,0 +1,17 @@
+Hi {{name}},
+
+We have confirmed your registration, and we will follow up with you for payment
+at a later time. We look forward to creating something special with you this
+October. Please keep an eye on your email inbox for more details as we approach
+the date of the event.
+
+Straylight Campoutに予約頂きありがとうございます。
+お支払に関しては、後ほど運営の方から直接ご連絡させていただきます。
+一緒に10月のイベントを盛り上げていきましょう。以降のアップデートは、
+日付が近づき次第登録いただいたメールアドレス宛にご案内させていただきます。
+
+----------
+Straylight
+東京都渋谷区元代々木町4-5 クレアトゥール3C
+03-5738-7695
+

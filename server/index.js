@@ -18,8 +18,8 @@ var lodash = require('lodash');
 var expressValidator = require('express-validator');
 var errorHandler = require('./middleware/error');
 var passportMiddleware = require('./middleware/google-passport');
-var setOAuth2Client = require('./middleware/auth').setOAuth2Client;
 var viewHelper = require('./middleware/view-helper');
+var auth = require('./middleware/auth');
 var flash = require('express-flash');
 var cors = require('cors');
 var corsOptions = {
@@ -27,9 +27,11 @@ var corsOptions = {
 };
 
 // setup db
-mongoose.connect(secrets.db);
-mongoose.connection.on('error', function() {
-  console.error('MongoDB Connection Error. Make sure MongoDB is running.');
+mongoose.Promise = global.Promise;
+mongoose.connect(secrets.db).then(() => {
+  console.info('Connected to MongoDB.');
+}).catch(err => {
+  console.error('MongoDB connection Error. Make sure MongoDB is running.');
 });
 
 // express setup
@@ -48,7 +50,7 @@ app.engine('html', swig.renderFile);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
-app.use(favicon(path.join(__dirname + '/../public/favicon.png')));
+app.use(favicon(path.join(__dirname + '/../public/images/favicon.png')));
 app.use(logger('dev'));
 
 app.use(compress);
@@ -66,7 +68,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   cookie: {
-    maxAge: 14 * 86400 * 1000  // 2 weeks
+    maxAge: 42 * 86400 * 1000  // 6 weeks
   },
   secret: secrets.sessionSecret,
   store: new MongoStore({
@@ -79,7 +81,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 passportMiddleware(passport);
-app.use(setOAuth2Client);
+app.use(auth.setGoogleAuthClient);
 
 // other
 app.use(flash());

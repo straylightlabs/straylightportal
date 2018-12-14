@@ -1,5 +1,10 @@
 html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
+  background-color: #f5f5f5;
+}
+
+li {
+  margin-top: 16px;
 }
 
 /* TODO(ryok): Clean up these card styles. */
@@ -130,6 +135,9 @@ html, body {
   .small-screen {
     display: inline;
   }
+  .content {
+    padding: 20px 10px;
+  }
 }
 
 @media (min-width: 800px) {
@@ -172,6 +180,28 @@ html, body {
   line-height: 14px;
 }
 
+.spacing {
+  margin-bottom: 15px;
+}
+
+.no-space {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: inherit !important;
+}
+
+.mdl-textfield {
+  padding: 20px 0 0 0;
+}
+
+/* Override materialize.css */
+nav i.material-icons {
+  height: inherit;
+  line-height: inherit;
+}
+/* END Override materialize.css */
+
+/* Add .mdl-button--file */
 .mdl-button--file input {
   cursor: pointer;
   height: 100%;
@@ -182,15 +212,14 @@ html, body {
   max-width: 300px;
   z-index: 4;
 }
-
 .mdl-textfield--file .mdl-textfield__input {
   box-sizing: border-box;
   width: calc(100% - 32px);
 }
-
 .mdl-textfield--file .mdl-button--file {
   right: 0;
 }
+/* END Add .mdl-button--file */
 
 /* iOS Safari specific workaround */
 .mdl-layout__drawer .mdl-menu__container {
@@ -200,6 +229,15 @@ html, body {
   z-index: -2;
 }
 /* END iOS Safari specific workaround */
+
+textarea.materialize-textarea.tall {
+  height: 10rem;
+}
+
+/* TODO(ryok): Fix the issue overlay hiding dialogs. */
+.modal-overlay {
+  display: none !important;
+}
 
 @media print {
   .mdl-layout__header,

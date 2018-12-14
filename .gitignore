@@ -1,4 +1,5 @@
-uploads/
+server/config/google-key.json
+dumps/
 
 # Logs
 logs

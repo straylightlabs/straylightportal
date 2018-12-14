@@ -1,24 +1,20 @@
 {
   "name": "straylight-portal-server",
   "description": "Straylight Portal Nodejs server",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/straylightlabs/straylightportal"
   },
   "license": "UNLICENSED",
   "scripts": {
-    "prod": "PORTAL_BASE_URL='https://straylight.jp/connect' PORTAL_PORT=8081 pm2 restart index.js --name=portal --update-env --merge-logs --log-date-format='YYYY-MM-DD HH:mm:ss Z'",
-    "dev": "PORTAL_BASE_URL='https://straylight.jp/connect-dev' PORTAL_PORT=9081 nodemon index.js"
+    "start": "PORTAL_BASE_URL='https://straylight.jp/connect' PORTAL_PORT=8080 node index.js",
+    "dev": "MONGO_DB_URL='mongodb://straylightportal-dev:83j7gw7W@localhost:27017/straylightportal-dev' PORTAL_BASE_URL='https://localhost' PORTAL_PORT=8080 STRIPE_KEY=sk_test_2BV9M8v6KTaorg80tWNFvAye STRIPE_PUB_KEY=pk_test_pkUbqe9TDp39w3ecVbBpizrI nodemon index.js"
   },
   "dependencies": {
     "airtable": "^0.4.5",
     "asana": "^0.15.0",
-    "async": "^0.9.0",
-    "axios": "^0.15.3",
-    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.8.4",
-    "bootstrap-material-design": "^0.5.10",
     "compression": "*",
     "connect-mongo": "*",
     "cookie-parser": "~1.3.3",
@@ -27,17 +23,17 @@
     "express": "^4.10.4",
     "express-flash": "*",
     "express-session": "*",
-    "express-subdomain": "^1.0.1",
     "express-validator": "^2.6.0",
     "googleapis": "^17.1.0",
+    "immutable": "^3.8.2",
     "lodash": "^2.4.1",
-    "mdl-select-component": "0.0.7",
     "middleware-responder": "^1.0.0",
-    "moment": "^2.17.1",
+    "moment": "^2.18.1",
     "mongoose": "^4.2.5",
     "mongoose-timestamp": "^0.3.0",
     "morgan": "~1.3.0",
     "multer": "^1.3.0",
+    "node-fetch": "^2.1.2",
     "passport": "^0.2.1",
     "passport-google-oauth20": "^1.0.0",
     "passport-local": "^1.0.0",
@@ -45,5 +41,10 @@
     "stripe": "^3.0.2",
     "stripe-webhook-middleware": "^0.2.0",
     "swig": "^1.4.2"
+  },
+  "resolutions": {
+    "//": "CVE-2015-8858 High severity",
+    "uglify-js": "2.6.0",
+    "hoek": "4.2.1"
   }
 }

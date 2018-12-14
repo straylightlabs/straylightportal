@@ -7,6 +7,8 @@ var userSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true },
   membershipPlan: String,
   isOnboarded: Boolean,
+  isAdmin: Boolean,
+  isDisabled: Boolean,
   profile: {
     displayName: String,
     imageUrl: String,
@@ -40,14 +42,28 @@ var userSchema = new mongoose.Schema({
     firstBillingDate: Date
   },
   guests: [{
-    name: String,
-    email: String,
+    name: String,  // deprecated
+    email: String,  // deprecated
+    names: [String],
+    emails: [String],
     dateStart: Date,
     dateEnd: Date,
     project: String,
     notes: String,
     internalEventId: String,
     externalEventId: String
+  }],
+  events: [{
+    eventType: String,
+    name: String,
+    names: [String],
+    emails: [String],
+    dateStart: Date,
+    dateEnd: Date,
+    details: String,
+    eventId: String,
+    addStraylightMembers: Boolean,
+    url: String,
   }],
   oauth2: {
     accessToken: String,

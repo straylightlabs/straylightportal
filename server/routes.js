@@ -1,8 +1,7 @@
-const UPLOAD_DIR = 'uploads/';
-
 const url = require('url');
 
 const secrets = require('./config/secrets');
+const config = require('./config/main');
 // middleware
 const StripeWebhook = require('stripe-webhook-middleware');
 const isAuthenticated = require('./middleware/auth').isAuthenticated;
@@ -10,14 +9,17 @@ const isUnauthenticated = require('./middleware/auth').isUnauthenticated;
 const setRender = require('middleware-responder').setRender;
 const setRedirect = require('middleware-responder').setRedirect;
 const stripeEvents = require('./middleware/stripe-events');
-const upload = require('multer')({ dest: UPLOAD_DIR });
+const upload = require('multer')({ dest: config.fileUploadDir });
 // controllers
 const users = require('./controllers/users-controller');
 const guests = require('./controllers/guests-controller');
+const events = require('./controllers/events-controller');
+const library = require('./controllers/library-controller');
 const index = require('./controllers/index-controller');
 const sessions = require('./controllers/sessions-controller');
 const files = require('./controllers/files-controller');
 const one = require('./controllers/one-controller');
+const hooks = require('./controllers/hooks-controller');
 
 var stripeWebhook = new StripeWebhook({
   stripeApiKey: secrets.stripeOptions.apiKey,
@@ -75,7 +77,7 @@ module.exports = function(app, passport) {
 
   // Sessions.
   app.get('/auth/google',
-    setRedirect({auth: '/home'}),
+    setRedirect({auth: '/home'}),   
     isUnauthenticated,
     sessions.login);
   app.get('/auth/google/callback',
@@ -131,6 +133,16 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/'}),
     isAuthenticated,
     guests.get);
+  app.get('/events(/:event_id)?',
+    setRender('events'),
+    setRedirect({auth: '/'}),
+    isAuthenticated,
+    events.get);
+  app.get('/library',
+    setRender('library'),
+    setRedirect({auth: '/'}),
+    isAuthenticated,
+    library.get);
   app.get('/one',
     setRender('one'),
     setRedirect({auth: '/'}),
@@ -168,19 +180,36 @@ module.exports = function(app, passport) {
     setRedirect({auth: '/', success: '/guests', failure: '/guests'}),
     isAuthenticated,
     guests.delete);
-  // One JSON API.
-  app.get('/one/lock',
-    setRedirect({auth: '/'}),
+  // Events API.
+  app.post('/events/create',
+    setRedirect({auth: '/', success: '/events', failure: '/events'}),
     isAuthenticated,
-    one.getLockState);
+    events.create);
+  app.post('/events/edit/:event_id',
+    setRedirect({auth: '/', success: '/events', failure: '/events'}),
+    isAuthenticated,
+    events.edit);
+  app.post('/events/delete/:event_id',
+    setRedirect({auth: '/', success: '/events', failure: '/events'}),
+    isAuthenticated,
+    events.delete);
+  // One JSON API.
   app.post('/one/lock',
     setRedirect({auth: '/', success: '/one', failure: '/one'}),
     isAuthenticated,
     one.postLockState);
+  app.get('/one/doorlighting', one.getDoorLighting);
+  app.post('/one/doorlighting',
+    setRedirect({auth: '/', success: '/one', failure: '/one'}),
+    isAuthenticated,
+    one.postDoorLighting);
 
   // Stripe webhook events.
   app.post('/stripe/events',
     stripeWebhook.middleware,
     stripeEvents
   );
+  // Other hooks.
+  app.post('/hooks/lock', hooks.lock);
+  app.post('/hooks/blescan', hooks.blescan);
 };
