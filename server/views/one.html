@@ -3,7 +3,7 @@
 {% block title %}Straylight One Devices{% endblock %}
 
 {% block content %}
-{% if !fromTrustedNetwork %}
+{% if !fromTrustedNetwork && locked[0] %}
 <script>
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(getPosition);
@@ -27,7 +27,7 @@ function getPosition(position) {
     <p>
       <form id="lock-form" action="{{ base_url }}/one/lock" method="post">
         <input type="hidden" name="action" value="{{ locked[0] && 'unlock' || 'lock' }}" />
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect{% if !lockUnreachable %} proximity-locked{% endif %}" {% if !fromTrustedNetwork || lockUnreachable %}disabled="disabled"{% endif %} onclick="$(this).attr('disabled', 'disabled'); $('#lock-form').submit();">
+        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect{% if !lockUnreachable %} proximity-locked{% endif %}" {% if (!fromTrustedNetwork && locked[0]) || lockUnreachable %}disabled="disabled"{% endif %} onclick="$(this).attr('disabled', 'disabled'); $('#lock-form').submit();">
           <i class="material-icons" role="presentation" style="font-size: 18px">{{ locked[0] && 'lock_open' || 'lock' }}</i> {{ locked[0] && 'Unlock' || 'Lock' }}
         </button>
       </form>
@@ -35,7 +35,7 @@ function getPosition(position) {
     {% if locked[0] != locked[1] %}
     <p style="color: red">3C door and 3D door are not in sync.</p>
     {% endif %}
-    {% if !fromTrustedNetwork %}
+    {% if !fromTrustedNetwork && locked[0] %}
     <p class="proximity-warning" style="color: red">You need to be physically nearby Straylight One or connected to the STRAYLIGHT WiFi network to use this feature. When prompted, pleaes allow location reporting. Your location is never recorded or sent to the servers.</p>
     {% endif %}
     {% if lockUnreachable %}
@@ -100,9 +100,7 @@ if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
       </form>
     </p>
     {% if !fromTrustedNetwork %}
-    <p style="color: red">We cannot verify your proximity to Straylight One.
-    Please make sure you are at or nearby and connected to the STRAYLIGHT wifi
-    network.</p>
+    <p style="color: red">You need to be on the STRAYLIGHT wifi network to try these features.</p>
     {% endif %}
   </div>
 </div>
