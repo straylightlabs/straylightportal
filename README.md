@@ -18,6 +18,7 @@ First update `/server/config/secrets.js` with the following credentials:
 - Google Analytics ID
 - Google OAuth2 client ID and secret
 - Asana access token
+- August access token
 
 Install dependencies with `yarn install`.
 Start the server with `yarn dev`.
@@ -27,9 +28,7 @@ Start the server with `yarn dev`.
 - Move to client-side rendering & API server
 - Isolate Straylight specific code
 - Automatically cycle August Lock access token.
-  - See more about the access tokens
-    [here](https://github.com/snjoetw/py-august/blob/master/august/api.py) and
-    [here](https://github.com/jmaxxz/keymaker/issues/5).
+  - For now, manually run `conda activate august && python tools/generate_august_token.py`
 
 ### How to contribute
 
