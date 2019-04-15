@@ -19,7 +19,7 @@ if auth.state == AuthenticationState.BAD_PASSWORD:
 if auth.state == AuthenticationState.REQUIRES_VALIDATION:
     authenticator.send_verification_code()
 
-    print('ENTER VERIFICATION CODE:')
+    print('ENTER VERIFICATION CODE (sent to email):')
     code = input()
     validation_result = authenticator.validate_verification_code(code)
 
