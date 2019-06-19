@@ -1,0 +1,189 @@
+<html><head><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="/liminal/liminal.b7adf7cf.css"></head><body> <div id="scene"></div> <div id="content"> <div id="headersection"> <div id="openertext"> <h1><span id="highlight">liminal</span> /ˈlɪmɪn(ə)l/</h1> <h3>a spring campout</h3> <h4>MAY 25 - 26 AT KINONE PENSION</h4> </div> </div> <div id="invite"> <h3>What is Liminal?</h3> <p>Airports exist in the strange unsettling category of non-space. We pass through like ghosts, our identities reduced to a series of flights, gates and boarding group numbers, as we’re passed from security checkpoint to checkpoint. Surrounded but alone, inexplicably drinking a bloody mary at 2pm, we silently say goodbye to those we’ve already left, waiting for our next adventure to begin. </p> <p> Along with dark stairwells, playgrounds at night, and rooftops at early dawn, airports are spaces of circulation and transition, suspended from time, existing solely as a threshold between what came before and what comes after. </p> <p>This is <span id="highlight">liminality</span>: the strange twilight zone of ambiguity and paradox during a rite of passage to something new. </p> <p> Liminality is disorienting because it means detaching from the parts of your identity that feel familiar. But there is a genuine form of liberation in this anonymity. It’s an opportunity for a birds-eye view of our existing social hierarchies and traditions, for building new customs and institutions, for growth & transformation. It is the feeling of floating before becoming. </p> <p> We invite you to celebrate with us at <span id="highlight">Liminal: a spring campout</span> for Straylight and our friends at Kinone Pension, one of the last rebellious houses still standing between a taxiway and tarmac at Narita Airport. The farmers who continue to grow vegetables on the site of Narita Airport first had to fight for their land in the 1960s, when the Japanese government announced it would build there. While some sold their land, many like the co-operative owners of Kinone Pension resisted, and a protest movement was born when leftist students took on the cause. </p> <p>We hope you’ll join us for this overnight camping event, with two days of community, music, talks and creative self-expression, as we reflect together on what came before, and what can come after. </p> </div> <form id="reg-form"> <h3>Registration</h3> <article> <p>There is a <span id="highlight">¥3000</span> registration fee to cover the cost of throwing the event. This fee will be collected at the venue on the day of the event. Please let organizers know no more than 72 hours before the event if you can no longer attend for a refund. </p> </article> <article> <h2>What is your name?</h2> <input type="text" name="name" id="name" required=""> </article> <article> <h2>What is your email?</h2> <input type="email" name="email" id="email" required=""> </article> <article> <h2>Who is your Straylight host?</h2> <div class="custom-select" style="width:300px;"> <select name="host" required=""> <option value="">(select one)</option> <option value="Alisa Koegel">Alisa Koegel</option> <option value="Alisaun Fukugaki">Alisaun Fukugaki</option> <option value="Alvaro Arregui">Alvaro Arregui</option> <option value="Atsuyuki Degawa">Atsuyuki Degawa</option> <option value="Ayano Morisaka">Ayano Morisaka</option> <option value="Chiyun Yeh">Chiyun Yeh</option> <option value="Daniel Harris Rosen">Daniel Harris Rosen</option> <option value="Ikue Nomura">Ikue Nomura</option> <option value="Jake McGinty">Jake McGinty</option> <option value="Jay Zimmermann">Jay Zimmermann</option> <option value="Joy Ding">Joy Ding</option> <option value="Keigo Fukugaki">Keigo Fukugaki</option> <option value="Mariko McTier">Mariko McTier</option> <option value="Mariya Suzuki">Mariya Suzuki</option> <option value="Nik Pavesic">Nik Pavesic</option> <option value="Roy Husada">Roy Husada</option> <option value="Ryo Kawaguchi">Ryo Kawaguchi</option> <option value="Shiro Gonoo">Shiro Gonoo</option> <option value="Shizuka Nagahama">Shizuka Nagahama</option> <option value="Soh Nagano">Soh Nagano</option> <option value="Taj Campbell">Taj Campbell</option> </select> </div> </article> <article> <h2>Will you be bringing any children with you?</h2> <p>If so, please list their names and ages.</p> <textarea rows="4" name="children" id="children"></textarea> </article> <article> <h2>What is your phone number?</h2> <input type="tel" name="phone" id="phone" required=""> </article> <article> <h2>What activities would you like to participate in?</h2> <p>Select as many as you like. If you have other ideas for contribution, please include them in the "Any other thoughts?" section below.</p> <label class="container">Food or Drink <input type="checkbox" name="activities[]" id="fooddrink" value="Food or Drink"> <span class="checkmark"></span> </label> <label class="container">Music or DJ Performances <input type="checkbox" name="activities[]" id="music" value="Music or DJ Performances"> <span class="checkmark"></span> </label> <label class="container">Decorations or Art Installations <input type="checkbox" name="activities[]" id="deco" value="Decorations or Art Installations"> <span class="checkmark"></span> </label> <label class="container" id="othersetup">Other setup / construction <input type="checkbox" name="activities[]" id="other" value="Other setup / construction"> <span class="checkmark"></span> </label> </article> <article> <h2>Any other thoughts?</h2> <textarea rows="4" name="thoughts" id="thoughts"></textarea> </article> <article> <input type="submit" name="submit" id="submit"> </article> </form> <div id="thankyou"> <h1><span id="highlight"><br><br><br>Thank you</span></h1> <h4>We're so excited to see you there.</h4> </div> </div>  <script type="x-shader/x-vertex" id="vertexshader">
+            attribute float size;
+            attribute float opacity;
+            attribute float blur;
+            varying vec3 vColor;
+            varying float vSize;
+            varying float vOpacity;
+            varying float vBlur;
+            void main() {
+                vColor = color;
+                vSize = size;
+                vBlur = blur;
+                vOpacity = opacity;
+                vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+                gl_PointSize = size * ( 300.0 / -mvPosition.z );
+                gl_Position = projectionMatrix * mvPosition;
+            }
+        </script> <script type="x-shader/x-fragment" id="fragmentshader">
+            varying vec3 vColor;
+            varying float vSize;
+            varying float vOpacity;
+            varying float vBlur;
+
+            void main() {
+                vec2 uv = 2.0 * gl_PointCoord.xy - 1.0;
+                float dist = length(uv);
+
+                vec4 color1 = vec4(0.8, 0.8, 0.8, 1.0 - vBlur); // White
+                vec4 color2 = vec4(0.9, 1.0, 0.9, 1.0 - vBlur); // Greenish-white
+                vec4 color3 = vec4(vColor, 0.2);        // Star-specific color
+                vec4 color4 = vec4(0.0, 0.2, 1.0, 0.0); // Blue
+
+                float step1 = 0.0;
+                float step2 = 0.15;
+                float step3 = 0.22;
+                float step4 = 1.0;
+
+                // Create more halo glow for larger sized stars
+                step2 = step2 - 0.1 * vSize / 100.0;
+
+                // Mix the steps
+                vec4 color = mix(color1, color2, smoothstep(step1, step2, dist));
+                color = mix(color, color3, smoothstep(step2, step3, dist));
+                color = mix(color, color4, smoothstep(step3, step4, dist));
+                color.a = color.a * vOpacity;
+                gl_FragColor = color;
+            }
+        </script> <script type="x-shader/x-fragment" id="perlinnoise">
+            /*
+            Film Grain post-process shader v1.1
+            Martins Upitis (martinsh) devlog-martinsh.blogspot.com
+            2013
+
+            --------------------------
+            This work is licensed under a Creative Commons Attribution 3.0 Unported License.
+            So you are free to share, modify and adapt it for your needs, and even use it for commercial use.
+            I would also love to hear about a project you are using it.
+
+            Have fun,
+            Martins
+            --------------------------
+
+            Perlin noise shader by toneburst:
+            http://machinesdontcare.wordpress.com/2009/06/25/3d-perlin-noise-sphere-vertex-shader-sourcecode/
+            */
+
+            uniform sampler2D bgl_RenderedTexture; //rendered scene sampler
+            uniform float bgl_RenderedTextureWidth; //scene sampler width
+            uniform float bgl_RenderedTextureHeight; //scene sampler height
+            uniform float timer;
+
+            const float permTexUnit = 1.0/256.0;		// Perm texture texel-size
+            const float permTexUnitHalf = 0.5/256.0;	// Half perm texture texel-size
+
+            float width = bgl_RenderedTextureWidth;
+            float height = bgl_RenderedTextureHeight;
+
+            const float grainamount = 0.05; //grain amount
+            bool colored = false; //colored noise?
+            float coloramount = 0.6;
+            float grainsize = 1.6; //grain particle size (1.5 - 2.5)
+            float lumamount = 1.0; //
+
+            //a random texture generator, but you can also use a pre-computed perturbation texture
+            vec4 rnm(in vec2 tc)
+            {
+                float noise =  sin(dot(tc + vec2(timer,timer),vec2(12.9898,78.233))) * 43758.5453;
+
+                float noiseR =  fract(noise)*2.0-1.0;
+                float noiseG =  fract(noise*1.2154)*2.0-1.0;
+                float noiseB =  fract(noise*1.3453)*2.0-1.0;
+                float noiseA =  fract(noise*1.3647)*2.0-1.0;
+
+                return vec4(noiseR,noiseG,noiseB,noiseA);
+            }
+
+            float fade(in float t) {
+                return t*t*t*(t*(t*6.0-15.0)+10.0);
+            }
+
+            float pnoise3D(in vec3 p)
+            {
+                vec3 pi = permTexUnit*floor(p)+permTexUnitHalf; // Integer part, scaled so +1 moves permTexUnit texel
+                // and offset 1/2 texel to sample texel centers
+                vec3 pf = fract(p);     // Fractional part for interpolation
+
+                // Noise contributions from (x=0, y=0), z=0 and z=1
+                float perm00 = rnm(pi.xy).a ;
+                vec3  grad000 = rnm(vec2(perm00, pi.z)).rgb * 4.0 - 1.0;
+                float n000 = dot(grad000, pf);
+                vec3  grad001 = rnm(vec2(perm00, pi.z + permTexUnit)).rgb * 4.0 - 1.0;
+                float n001 = dot(grad001, pf - vec3(0.0, 0.0, 1.0));
+
+                // Noise contributions from (x=0, y=1), z=0 and z=1
+                float perm01 = rnm(pi.xy + vec2(0.0, permTexUnit)).a ;
+                vec3  grad010 = rnm(vec2(perm01, pi.z)).rgb * 4.0 - 1.0;
+                float n010 = dot(grad010, pf - vec3(0.0, 1.0, 0.0));
+                vec3  grad011 = rnm(vec2(perm01, pi.z + permTexUnit)).rgb * 4.0 - 1.0;
+                float n011 = dot(grad011, pf - vec3(0.0, 1.0, 1.0));
+
+                // Noise contributions from (x=1, y=0), z=0 and z=1
+                float perm10 = rnm(pi.xy + vec2(permTexUnit, 0.0)).a ;
+                vec3  grad100 = rnm(vec2(perm10, pi.z)).rgb * 4.0 - 1.0;
+                float n100 = dot(grad100, pf - vec3(1.0, 0.0, 0.0));
+                vec3  grad101 = rnm(vec2(perm10, pi.z + permTexUnit)).rgb * 4.0 - 1.0;
+                float n101 = dot(grad101, pf - vec3(1.0, 0.0, 1.0));
+
+                // Noise contributions from (x=1, y=1), z=0 and z=1
+                float perm11 = rnm(pi.xy + vec2(permTexUnit, permTexUnit)).a ;
+                vec3  grad110 = rnm(vec2(perm11, pi.z)).rgb * 4.0 - 1.0;
+                float n110 = dot(grad110, pf - vec3(1.0, 1.0, 0.0));
+                vec3  grad111 = rnm(vec2(perm11, pi.z + permTexUnit)).rgb * 4.0 - 1.0;
+                float n111 = dot(grad111, pf - vec3(1.0, 1.0, 1.0));
+
+                // Blend contributions along x
+                vec4 n_x = mix(vec4(n000, n001, n010, n011), vec4(n100, n101, n110, n111), fade(pf.x));
+
+                // Blend contributions along y
+                vec2 n_xy = mix(n_x.xy, n_x.zw, fade(pf.y));
+
+                // Blend contributions along z
+                float n_xyz = mix(n_xy.x, n_xy.y, fade(pf.z));
+
+                // We're done, return the final noise value.
+                return n_xyz;
+            }
+
+            //2d coordinate orientation thing
+            vec2 coordRot(in vec2 tc, in float angle)
+            {
+                float aspect = width/height;
+                float rotX = ((tc.x*2.0-1.0)*aspect*cos(angle)) - ((tc.y*2.0-1.0)*sin(angle));
+                float rotY = ((tc.y*2.0-1.0)*cos(angle)) + ((tc.x*2.0-1.0)*aspect*sin(angle));
+                rotX = ((rotX/aspect)*0.5+0.5);
+                rotY = rotY*0.5+0.5;
+                return vec2(rotX,rotY);
+            }
+
+            void main()
+            {
+                vec2 texCoord = gl_TexCoord[0].st;
+
+                vec3 rotOffset = vec3(1.425,3.892,5.835); //rotation offset values
+                vec2 rotCoordsR = coordRot(texCoord, timer + rotOffset.x);
+                vec3 noise = vec3(pnoise3D(vec3(rotCoordsR*vec2(width/grainsize,height/grainsize),0.0)));
+
+                if (colored)
+                {
+                    vec2 rotCoordsG = coordRot(texCoord, timer + rotOffset.y);
+                    vec2 rotCoordsB = coordRot(texCoord, timer + rotOffset.z);
+                    noise.g = mix(noise.r,pnoise3D(vec3(rotCoordsG*vec2(width/grainsize,height/grainsize),1.0)),coloramount);
+                    noise.b = mix(noise.r,pnoise3D(vec3(rotCoordsB*vec2(width/grainsize,height/grainsize),2.0)),coloramount);
+                }
+
+                vec3 col = texture2D(bgl_RenderedTexture, texCoord).rgb;
+
+                //noisiness response curve based on scene luminance
+                vec3 lumcoeff = vec3(0.299,0.587,0.114);
+                float luminance = mix(0.0,dot(col, lumcoeff),lumamount);
+                float lum = smoothstep(0.2,0.0,luminance);
+                lum += luminance;
+
+
+                noise = mix(noise,vec3(0.0),pow(lum,4.0));
+                col = col+noise*grainamount;
+
+                gl_FragColor =  vec4(col,1.0);
+            }
+        </script> <script src="/liminal/liminal.6301a1a5.js"></script> </body></html>
