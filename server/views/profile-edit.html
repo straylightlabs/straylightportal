@@ -58,13 +58,13 @@ Step 1: Profile
       <input class="mdl-textfield__input" type="text" id="address_country" name="addressCountry" value="{{user.profile.mailingAddress.country}}" data-required>
       <label class="mdl-textfield__label" for="address_country">Country</label>
     </div>
-    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-cell mdl-cell--4-col" for="mailing-address-private">
-      <input type="checkbox" id="mailing-address-private" class="mdl-switch__input" {% if user.profile.mailingAddress.isPrivate %}checked{% endif %} name="mailingAddressPrivate" value="1">
-      <span class="mdl-switch__label" id="mailing-address-private-label">Private<span class="small-screen"> (Make mailing address visible only to admins)</span></span>
-      <div class="mdl-tooltip" data-mdl-for="mailing-address-private-label">
-        Make mailing address visible only to admins
-      </div>
-    </label>
+    <div class="switch tooltipped mdl-cell mdl-cell--4-col" data-position="top" data-tooltip="Make mailing address visible only to admins">
+      <label>
+        <input type="checkbox" {% if user.profile.mailingAddress.isPrivate %}checked{% endif %} name="mailingAddressPrivate" value="1">
+        <span class="lever"></span>
+        Private<span class="small-screen"> (Make mailing address visible only to admins)</span>
+      </label>
+    </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--3-col">
       <input class="mdl-textfield__input" type="text" value="{{user.profile.mobilePhone.countryCode}}" id="mobile-phone-country-code" name="mobilePhoneCountryCode" pattern="[0-9]{1,3}" data-required>
       <label class="mdl-textfield__label" for="mobile-phone-country-code">Country code</label>
@@ -75,13 +75,13 @@ Step 1: Profile
       <label class="mdl-textfield__label" for="mobile-phone">Mobile phone</label>
       <span class="mdl-textfield__error">Example: 8012345678</span>
     </div>
-    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-cell mdl-cell--4-col" for="mobile-phone-private">
-      <input type="checkbox" id="mobile-phone-private" class="mdl-switch__input" {% if user.profile.mobilePhone.isPrivate %}checked{% endif %} name="mobilePhonePrivate" value="1">
-      <span class="mdl-switch__label" id="mobile-phone-private-label">Private<span class="small-screen"> (Make mobile phone visible only to admins)</span></span>
-      <div class="mdl-tooltip" data-mdl-for="mobile-phone-private-label">
-        Make mobile phone visible only to admins
-      </div>
-    </label>
+    <div class="switch tooltipped mdl-cell mdl-cell--4-col" data-position="top" data-tooltip="Make mobile phone visible only to admins">
+      <label>
+        <input type="checkbox" {% if user.profile.mobilePhone.isPrivate %}checked{% endif %} name="mobilePhonePrivate" value="1">
+        <span class="lever"></span>
+        Private<span class="small-screen"> (Make mobile phone visible only to admins)</span>
+      </label>
+    </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--12-col">
       <input class="mdl-textfield__input" type="text" value="{{user.profile.currentLocation}}" id="current-location" name="currentLocation">
       <label class="mdl-textfield__label" for="current-location">Current city or location (optional)</label>
