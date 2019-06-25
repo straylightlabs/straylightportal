@@ -23,14 +23,14 @@ function createNewUser(googleProfile, oauth2Info, cb) {
   fetchProfileFromAirtable(email, function(err, airtableProfile) {
     if (err) return cb(err);
 
-    var membershipPlan = airtableProfile.get('Portal Membership');
+    var membershipPlan = airtableProfile.get('Stripe Plan');
     var imageUrl = googleProfile.photos && googleProfile.photos.length == 1
       ? googleProfile.photos[0].value : '';
     var mailingAddress = (airtableProfile.get('Physical Address') || '').split('\n');
     var firstBillingDateStr = airtableProfile.get('First Billing Date');
     var mobilePhone = airtableProfile.get('Mobile') || '';
 
-    if (!membershipPlan ||
+    if (membershipPlan &&
         !new RegExp('[0-9]{4}-[0-9]{2}-[0-9]{2}').test(firstBillingDateStr)) {
       return cb(`Invalid data in Airtable: membershipPlan=${membershipPlan} firstBillingDate=${firstBillingDateStr}`);
     }

@@ -65,7 +65,7 @@ function handleOneTimeInvoice(user, req, res, next) {
   if (!req.body.oneTimeInvoice) {
     return next();
   }
-  // TODO(ryok): Insecure. Use session.
+  // TODO(ryok): Use session.
   var oneTimeInvoice = JSON.parse(decodeURIComponent(req.body.oneTimeInvoice));
   user.createInvoice(oneTimeInvoice, next);
 }
@@ -143,9 +143,16 @@ exports.postProfile = function(req, res, next) {
       if (err) return next(err);
 
       req.flash('success', 'Profile information updated');
-      res.onboardOr(user, function() {
-        res.redirect(req.redirect.success);
-      });
+      if (user.membershipPlan) {
+        res.onboardOr(user, function() {
+          res.redirect(req.redirect.success);
+        });
+      } else {
+        user.isOnboarded = true;
+        user.save(function(err) {
+          if (err) return next(err);
+          res.redirect(req.redirect.success);
+        });
     });
   });
 };

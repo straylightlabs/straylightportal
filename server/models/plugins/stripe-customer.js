@@ -26,14 +26,6 @@ module.exports = exports = function stripeCustomer (schema, options) {
     });
   });
 
-  schema.methods.getPlan = function () {
-    return options.planData[this.stripe.plan];
-  };
-
-  schema.methods.getMembershipPlan = function () {
-    return options.planData[this.membershipPlan];
-  };
-
   schema.methods.createCustomer = function(cb) {
     var user = this;
 
