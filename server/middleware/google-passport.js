@@ -28,14 +28,11 @@ function createNewUser(googleProfile, oauth2Info, cb) {
       ? googleProfile.photos[0].value : '';
     var mailingAddress = (airtableProfile.get('Physical Address') || '').split('\n');
     var firstBillingDateStr = airtableProfile.get('First Billing Date');
+    var firstBillingDate = firstBillingDateStr
+        ? new Date(firstBillingDateStr + 'T00:00:00+0900')
+        : new Date();
     var mobilePhone = airtableProfile.get('Mobile') || '';
 
-    if (membershipPlan &&
-        !new RegExp('[0-9]{4}-[0-9]{2}-[0-9]{2}').test(firstBillingDateStr)) {
-      return cb(`Invalid data in Airtable: membershipPlan=${membershipPlan} firstBillingDate=${firstBillingDateStr}`);
-    }
-
-    var firstBillingDate = new Date(firstBillingDateStr + 'T00:00:00+0900');
     var user = new User({
       email: email,
       membershipPlan: membershipPlan,
@@ -78,7 +75,7 @@ module.exports = function(passport) {
     }
 
     User.findById(id, function(err, user) {
-      if (user.isDisabled) {
+      if (!user || user.isDisabled) {
         return done('Your account is disabled');
       }
       done(err, user);
