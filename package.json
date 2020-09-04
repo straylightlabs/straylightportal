@@ -12,7 +12,7 @@
     "dev": "MONGO_DB_URL='mongodb://straylightportal-dev:83j7gw7W@localhost:27017/straylightportal-dev' PORTAL_BASE_URL='https://localhost' PORTAL_PORT=8080 STRIPE_KEY=sk_test_2BV9M8v6KTaorg80tWNFvAye STRIPE_PUB_KEY=pk_test_pkUbqe9TDp39w3ecVbBpizrI nodemon index.js"
   },
   "dependencies": {
-    "airtable": "^0.4.5",
+    "airtable": "^0.7.2",
     "asana": "^0.15.0",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
