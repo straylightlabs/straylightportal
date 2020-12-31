@@ -27,7 +27,7 @@ function getPosition(position) {
     <p>
       <form id="lock-form" action="{{ base_url }}/one/lock" method="post">
         <input type="hidden" name="action" value="{{ locked[0] && 'unlock' || 'lock' }}" />
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect{% if !lockUnreachable %} proximity-locked{% endif %}" {% if (!fromTrustedNetwork && locked[0]) || lockUnreachable %}disabled="disabled"{% endif %} onclick="$(this).attr('disabled', 'disabled'); $('#lock-form').submit();">
+        <button type="submit" class="btn waves-effect waves-light blue-grey{% if !lockUnreachable %} proximity-locked{% endif %}" {% if (!fromTrustedNetwork && locked[0]) || lockUnreachable %}disabled="disabled"{% endif %} onclick="$(this).attr('disabled', 'disabled'); $('#lock-form').submit();">
           <i class="material-icons" role="presentation" style="font-size: 18px">{{ locked[0] && 'lock_open' || 'lock' }}</i> {{ locked[0] && 'Unlock' || 'Lock' }}
         </button>
       </form>
@@ -78,7 +78,7 @@ if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
     <p>
       <form action="{{ base_url }}/one/doorlighting" method="post">
         <input type="hidden" name="pattern" value="rainbow" />
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+        <button type="submit" class="btn waves-effect waves-light blue-grey" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
           Play rainbow pattern
         </button>
       </form>
@@ -86,7 +86,7 @@ if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
     </p>
       <form action="{{ base_url }}/one/doorlighting" method="post">
         <input type="hidden" name="pattern" value="flicker" />
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+        <button type="submit" class="btn waves-effect waves-light blue-grey" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
           Start flicker pattern
         </button>
       </form>
@@ -94,7 +94,7 @@ if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
     </p>
       <form action="{{ base_url }}/one/doorlighting" method="post">
         <input type="hidden" name="pattern" value="clear" />
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
+        <button type="submit" class="btn waves-effect waves-light blue-grey" {% if !fromTrustedNetwork %}disabled="disabled"{% endif %}>
           Clear pattern
         </button>
       </form>

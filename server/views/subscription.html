@@ -93,12 +93,12 @@ Step 3: Pay
   {% if oneTimeInvoice %}
   <input type="hidden" name="oneTimeInvoice" value="{{encodeURIComponent(JSON.stringify(oneTimeInvoice))}}">
   {% endif %}
-  <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+  <button type="submit" class="btn waves-effect waves-light red lighten-2">
     Confirm and process payment
   </button>
 </form>
 {% else %}
-<a href="{{base_url}}/billing" class="mdl-button mdl-js-button mdl-js-ripple-effect">
+<a href="{{base_url}}/billing" class="btn-flat waves-effect waves-teal">
   Update billing information
 </a>
 <form role="form" action="{{base_url}}/user/subscription/cancel" method="POST" class="confirmation">
@@ -113,7 +113,7 @@ Step 3: Pay
       ryo@straylight.jp instead so we can avoid double-charging.</p>
     </div>
   </div>
-  <button type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">
+  <button type="submit" class="btn-flat waves-effect waves-teal">
     Cancel subscription
   </button>
 </form>
