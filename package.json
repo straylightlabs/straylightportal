@@ -24,7 +24,7 @@
     "express-flash": "*",
     "express-session": "^1.16.2",
     "express-validator": "^2.6.0",
-    "googleapis": "^66.0.0",
+    "googleapis": "^39.1.0",
     "immutable": "^3.8.2",
     "lodash": "^2.4.1",
     "middleware-responder": "^1.0.0",
@@ -45,6 +45,7 @@
   "resolutions": {
     "lodash": "^4.17.19",
     "qs": "^6.3.2",
-    "minimist": "^1.2.3"
+    "minimist": "^1.2.3",
+    "node-forge": "^0.10.0"
   }
 }

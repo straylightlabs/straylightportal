@@ -1,7 +1,7 @@
 'use strict';
 
 var express = require('express');
-var swig = require('swig');
+var swig = require('swig-templates');
 var subdomainOffset = process.env.SUBDOMAIN_OFFSET || 0;
 var secrets = require('./config/secrets');
 var path = require('path');

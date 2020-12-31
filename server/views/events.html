@@ -58,7 +58,7 @@
               <label for="name">Event name</label>
             </div>
             <div class="input-field col s12 m6">
-              <input type="date" {% if event.dateStart %}value="{{moment(event.dateStart).format('YYYY-MM-DD')}}"{% endif %} id="date" name="date" class="datepicker validate">
+              <input type="text" {% if event.dateStart %}value="{{moment(event.dateStart).format('YYYY-MM-DD')}}"{% endif %} id="date" name="date" class="datepicker validate">
               <label for="date">Date</label>
             </div>
             <div class="input-field col s12 m3">
