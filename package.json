@@ -24,7 +24,7 @@
     "express-flash": "*",
     "express-session": "^1.16.2",
     "express-validator": "^2.6.0",
-    "googleapis": "^39.1.0",
+    "googleapis": "^17.1.0",
     "immutable": "^3.8.2",
     "lodash": "^2.4.1",
     "middleware-responder": "^1.0.0",
